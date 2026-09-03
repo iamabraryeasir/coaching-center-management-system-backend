@@ -1,12 +1,16 @@
-﻿import type { Server } from 'node:http';
+import type { Server } from 'node:http';
 import { app } from './app';
-import { config } from './config';
+import { config, pool, prisma } from './config';
 import { logger } from './utils';
 
 let server: Server;
 
-const startServer = (): void => {
+const startServer = async (): Promise<void> => {
   try {
+    logger.info('Connecting to PostgreSQL database via Prisma...');
+    await prisma.$connect();
+    logger.info('PostgreSQL database connected successfully.');
+
     server = app.listen(config.PORT, () => {
       logger.info('=======================================================');
       logger.info('  Coaching Center Management System Backend Running');
@@ -16,21 +20,43 @@ const startServer = (): void => {
       logger.info(`  API Base    : http://localhost:${config.PORT}/api/v1`);
       logger.info('=======================================================');
     });
+
+    server.on('error', (error: Error) => {
+      logger.error('HTTP Server encountered an error:', error);
+      process.exit(1);
+    });
   } catch (error) {
     logger.error('Failed to start server:', error);
     process.exit(1);
   }
 };
 
-const handleGracefulShutdown = (signal: string): void => {
+const handleGracefulShutdown = async (signal: string): Promise<void> => {
   logger.info(`Received ${signal}. Starting graceful shutdown...`);
-  if (server) {
-    server.close(() => {
-      logger.info('HTTP server closed successfully.');
-      process.exit(0);
-    });
-  } else {
+  try {
+    if (server) {
+      await new Promise<void>((resolve, reject) => {
+        server.close((err) => {
+          if (err) {
+            reject(err);
+          } else {
+            logger.info('HTTP server closed successfully.');
+            resolve();
+          }
+        });
+      });
+    }
+
+    await prisma.$disconnect();
+    logger.info('Database client disconnected successfully.');
+
+    await pool.end();
+    logger.info('Database connection pool ended.');
+
     process.exit(0);
+  } catch (error) {
+    logger.error('Error during graceful shutdown:', error);
+    process.exit(1);
   }
 };
 

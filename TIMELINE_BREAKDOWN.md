@@ -14,15 +14,15 @@
 
 **Focus:** Laying a rock-solid foundation. A good schema prevents headaches later.
 
-- [ ] Finalize domain specifications and operational workflows for multi-branch coaching center management.
-- [ ] Define the **4 primary roles** (`SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT`) and map delegated operational permissions.
-- [ ] Plan all **30+ RESTful API endpoints** with request/response schemas, status codes, and error envelopes.
-- [ ] Design the complete relational **Entity Relationship Diagram (ERD)** with indices, foreign keys, and soft delete columns.
-- [ ] Initialize Node.js (v24+), TypeScript (v7+), Express.js (v5), and Biome (v2.5+) project infrastructure.
-- [ ] Configure PostgreSQL database pool connection and configure **Prisma ORM (v7+)** with `@prisma/adapter-pg`.
+- [x] Finalize domain specifications and operational workflows for multi-branch coaching center management.
+- [x] Define the **4 primary roles** (`SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT`) and map delegated operational permissions.
+- [x] Plan all **30+ RESTful API endpoints** with request/response schemas, status codes, and error envelopes.
+- [x] Design the complete relational **Entity Relationship Diagram (ERD)** with indices, foreign keys, and soft delete columns.
+- [x] Initialize Node.js (v24+), TypeScript (v7+), Express.js (v5), and Biome (v2.5+) project infrastructure.
+- [x] Configure PostgreSQL database pool connection and configure **Prisma ORM (v7+)** with `@prisma/adapter-pg`.
 - [ ] Build the modular multi-file Prisma schema architecture:
-    - [ ] `prisma/schema.prisma` (minimal root config with generator client and datasource db)
-    - [ ] `prisma/enums.prisma` (`Role`, `UserStatus`, `Gender`, `Permission`, `AttendanceStatus`, `PaymentStatus`, `EnrollmentStatus`, `ExamStatus`)
+    - [x] `prisma/schema.prisma` (minimal root config with generator client and datasource db)
+    - [x] `prisma/enums.prisma` (`Role`, `UserStatus`, `Gender`, `Permission`, `AttendanceStatus`, `PaymentStatus`, `EnrollmentStatus`, `ExamStatus`)
     - [ ] `prisma/user.prisma` (`User`, `Session`, `AdminProfile`, `TeacherProfile`, `StudentProfile`, `TeacherPermission`)
     - [ ] `prisma/branch.prisma` (`Branch` with `slug`)
     - [ ] `prisma/batch.prisma` (`Batch` with seat limit, schedule, fee)
