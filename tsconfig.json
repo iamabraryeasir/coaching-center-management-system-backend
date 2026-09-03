@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    /* -------------------------------------------------------------------------- */
+    /*                   Base Language & Environment Settings                     */
+    /* -------------------------------------------------------------------------- */
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    /* -------------------------------------------------------------------------- */
+    /*                          Project Layout & Output                           */
+    /* -------------------------------------------------------------------------- */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": false,
+    /* -------------------------------------------------------------------------- */
+    /*                          Strict Type-Checking Options                      */
+    /* -------------------------------------------------------------------------- */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    /* -------------------------------------------------------------------------- */
+    /*                 Additional Code Quality & Safety Checks                    */
+    /* -------------------------------------------------------------------------- */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    /* -------------------------------------------------------------------------- */
+    /*                    Interop, Module & Package Resolution                    */
+    /* -------------------------------------------------------------------------- */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "coverage", "**/*.test.ts", "**/*.spec.ts"]
+}
