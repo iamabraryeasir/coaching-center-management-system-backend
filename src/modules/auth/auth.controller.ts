@@ -161,3 +161,65 @@ export const resetPassword = catchAsync(async (req: Request, res: Response): Pro
     data: null,
   });
 });
+
+/**
+ * Authenticates student via Google Identity Services (GIS) ID Token
+ * Returns active session tokens if approved, or prompts for onboarding if new user
+ */
+export const googleLogin = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const metadata = extractClientMetadata(req);
+  const result = await authService.loginWithGoogle(req.body, metadata);
+
+  if (result.isNewUser) {
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Google authentication verified. Student onboarding required.',
+      data: result,
+    });
+    return;
+  }
+
+  // Set HttpOnly cookies for Web clients
+  res.cookie('accessToken', result.tokens.accessToken, getAccessTokenCookieOptions());
+  res.cookie('refreshToken', result.tokens.refreshToken, getRefreshTokenCookieOptions());
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Logged in successfully with Google',
+    data: {
+      user: result.user,
+      tokens: result.tokens,
+    },
+  });
+});
+
+/**
+ * Onboards a new Google-authenticated student into PENDING_ACTIVATION state
+ */
+export const googleOnboard = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const metadata = extractClientMetadata(req);
+  const result = await authService.onboardGoogleStudent(req.body, metadata);
+
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: result.message,
+    data: result.user,
+  });
+});
+
+/**
+ * Retrieves public list of coaching branches for registration and onboarding dropdowns
+ */
+export const getBranches = catchAsync(async (_req: Request, res: Response): Promise<void> => {
+  const branches = await authService.getPublicBranches();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Available branches retrieved successfully',
+    data: branches,
+  });
+});

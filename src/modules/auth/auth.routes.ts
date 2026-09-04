@@ -3,6 +3,9 @@ import { Router } from 'express';
 import { checkAuth, validateRequest } from '../../middlewares';
 import {
   forgotPassword,
+  getBranches,
+  googleLogin,
+  googleOnboard,
   login,
   logout,
   refreshToken,
@@ -11,6 +14,8 @@ import {
 } from './auth.controller';
 import {
   forgotPasswordSchema,
+  googleLoginSchema,
+  googleOnboardSchema,
   loginSchema,
   logoutSchema,
   refreshTokenSchema,
@@ -19,6 +24,11 @@ import {
 } from './auth.validation';
 
 const authRouter: Router = Router();
+
+/**
+ * Public directory of coaching branches (for registration and onboarding dropdowns)
+ */
+authRouter.get('/branches', getBranches);
 
 /**
  * Direct Student Registration (Protected — ADMIN only, SUPER_ADMIN cannot register students)
@@ -54,5 +64,15 @@ authRouter.post('/forgot-password', validateRequest(forgotPasswordSchema), forgo
  * Reset password using single-use Redis-backed token
  */
 authRouter.post('/reset-password', validateRequest(resetPasswordSchema), resetPassword);
+
+/**
+ * Google Identity Services (GIS) token verification / student login
+ */
+authRouter.post('/google', validateRequest(googleLoginSchema), googleLogin);
+
+/**
+ * Submit onboarding details for Google-authenticated student (PENDING_ACTIVATION)
+ */
+authRouter.post('/google/onboard', validateRequest(googleOnboardSchema), googleOnboard);
 
 export { authRouter };

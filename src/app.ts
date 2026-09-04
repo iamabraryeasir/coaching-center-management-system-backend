@@ -10,13 +10,25 @@ import { httpLogger, sendResponse } from './utils';
 
 const app: Application = express();
 
-// Security HTTP headers
-app.use(helmet());
+// Security HTTP headers configured for cross-origin API clients & Google OAuth popups
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+  }),
+);
 
 // Cross-Origin Resource Sharing
 app.use(
   cors({
-    origin: config.CORS_ORIGIN === '*' ? true : config.CORS_ORIGIN.split(','),
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or local HTML) or matched origins
+      if (!origin || config.CORS_ORIGIN === '*' || config.CORS_ORIGIN.split(',').includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   }),
 );

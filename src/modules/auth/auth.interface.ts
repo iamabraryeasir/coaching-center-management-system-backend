@@ -36,6 +36,24 @@ export interface IResetPasswordInput {
   newPassword: string;
 }
 
+export interface IGoogleLoginInput {
+  idToken: string;
+}
+
+export interface IGoogleOnboardInput {
+  googleId: string;
+  email: string;
+  name: string;
+  phone: string;
+  adminId: string; // Managing branch Admin ID
+  guardianName: string;
+  guardianPhone: string;
+  institutionName?: string;
+  classLevel: string;
+  rollNumber?: string;
+  avatarUrl?: string;
+}
+
 export interface IBranchSummary {
   id: string;
   branchName: string;
@@ -115,6 +133,25 @@ export interface ILoginResponse {
 
 export interface ITokenRefreshResponse {
   tokens: IAuthTokens;
+}
+
+export type IGoogleLoginResponse =
+  | {
+      isNewUser: true;
+      googleId: string;
+      email: string;
+      name: string;
+      avatarUrl?: string | null;
+    }
+  | {
+      isNewUser: false;
+      user: IAuthUser;
+      tokens: IAuthTokens;
+    };
+
+export interface IGoogleOnboardResponse {
+  user: IAuthUser;
+  message: string;
 }
 
 export interface IClientMetadata {
