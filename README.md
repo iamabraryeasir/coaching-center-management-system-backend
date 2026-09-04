@@ -226,21 +226,20 @@ erDiagram
 
 ### System Enums
 
-| Enum | Values | Description |
-| :--- | :--- | :--- |
-| **`Role`** | `SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT` | System-wide role-based access control. |
-| **`UserStatus`** | `ACTIVE`, `INACTIVE`, `BLOCKED`, `PENDING_ACTIVATION` | Account state (e.g. Google-onboarded starts as `PENDING_ACTIVATION`). |
-| **`DayOfWeek`** | `SATURDAY`, `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDAY`, `THURSDAY`, `FRIDAY` | 7-day calendar days for `ClassRoutine` weekly timetable. |
-| **`BatchStatus`** | `UPCOMING`, `ONGOING`, `COMPLETED`, `CANCELLED` | Lifecycle of a coaching class batch. |
-| **`EnrollmentStatus`** | `PENDING`, `ENROLLED`, `REJECTED` | Student batch admission approval workflow. |
-| **`AttendanceStatus`** | `PRESENT`, `ABSENT`, `LATE`, `EXCUSED`, `LEAVE` | Daily student attendance categories. |
-| **`ExamStatus`** | `UPCOMING`, `ONGOING`, `COMPLETED`, `CANCELLED` | Batch exam timeline status. |
-| **`ResultStatus`** | `DRAFT`, `PUBLISHED` | Exam marks publication gate (only published marks are visible to students). |
-| **`PaymentMethod`** | `STRIPE`, `CASH`, `BKASH`, `BANK_TRANSFER`, `NAGAD` | Online and offline payment collection channels. |
-| **`PaymentStatus`** | `PENDING`, `COMPLETED`, `FAILED`, `REFUNDED` | Transaction payment verification status. |
-| **`Permission`** | `MANAGE_STUDENTS`, `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES`, `VIEW_REPORTS` | Delegated operational permissions for teachers. |
-| **`Gender`** | `MALE`, `FEMALE`, `OTHER` | Standard gender demographic options. |
-
+| Enum                   | Values                                                                                    | Description                                                                 |
+| :--------------------- | :---------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- |
+| **`Role`**             | `SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT`                                              | System-wide role-based access control.                                      |
+| **`UserStatus`**       | `ACTIVE`, `INACTIVE`, `BLOCKED`, `PENDING_ACTIVATION`                                     | Account state (e.g. Google-onboarded starts as `PENDING_ACTIVATION`).       |
+| **`DayOfWeek`**        | `SATURDAY`, `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDAY`, `THURSDAY`, `FRIDAY`              | 7-day calendar days for `ClassRoutine` weekly timetable.                    |
+| **`BatchStatus`**      | `UPCOMING`, `ONGOING`, `COMPLETED`, `CANCELLED`                                           | Lifecycle of a coaching class batch.                                        |
+| **`EnrollmentStatus`** | `PENDING`, `ENROLLED`, `REJECTED`                                                         | Student batch admission approval workflow.                                  |
+| **`AttendanceStatus`** | `PRESENT`, `ABSENT`, `LATE`, `EXCUSED`, `LEAVE`                                           | Daily student attendance categories.                                        |
+| **`ExamStatus`**       | `UPCOMING`, `ONGOING`, `COMPLETED`, `CANCELLED`                                           | Batch exam timeline status.                                                 |
+| **`ResultStatus`**     | `DRAFT`, `PUBLISHED`                                                                      | Exam marks publication gate (only published marks are visible to students). |
+| **`PaymentMethod`**    | `STRIPE`, `CASH`, `BKASH`, `BANK_TRANSFER`, `NAGAD`                                       | Online and offline payment collection channels.                             |
+| **`PaymentStatus`**    | `PENDING`, `COMPLETED`, `FAILED`, `REFUNDED`                                              | Transaction payment verification status.                                    |
+| **`Permission`**       | `MANAGE_STUDENTS`, `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES`, `VIEW_REPORTS` | Delegated operational permissions for teachers.                             |
+| **`Gender`**           | `MALE`, `FEMALE`, `OTHER`                                                                 | Standard gender demographic options.                                        |
 
 ---
 
