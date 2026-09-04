@@ -1,7 +1,7 @@
 import type { Server } from 'node:http';
 import { app } from './app';
 import { config, pool, prisma } from './config';
-import { logger } from './utils';
+import { logger, seedData } from './utils';
 
 let server: Server;
 
@@ -10,6 +10,9 @@ const startServer = async (): Promise<void> => {
     logger.info('Connecting to PostgreSQL database via Prisma...');
     await prisma.$connect();
     logger.info('PostgreSQL database connected successfully.');
+
+    // Seed initial SuperAdmin and Branch Admin if they do not exist
+    await seedData();
 
     server = app.listen(config.PORT, () => {
       logger.info('=======================================================');

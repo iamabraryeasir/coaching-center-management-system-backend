@@ -31,9 +31,9 @@
   - [x] `prisma/exam.prisma` (`Exam`, `ExamResult`)
   - [x] `prisma/payment.prisma` (`PaymentTransaction`, `Receipt`)
   - [x] `prisma/audit-log.prisma` (`AuditLog`)
-- [ ] Run Prisma migration (`pnpm prisma:migrate`) to create tables, indices, and relations in PostgreSQL.
-- [ ] Write and execute an idempotent database seed script (`prisma/seed.ts`) populating default branch and Super Admin credentials.
-- [ ] Configure `express-rate-limit`, `helmet`, `cors`, and `cookie-parser` security middleware pipelines.
+- [x] Run Prisma migration (`pnpm prisma:migrate`) to create tables, indices, and relations in PostgreSQL.
+- [x] Write and execute an idempotent database seed script (`src/utils/seedData.ts` & on-startup in `src/server.ts`) populating default branch and Super Admin credentials.
+- [x] Configure `express-rate-limit`, `helmet`, `cors`, and `cookie-parser` security middleware pipelines.
 - [ ] Setup initial Git repository, configure `.gitignore`, and create the initial commit.
 - [ ] **Set up initial deployment (Render/Vercel) and testing workflows** so code can be deployed and verified daily.
 

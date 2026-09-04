@@ -17,6 +17,20 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().default(''),
   CLOUDINARY_API_KEY: z.string().default(''),
   CLOUDINARY_API_SECRET: z.string().default(''),
+
+  // Initial Seed Credentials
+  SUPER_ADMIN_NAME: z.string().default('System Super Admin'),
+  SUPER_ADMIN_EMAIL: z.string().email().default('superadmin@coaching.com'),
+  SUPER_ADMIN_PASSWORD: z.string().min(8).default('SuperAdmin@123456'),
+  SUPER_ADMIN_PHONE: z.string().default('+8801700000000'),
+
+  ADMIN_NAME: z.string().default('Dhanmondi Branch Admin'),
+  ADMIN_EMAIL: z.string().email().default('admin@coaching.com'),
+  ADMIN_PASSWORD: z.string().min(8).default('Admin@123456'),
+  ADMIN_PHONE: z.string().default('+8801700000001'),
+  ADMIN_BRANCH_NAME: z.string().default('Dhanmondi Campus'),
+  ADMIN_BRANCH_ADDRESS: z.string().default('House 12, Road 5, Dhanmondi, Dhaka'),
+  ADMIN_BRANCH_PHONE: z.string().default('+8801700000002'),
 });
 
 const parseEnv = () => {
