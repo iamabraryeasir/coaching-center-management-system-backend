@@ -20,7 +20,8 @@
       "!**/coverage",
       "!**/pnpm-lock.yaml",
       "!**/prisma/migrations",
-      "!**/.env*"
+      "!**/.env*",
+      "!src/templates"
     ]
   },
   "formatter": {

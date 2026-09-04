@@ -27,6 +27,15 @@ export interface ILogoutInput {
   allDevices?: boolean;
 }
 
+export interface IForgotPasswordInput {
+  email: string;
+}
+
+export interface IResetPasswordInput {
+  token: string;
+  newPassword: string;
+}
+
 export interface IBranchSummary {
   id: string;
   branchName: string;

@@ -63,14 +63,17 @@ export const login = catchAsync(async (req: Request, res: Response): Promise<voi
  * Rotates refresh token and issues fresh access token
  */
 export const refreshToken = catchAsync(async (req: Request, res: Response): Promise<void> => {
-  // Mobile sends via body or custom header; Web sends via HttpOnly cookie
+  // 1. Primary for Web browsers: automatically sent via HttpOnly cookie
+  // 2. Fallback for React Native mobile apps: body or custom header
   const token =
+    req.cookies?.refreshToken ||
     req.body?.refreshToken ||
-    (req.headers['x-refresh-token'] as string | undefined) ||
-    req.cookies?.refreshToken;
+    (req.headers['x-refresh-token'] as string | undefined);
 
   if (!token) {
-    throw ApiError.unauthorized('Refresh token is required');
+    throw ApiError.unauthorized(
+      'Refresh token is required via cookie, request body, or x-refresh-token header',
+    );
   }
 
   const metadata = extractClientMetadata(req);
@@ -95,10 +98,12 @@ export const refreshToken = catchAsync(async (req: Request, res: Response): Prom
  * Terminates active session on current device or across all devices
  */
 export const logout = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  // 1. Primary for Web browsers: automatically sent via HttpOnly cookie
+  // 2. Fallback for React Native mobile apps: body or custom header
   const token =
+    req.cookies?.refreshToken ||
     req.body?.refreshToken ||
-    (req.headers['x-refresh-token'] as string | undefined) ||
-    req.cookies?.refreshToken;
+    (req.headers['x-refresh-token'] as string | undefined);
 
   const allDevices = Boolean(req.body?.allDevices);
   const metadata = extractClientMetadata(req);
@@ -123,6 +128,36 @@ export const logout = catchAsync(async (req: Request, res: Response): Promise<vo
     statusCode: 200,
     success: true,
     message: allDevices ? 'Logged out successfully from all devices' : 'Logged out successfully',
+    data: null,
+  });
+});
+
+/**
+ * Initiates password recovery by emailing a single-use reset link
+ */
+export const forgotPassword = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const metadata = extractClientMetadata(req);
+  const result = await authService.requestPasswordReset(req.body, metadata);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: result.message,
+    data: null,
+  });
+});
+
+/**
+ * Completes password recovery using a verified reset token
+ */
+export const resetPassword = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const metadata = extractClientMetadata(req);
+  const result = await authService.resetUserPassword(req.body, metadata);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: result.message,
     data: null,
   });
 });

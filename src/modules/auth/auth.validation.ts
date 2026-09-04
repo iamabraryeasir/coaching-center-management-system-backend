@@ -29,26 +29,38 @@ export const loginSchema = z.object({
     .optional(),
 });
 
-export const refreshTokenSchema = z.object({
-  body: z
-    .object({
-      refreshToken: z.string().min(10).optional(),
-    })
-    .optional(),
-  cookies: z
-    .object({
-      refreshToken: z.string().min(10).optional(),
-    })
-    .optional(),
-  headers: z
-    .object({
-      'x-refresh-token': z.string().min(10).optional(),
-      'x-device-name': z.string().trim().max(100).optional(),
-      'x-platform': z.enum(['ios', 'android', 'web']).optional(),
-    })
-    .passthrough()
-    .optional(),
-});
+export const refreshTokenSchema = z
+  .object({
+    body: z
+      .object({
+        refreshToken: z.string().min(10).optional(),
+      })
+      .optional(),
+    cookies: z
+      .object({
+        refreshToken: z.string().min(10).optional(),
+      })
+      .optional(),
+    headers: z
+      .object({
+        'x-refresh-token': z.string().min(10).optional(),
+        'x-device-name': z.string().trim().max(100).optional(),
+        'x-platform': z.enum(['ios', 'android', 'web']).optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+  .refine(
+    (data) =>
+      Boolean(
+        data.cookies?.refreshToken || data.body?.refreshToken || data.headers?.['x-refresh-token'],
+      ),
+    {
+      message:
+        'Refresh token is required via cookie (refreshToken), request body, or x-refresh-token header',
+      path: ['refreshToken'],
+    },
+  );
 
 export const logoutSchema = z.object({
   body: z
@@ -68,4 +80,17 @@ export const logoutSchema = z.object({
     })
     .passthrough()
     .optional(),
+});
+
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().trim().email('Please provide a valid email address'),
+  }),
+});
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    token: z.string().trim().min(32, 'Valid reset token is required'),
+    newPassword: z.string().min(6, 'Password must be at least 6 characters'),
+  }),
 });

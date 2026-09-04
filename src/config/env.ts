@@ -18,6 +18,18 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string().default(''),
   CLOUDINARY_API_SECRET: z.string().default(''),
 
+  // Redis Cache & Temporary Data Store
+  REDIS_URL: z.string().default('redis://localhost:6379'),
+
+  // Email / SMTP Service
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().default(587),
+  SMTP_USER: z.string().default(''),
+  SMTP_PASS: z.string().default(process.env.SMTP_PASSWORD || ''),
+  SMTP_PASSWORD: z.string().optional(),
+  EMAIL_FROM: z.string().default('Coaching Management System <noreply@coaching.com>'),
+  FRONTEND_URL: z.string().default('http://localhost:3000'),
+
   // Initial Seed Credentials
   SUPER_ADMIN_NAME: z.string().default('System Super Admin'),
   SUPER_ADMIN_EMAIL: z.string().email().default('superadmin@coaching.com'),

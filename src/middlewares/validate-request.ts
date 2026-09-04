@@ -9,6 +9,7 @@ export const validateRequest = (schema: ZodType) => {
         query: req.query,
         params: req.params,
         cookies: req.cookies,
+        headers: req.headers,
       })) as {
         body?: Record<string, unknown>;
         query?: Record<string, unknown>;

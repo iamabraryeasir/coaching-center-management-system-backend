@@ -1,6 +1,6 @@
 import type { Server } from 'node:http';
 import { app } from './app';
-import { config, pool, prisma } from './config';
+import { config, connectRedis, disconnectRedis, pool, prisma } from './config';
 import { logger, seedData } from './utils';
 
 let server: Server;
@@ -10,6 +10,9 @@ const startServer = async (): Promise<void> => {
     logger.info('Connecting to PostgreSQL database via Prisma...');
     await prisma.$connect();
     logger.info('PostgreSQL database connected successfully.');
+
+    // Connect to Redis
+    await connectRedis();
 
     // Seed initial SuperAdmin and Branch Admin if they do not exist
     await seedData();
@@ -56,6 +59,8 @@ const handleGracefulShutdown = async (signal: string): Promise<void> => {
     await pool.end();
     logger.info('Database connection pool ended.');
 
+    await disconnectRedis();
+
     process.exit(0);
   } catch (error) {
     logger.error('Error during graceful shutdown:', error);
@@ -82,6 +87,7 @@ export { app };
 if (process.env.VERCEL) {
   prisma
     .$connect()
+    .then(() => connectRedis())
     .then(() => seedData())
     .catch((err: Error) => {
       logger.error('Vercel serverless initialization error:', err);
