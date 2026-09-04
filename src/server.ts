@@ -76,4 +76,16 @@ process.on('unhandledRejection', (reason: unknown) => {
   process.exit(1);
 });
 
-startServer();
+export default app;
+export { app };
+
+if (process.env.VERCEL) {
+  prisma
+    .$connect()
+    .then(() => seedData())
+    .catch((err: Error) => {
+      logger.error('Vercel serverless initialization error:', err);
+    });
+} else {
+  startServer();
+}

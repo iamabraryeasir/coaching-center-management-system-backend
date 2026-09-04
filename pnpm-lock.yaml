@@ -261,9 +261,15 @@ importers:
       pg:
         specifier: ^8.23.0
         version: 8.23.0
+      prisma:
+        specifier: 7.10.0
+        version: 7.10.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
       stripe:
         specifier: ^22.6.1
         version: 22.6.1(@types/node@26.4.1)
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(tsx@4.23.13)(typescript@7.0.2)
       zod:
         specifier: ^4.5.4
         version: 4.5.4
@@ -301,12 +307,6 @@ importers:
       '@types/pg':
         specifier: ^8.23.1
         version: 8.23.1
-      prisma:
-        specifier: 7.10.0
-        version: 7.10.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@2.7.0)(tsx@4.23.13)(typescript@7.0.2)
       tsx:
         specifier: ^4.23.13
         version: 4.23.13
