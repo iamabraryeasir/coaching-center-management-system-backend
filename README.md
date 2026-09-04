@@ -32,8 +32,7 @@ erDiagram
 
     %% Student Participation
     User ||--o{ Enrollment : "enrolls (studentId)"
-    User ||--o{ AttendanceRecord : "student attendance"
-    User ||--o{ AttendanceRecord : "marks (markedById)"
+    User ||--o{ AttendanceRecord : "records (studentId or markedById)"
     User ||--o{ ExamResult : "receives marks"
     User ||--o{ PaymentTransaction : "pays (studentId)"
 
@@ -41,24 +40,24 @@ erDiagram
     Exam ||--o{ ExamResult : "evaluates"
 
     %% Payments & Invoicing
-    Enrollment ||--o{ PaymentTransaction : "pays for"
+    Enrollment ||--o{ PaymentTransaction : "pays for (optional)"
     PaymentTransaction ||--o| Receipt : "issues"
 
     %% Entity Field Definitions
     User {
         string id PK "UUID"
         string email UK
-        string password "Nullable for Google OAuth"
+        string password "Nullable (null for Google OAuth)"
         string name
         string phone UK
-        string avatarUrl
+        string avatarUrl "Nullable"
         Role role "SUPER_ADMIN | ADMIN | TEACHER | STUDENT"
         UserStatus status "ACTIVE | INACTIVE | BLOCKED | PENDING_ACTIVATION"
         string googleId UK "Nullable"
         string adminId FK "Nullable (Branch Admin reference)"
         datetime createdAt
         datetime updatedAt
-        datetime deletedAt "Soft delete"
+        datetime deletedAt "Nullable (Soft delete)"
     }
 
     AdminProfile {
@@ -66,7 +65,7 @@ erDiagram
         string userId FK, UK
         string branchName "e.g. Dhanmondi Campus"
         string branchAddress
-        string branchPhone
+        string branchPhone "Nullable"
         datetime createdAt
         datetime updatedAt
     }
@@ -76,9 +75,9 @@ erDiagram
         string userId FK, UK
         string guardianName
         string guardianPhone
-        string institutionName
+        string institutionName "Nullable"
         string classLevel "e.g. Class 10, HSC-1st"
-        string rollNumber
+        string rollNumber "Nullable"
         datetime createdAt
         datetime updatedAt
     }
@@ -89,7 +88,7 @@ erDiagram
         string designation "e.g. Senior Lecturer"
         string qualification
         string specialization
-        datetime joiningDate
+        datetime joiningDate "Nullable"
         datetime createdAt
         datetime updatedAt
     }
@@ -105,10 +104,10 @@ erDiagram
         string id PK "UUID"
         string userId FK
         string refreshTokenHash
-        string ipAddress
-        string userAgent
+        string ipAddress "Nullable"
+        string userAgent "Nullable"
         datetime expiresAt
-        datetime revokedAt
+        datetime revokedAt "Nullable"
         datetime createdAt
     }
 
@@ -120,7 +119,7 @@ erDiagram
         BatchStatus status "UPCOMING | ONGOING | COMPLETED | CANCELLED"
         datetime createdAt
         datetime updatedAt
-        datetime deletedAt "Soft delete"
+        datetime deletedAt "Nullable (Soft delete)"
     }
 
     ClassRoutine {
@@ -129,8 +128,8 @@ erDiagram
         DayOfWeek dayOfWeek "SATURDAY | SUNDAY | MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY"
         string startTime "HH:mm format (e.g. 10:00)"
         string endTime "HH:mm format (e.g. 11:30)"
-        string subject "e.g. Higher Math, Physics"
-        string room "e.g. Room 101"
+        string subject "Nullable (e.g. Higher Math)"
+        string room "Nullable (e.g. Room 101)"
         string teacherId FK "Nullable"
         datetime createdAt
         datetime updatedAt
@@ -142,7 +141,7 @@ erDiagram
         string batchId FK
         EnrollmentStatus status "PENDING | ENROLLED | REJECTED"
         datetime enrolledAt
-        datetime approvedAt "Admin approval timestamp"
+        datetime approvedAt "Nullable (Admin approval timestamp)"
         datetime createdAt
         datetime updatedAt
     }
@@ -154,7 +153,7 @@ erDiagram
         string markedById FK
         date date "Native PostgreSQL DATE"
         AttendanceStatus status "PRESENT | ABSENT | LATE | EXCUSED | LEAVE"
-        string remarks
+        string remarks "Nullable"
         datetime createdAt
         datetime updatedAt
     }
@@ -163,7 +162,7 @@ erDiagram
         string id PK "UUID"
         string batchId FK
         string title "e.g. Weekly Test 1: Algebra"
-        string description
+        string description "Nullable"
         decimal totalMarks "5,2"
         decimal passMarks "5,2"
         date examDate "Native PostgreSQL DATE"
@@ -178,8 +177,8 @@ erDiagram
         string examId FK
         string studentId FK
         decimal marksObtained "5,2"
-        string grade "e.g. A+, A, B, F"
-        string remarks
+        string grade "Nullable (e.g. A+, A, B, F)"
+        string remarks "Nullable"
         datetime createdAt
         datetime updatedAt
     }
@@ -195,7 +194,7 @@ erDiagram
         PaymentStatus status "PENDING | COMPLETED | FAILED | REFUNDED"
         string stripeSessionId UK "Nullable"
         string stripePaymentIntentId "Nullable"
-        datetime paidAt
+        datetime paidAt "Nullable"
         datetime createdAt
         datetime updatedAt
     }
@@ -216,12 +215,32 @@ erDiagram
         string action "e.g. PAYMENT_COMPLETED, USER_BLOCKED"
         string entity "e.g. User, Batch, Payment"
         string entityId
-        string details "JSON metadata string"
-        string ipAddress
-        string userAgent
+        string details "Nullable (JSON metadata string)"
+        string ipAddress "Nullable"
+        string userAgent "Nullable"
         datetime createdAt
     }
 ```
+
+---
+
+### System Enums
+
+| Enum | Values | Description |
+| :--- | :--- | :--- |
+| **`Role`** | `SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT` | System-wide role-based access control. |
+| **`UserStatus`** | `ACTIVE`, `INACTIVE`, `BLOCKED`, `PENDING_ACTIVATION` | Account state (e.g. Google-onboarded starts as `PENDING_ACTIVATION`). |
+| **`DayOfWeek`** | `SATURDAY`, `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDAY`, `THURSDAY`, `FRIDAY` | 7-day calendar days for `ClassRoutine` weekly timetable. |
+| **`BatchStatus`** | `UPCOMING`, `ONGOING`, `COMPLETED`, `CANCELLED` | Lifecycle of a coaching class batch. |
+| **`EnrollmentStatus`** | `PENDING`, `ENROLLED`, `REJECTED` | Student batch admission approval workflow. |
+| **`AttendanceStatus`** | `PRESENT`, `ABSENT`, `LATE`, `EXCUSED`, `LEAVE` | Daily student attendance categories. |
+| **`ExamStatus`** | `UPCOMING`, `ONGOING`, `COMPLETED`, `CANCELLED` | Batch exam timeline status. |
+| **`ResultStatus`** | `DRAFT`, `PUBLISHED` | Exam marks publication gate (only published marks are visible to students). |
+| **`PaymentMethod`** | `STRIPE`, `CASH`, `BKASH`, `BANK_TRANSFER`, `NAGAD` | Online and offline payment collection channels. |
+| **`PaymentStatus`** | `PENDING`, `COMPLETED`, `FAILED`, `REFUNDED` | Transaction payment verification status. |
+| **`Permission`** | `MANAGE_STUDENTS`, `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES`, `VIEW_REPORTS` | Delegated operational permissions for teachers. |
+| **`Gender`** | `MALE`, `FEMALE`, `OTHER` | Standard gender demographic options. |
+
 
 ---
 
