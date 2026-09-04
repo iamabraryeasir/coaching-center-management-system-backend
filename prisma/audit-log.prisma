@@ -1,0 +1,19 @@
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String // e.g. "PAYMENT_COMPLETED", "MARKS_PUBLISHED", "USER_BLOCKED"
+  entity    String // e.g. "User", "Batch", "Payment"
+  entityId  String
+  details   String? // Stringified JSON payload / metadata
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

@@ -1,0 +1,22 @@
+model Enrollment {
+  id         String           @id @default(uuid())
+  studentId  String // The Student (User with role STUDENT)
+  batchId    String // The Batch (Class)
+  status     EnrollmentStatus @default(PENDING) // PENDING -> ENROLLED (or REJECTED)
+  enrolledAt DateTime         @default(now()) // When the student requested to join
+  approvedAt DateTime? // When the Admin verified/approved the enrollment
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  // Relations
+  student  User                 @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  batch    Batch                @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  payments PaymentTransaction[]
+
+  // Constraints & Indexes
+  @@unique([batchId, studentId])
+  @@index([studentId])
+  @@index([batchId])
+  @@index([status])
+  @@map("enrollments")
+}

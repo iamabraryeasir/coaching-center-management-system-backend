@@ -1,0 +1,41 @@
+model PaymentTransaction {
+  id                    String        @id @default(uuid())
+  studentId             String        // The Student making the payment
+  batchId               String        // The Batch (Class) this payment is for
+  enrollmentId          String?       // Optional link to the student enrollment
+  amount                Decimal       @db.Decimal(10, 2)
+  currency              String        @default("bdt")
+  paymentMethod         PaymentMethod @default(STRIPE)
+  status                PaymentStatus @default(PENDING) // PENDING, COMPLETED, FAILED, REFUNDED
+  stripeSessionId       String?       @unique           // Stripe Checkout Session ID
+  stripePaymentIntentId String?                         // Stripe Payment Intent ID
+  paidAt                DateTime?                       // Confirmation timestamp
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  // Relations
+  student               User          @relation("StudentPayments", fields: [studentId], references: [id])
+  batch                 Batch         @relation(fields: [batchId], references: [id])
+  enrollment            Enrollment?   @relation(fields: [enrollmentId], references: [id])
+  receipt               Receipt?
+
+  @@index([studentId])
+  @@index([batchId])
+  @@index([status])
+  @@map("payment_transactions")
+}
+
+model Receipt {
+  id            String             @id @default(uuid())
+  transactionId String             @unique
+  receiptNumber String             @unique // e.g. "REC-2026-0001"
+  issuedAt      DateTime           @default(now())
+  downloadUrl   String?            // Generated PDF receipt download URL
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  // Relations
+  transaction   PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@map("receipts")
+}

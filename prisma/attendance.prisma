@@ -1,0 +1,24 @@
+model AttendanceRecord {
+  id         String           @id @default(uuid())
+  batchId    String           // The Batch (Class)
+  studentId  String           // The Student whose attendance is recorded
+  markedById String           // The Teacher or Admin who marked the attendance
+  date       DateTime         @db.Date // Strictly calendar date (YYYY-MM-DD)
+  status     AttendanceStatus @default(PRESENT)
+  remarks    String?          // Optional note
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  // Relations
+  batch      Batch            @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  student    User             @relation("StudentAttendance", fields: [studentId], references: [id], onDelete: Cascade)
+  markedBy   User             @relation("MarkedAttendance", fields: [markedById], references: [id])
+
+  // Constraints & Indexes
+  @@unique([batchId, studentId, date]) // 1 record per student per batch per day
+  @@index([batchId])
+  @@index([studentId])
+  @@index([date])
+  @@index([status])
+  @@map("attendance_records")
+}

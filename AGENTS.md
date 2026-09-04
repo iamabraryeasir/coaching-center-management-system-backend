@@ -38,6 +38,9 @@ This backend powers a multi-branch **Coaching Center Management System** designe
 | **Security**           | express-rate-limit, helmet | Rate limiting, attack surface reduction, and secure HTTP headers.                             |
 | **Documentation**      | Postman Collection (v2.1)  | Production API testing, automated environment tokens, and collection tests.                   |
 | **File Storage**       | Storage Abstraction        | Wrapped behind `StorageService` interface with initial Cloudinary adapter.                    |
+| **Date & Time**        | date-fns (v4+)             | Modern, immutable, timezone-safe date/time arithmetic and calendar formatting.               |
+| **Email & Templating** | Nodemailer + EJS           | SMTP email dispatching with dynamic EJS HTML templates for notifications and receipts.        |
+| **PDF Generation**     | PDFKit                     | Server-side programmatic PDF generation for printable receipts, routines, and grade sheets.   |
 
 ---
 

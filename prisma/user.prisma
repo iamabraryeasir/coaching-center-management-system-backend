@@ -1,0 +1,114 @@
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String? // Nullable for Google-authenticated students
+  name      String
+  phone     String     @unique
+  avatarUrl String?
+  role      Role       @default(STUDENT)
+  status    UserStatus @default(ACTIVE)
+  googleId  String?    @unique
+  adminId   String? // Points to managing Admin (null for ADMIN and SUPER_ADMIN)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime? // Universal soft delete
+
+  // Self-relation: Admin -> Students / Teachers
+  admin        User?  @relation("AdminManagedUsers", fields: [adminId], references: [id])
+  managedUsers User[] @relation("AdminManagedUsers")
+
+  // Profiles & Auth
+  adminProfile       AdminProfile?
+  studentProfile     StudentProfile?
+  teacherProfile     TeacherProfile?
+  teacherPermissions TeacherPermission[]
+  sessions           Session[]
+  auditLogs          AuditLog[]
+  managedBatches     Batch[]             @relation("AdminBatches")
+  teacherRoutines    ClassRoutine[]      @relation("TeacherRoutines")
+  enrollments        Enrollment[]        @relation("StudentEnrollments")
+  studentAttendance  AttendanceRecord[]  @relation("StudentAttendance")
+  markedAttendance   AttendanceRecord[]  @relation("MarkedAttendance")
+  examResults        ExamResult[]        @relation("StudentExamResults")
+  payments           PaymentTransaction[] @relation("StudentPayments")
+
+  @@index([adminId])
+  @@index([role])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model AdminProfile {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  branchName    String // e.g. "Dhanmondi Campus"
+  branchAddress String // e.g. "House 12, Road 5, Dhanmondi"
+  branchPhone   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_profiles")
+}
+
+model StudentProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  guardianName    String
+  guardianPhone   String
+  institutionName String?
+  classLevel      String // e.g. "Class 10", "HSC-1st"
+  rollNumber      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+model TeacherProfile {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  designation    String // e.g. "Senior Lecturer"
+  qualification  String // e.g. "B.Sc in Mathematics, DU"
+  specialization String // e.g. "Higher Mathematics, Calculus"
+  joiningDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("teacher_profiles")
+}
+
+model TeacherPermission {
+  id         String     @id @default(uuid())
+  teacherId  String
+  permission Permission
+  createdAt  DateTime   @default(now())
+
+  teacher User @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, permission])
+  @@map("teacher_permissions")
+}
+
+model Session {
+  id               String    @id @default(uuid())
+  userId           String
+  refreshTokenHash String
+  ipAddress        String?
+  userAgent        String?
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}

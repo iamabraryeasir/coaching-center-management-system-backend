@@ -1,0 +1,43 @@
+model Exam {
+  id           String       @id @default(uuid())
+  batchId      String       // The Batch (Class) taking this exam
+  title        String       // e.g. "Weekly Test 1: Algebra", "Monthly Assessment"
+  description  String?      // Optional: topics covered
+  totalMarks   Decimal      @db.Decimal(5, 2) // e.g. 100.00
+  passMarks    Decimal      @db.Decimal(5, 2) // e.g. 40.00
+  examDate     DateTime     @db.Date          // Date the exam takes place
+  status       ExamStatus   @default(UPCOMING)  // UPCOMING, ONGOING, COMPLETED, CANCELLED
+  resultStatus ResultStatus @default(DRAFT)     // DRAFT -> PUBLISHED
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  batch        Batch        @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  results      ExamResult[]
+
+  @@index([batchId])
+  @@index([status])
+  @@index([resultStatus])
+  @@map("exams")
+}
+
+model ExamResult {
+  id            String   @id @default(uuid())
+  examId        String   // The Exam
+  studentId     String   // The Student
+  marksObtained Decimal  @db.Decimal(5, 2) // e.g. 85.50
+  grade         String?  // Optional letter grade: "A+", "A", "B", "F"
+  remarks       String?  // Optional feedback
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  exam          Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student       User     @relation("StudentExamResults", fields: [studentId], references: [id], onDelete: Cascade)
+
+  // Constraints & Indexes
+  @@unique([examId, studentId]) // 1 result entry per student per exam
+  @@index([examId])
+  @@index([studentId])
+  @@map("exam_results")
+}

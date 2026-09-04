@@ -36,9 +36,8 @@ enum AttendanceStatus {
 
 enum EnrollmentStatus {
   PENDING
-  ACTIVE
-  COMPLETED
-  CANCELLED
+  ENROLLED
+  REJECTED
 }
 
 enum PaymentMethod {
@@ -66,4 +65,21 @@ enum ExamStatus {
 enum ResultStatus {
   DRAFT
   PUBLISHED
+}
+
+enum BatchStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum DayOfWeek {
+  SATURDAY
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
 }
