@@ -26,7 +26,7 @@ This backend powers a multi-branch **Coaching Center Management System** designe
 | :--------------------- | :------------------------- | :-------------------------------------------------------------------------------------------- |
 | **Runtime**            | Node.js (v24+)             | Server runtime with native ES modules (`"type": "module"`).                                   |
 | **Language**           | TypeScript (v7+)           | Strict type-safety throughout; configured with `moduleResolution: "bundler"`.                 |
-| **Package Manager**    | `pnpm` (v11+)              | Strict package manager. Lockfile `pnpm-lock.yaml` must always remain committed.               |
+| **Package Manager**    | `npm`                      | Node package manager. Lockfile `package-lock.json` must remain committed.                     |
 | **Web Framework**      | Express.js (v5)            | HTTP pipeline, security middleware, modular routing.                                          |
 | **Database & ORM**     | PostgreSQL + Prisma (v7+)  | Native driver adapter (`@prisma/adapter-pg` + `pg.Pool`), multi-file schema folder.           |
 | **Validation**         | Zod (v4+)                  | Runtime schema validation for environment variables and API inputs.                           |
@@ -38,7 +38,7 @@ This backend powers a multi-branch **Coaching Center Management System** designe
 | **Security**           | express-rate-limit, helmet | Rate limiting, attack surface reduction, and secure HTTP headers.                             |
 | **Documentation**      | Postman Collection (v2.1)  | Production API testing, automated environment tokens, and collection tests.                   |
 | **File Storage**       | Storage Abstraction        | Wrapped behind `StorageService` interface with initial Cloudinary adapter.                    |
-| **Date & Time**        | date-fns (v4+)             | Modern, immutable, timezone-safe date/time arithmetic and calendar formatting.               |
+| **Date & Time**        | date-fns (v4+)             | Modern, immutable, timezone-safe date/time arithmetic and calendar formatting.                |
 | **Email & Templating** | Nodemailer + EJS           | SMTP email dispatching with dynamic EJS HTML templates for notifications and receipts.        |
 | **PDF Generation**     | PDFKit                     | Server-side programmatic PDF generation for printable receipts, routines, and grade sheets.   |
 
@@ -85,9 +85,14 @@ backend/
 │   │   └── [feature]/
 │   │       ├── [feature].interface.ts   # TypeScript interfaces & domain types
 │   │       ├── [feature].validation.ts  # Zod schemas for body, query, and params
-│   │       ├── [feature].service.ts     # Pure business logic & database queries
+│   │       ├── [feature].utils.ts       # Module-specific helpers, sanitizers, and formatters
+│   │       ├── services/                # Action-decomposed business service functions
+│   │       │   ├── [action1].service.ts # Single-responsibility pure service function
+│   │       │   ├── [action2].service.ts # Single-responsibility pure service function
+│   │       │   └── index.ts             # Services barrel aggregating and freezing service bundle
 │   │       ├── [feature].controller.ts  # Request extraction & response dispatching
-│   │       └── [feature].routes.ts      # Express route definitions & middleware wiring
+│   │       ├── [feature].routes.ts      # Express route definitions & middleware wiring
+│   │       └── index.ts                 # Feature module barrel re-exporting all components
 │   └── types/              # Ambient type declarations & Express Request extensions
 ```
 
@@ -98,16 +103,16 @@ backend/
 To maintain high maintainability and prevent massive monolithic schema files:
 
 1. **`prisma/schema.prisma` is kept strictly minimal**:
-    - Contains **ONLY** the `generator client` and `datasource db` blocks.
-    - Do **NOT** place models or enums in `schema.prisma`.
+   - Contains **ONLY** the `generator client` and `datasource db` blocks.
+   - Do **NOT** place models or enums in `schema.prisma`.
 2. **`prisma/enums.prisma` contains all enums**:
-    - All domain enums (`Role`, `UserStatus`, `Gender`, `Permission`, `AttendanceStatus`, `PaymentMethod`, `PaymentStatus`, `ExamStatus`) reside in `prisma/enums.prisma`.
+   - All domain enums (`Role`, `UserStatus`, `Gender`, `Permission`, `AttendanceStatus`, `PaymentMethod`, `PaymentStatus`, `ExamStatus`) reside in `prisma/enums.prisma`.
 3. **Modular Per-Model Files (`prisma/*.prisma`)**:
-    - Each domain model entity has its own dedicated `.prisma` file (e.g. `branch.prisma`, `user.prisma`, `student.prisma`, `attendance.prisma`, `fee.prisma`).
+   - Each domain model entity has its own dedicated `.prisma` file (e.g. `branch.prisma`, `user.prisma`, `student.prisma`, `attendance.prisma`, `fee.prisma`).
 4. **`prisma.config.ts` Schema Discovery**:
-    - `prisma.config.ts` is configured with `schema: 'prisma'`. Prisma automatically and recursively discovers all `.prisma` files in the folder.
+   - `prisma.config.ts` is configured with `schema: 'prisma'`. Prisma automatically and recursively discovers all `.prisma` files in the folder.
 5. **Prisma 7 Driver Adapter Pattern**:
-    - Client is instantiated in [`src/config/prisma.ts`](file:///d:/01_coding/web-dev/radiant-way-coaching/backend/src/config/prisma.ts) using `PrismaPg` with a managed `pg.Pool` connection pool.
+   - Client is instantiated in [`src/config/prisma.ts`](file:///d:/01_coding/web-dev/radiant-way-coaching/backend/src/config/prisma.ts) using `PrismaPg` with a managed `pg.Pool` connection pool.
 
 ---
 
@@ -120,16 +125,16 @@ Whenever implementing or modifying code in this codebase, you **MUST** adhere to
 - **Zero untyped `any`**: Explicitly type all variables, function arguments, and return types. Use `unknown` with type guards or generics if dynamic typing is required.
 - **Type-only imports**: Use `import type { ... } from '...'` for type definitions (enforced by Biome `useImportType`).
 - **Barrel Re-Exports (`index.ts`) in Every Directory**:
-    - Every core directory (`config`, `utils`, `middlewares`, `routes`, etc.) MUST define its functional implementations in dedicated modular files (e.g. `env.ts`, `prisma.ts`, `api-error.ts`, `send-response.ts`, `catch-async.ts`).
-    - The directory's `index.ts` MUST re-export all members from these modular files.
+  - Every core directory (`config`, `utils`, `middlewares`, `routes`, etc.) MUST define its functional implementations in dedicated modular files (e.g. `env.ts`, `prisma.ts`, `api-error.ts`, `send-response.ts`, `catch-async.ts`).
+  - The directory's `index.ts` MUST re-export all members from these modular files.
 - **Clean Extensionless Directory Imports**:
-    - Consumers MUST import directly through the folder name without referencing inner filenames, `/index`, or `/index.js`.
-    - **NEVER** use `.js` or `.ts` extensions in import paths.
-    - **NEVER** append `/index` or `/index.js` when importing from a directory.
-    - _Correct_: `import { config } from '../config';`
-    - _Correct_: `import { ApiError, catchAsync, sendResponse } from '../utils';`
-    - _Incorrect_: `import { config } from '../config/env';`
-    - _Incorrect_: `import { config } from '../config/index.js';`
+  - Consumers MUST import directly through the folder name without referencing inner filenames, `/index`, or `/index.js`.
+  - **NEVER** use `.js` or `.ts` extensions in import paths.
+  - **NEVER** append `/index` or `/index.js` when importing from a directory.
+  - _Correct_: `import { config } from '../config';`
+  - _Correct_: `import { ApiError, catchAsync, sendResponse } from '../utils';`
+  - _Incorrect_: `import { config } from '../config/env';`
+  - _Incorrect_: `import { config } from '../config/index.js';`
 
 ### 5.2 Universal Response Format (`sendResponse`)
 
@@ -140,17 +145,17 @@ import type { Request, Response } from "express";
 import { sendResponse } from "../utils/send-response";
 
 export const getBranchById = async (
-    req: Request,
-    res: Response,
+  req: Request,
+  res: Response,
 ): Promise<void> => {
-    const branch = await branchService.getBranchById(req.params.id);
+  const branch = await branchService.getBranchById(req.params.id);
 
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: "Branch retrieved successfully",
-        data: branch,
-    });
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Branch retrieved successfully",
+    data: branch,
+  });
 };
 ```
 
@@ -158,13 +163,13 @@ export const getBranchById = async (
 
 - **NEVER** send manual error responses inside controllers or services.
 - Always instantiate or throw `ApiError`:
-    - `throw ApiError.badRequest('Invalid parameter supplied')` (400)
-    - `throw ApiError.unauthorized('Token expired or invalid')` (401)
-    - `throw ApiError.forbidden('You lack permissions for this branch')` (403)
-    - `throw ApiError.notFound('Record not found')` (404)
-    - `throw ApiError.conflict('Email or username already in use')` (409)
-    - `throw ApiError.unprocessable('Validation constraint failed', details)` (422)
-    - `throw ApiError.internal('Database query failed')` (500)
+  - `throw ApiError.badRequest('Invalid parameter supplied')` (400)
+  - `throw ApiError.unauthorized('Token expired or invalid')` (401)
+  - `throw ApiError.forbidden('You lack permissions for this branch')` (403)
+  - `throw ApiError.notFound('Record not found')` (404)
+  - `throw ApiError.conflict('Email or username already in use')` (409)
+  - `throw ApiError.unprocessable('Validation constraint failed', details)` (422)
+  - `throw ApiError.internal('Database query failed')` (500)
 - The [`globalErrorHandler`](file:///d:/01_coding/web-dev/radiant-way-coaching/backend/src/middlewares/global-error-handler.ts) middleware intercepts all thrown exceptions, formats them through `sendResponse`, and logs detailed diagnostics.
 
 ### 5.4 Structured Logging (`logger`) & Zero `console.*` Usage
@@ -203,24 +208,29 @@ export const getBranchById = async (
 3. **Mandatory Admin Approval**: Google-onboarded students are created in `PENDING_ACTIVATION` state. They cannot access protected student resources or receive session tokens until explicitly approved by an `ADMIN` via `PATCH /api/v1/admin/students/:id/approve`.
 4. **Strict Student-Only Access**: Google Authentication is strictly restricted to `Role.STUDENT`. If any user with `ADMIN`, `TEACHER`, or `SUPER_ADMIN` attempts Google login, reject with `403 Forbidden`.
 
----
+### 5.9 Student Registration Authority (Admin-Only Exclusivity)
 
+1. **Strict Admin Exclusivity**: Only a branch `ADMIN` has authority to register a student (`POST /api/v1/auth/register-student`). `SUPER_ADMIN` **CANNOT** register students under any circumstances.
+2. **Session-Bound Branch Identity**: A branch `ADMIN` registers students strictly into their own branch. The student's `adminId` is strictly derived from the authenticated admin's session (`req.user.userId`). Request bodies cannot override `adminId`.
+3. **Super Admin Scope**: The `SUPER_ADMIN` governs branches (`POST /api/v1/admin/branches`) and provisions branch `ADMIN` accounts, but never registers students or teachers directly.
+
+---
 
 ## 6. Developer & CLI Commands Reference
 
-| Command                      | Purpose                                                                                  |
-| :--------------------------- | :--------------------------------------------------------------------------------------- |
-| `pnpm dev`                   | Starts development server with hot-reload via `tsx watch src/server.ts`.                 |
-| `pnpm build`                 | Bundles the application using `tsup` into `dist/server.js`.                              |
-| `pnpm start`                 | Runs the compiled production server (`node dist/server.js`).                             |
-| `pnpm typecheck`             | Runs TypeScript type checking (`tsc --noEmit`) without generating files.                 |
-| `pnpm check`                 | Runs Biome checks (linting, formatting, import sorting) in dry-run mode.                 |
-| `pnpm check:fix`             | Automatically fixes all Biome linter warnings, formatting issues, and organizes imports. |
-| `pnpm prisma:generate`       | Generates TypeScript client types from all `.prisma` files.                              |
-| `pnpm prisma:migrate`        | Runs Prisma development migrations.                                                      |
-| `pnpm prisma:migrate:deploy` | Applies pending migrations in production / CI environments.                              |
-| `pnpm prisma:seed`           | Runs the idempotent seed script (`prisma/seed.ts`).                                      |
-| `pnpm prisma:studio`         | Launches interactive Prisma Studio web UI.                                               |
+| Command                         | Purpose                                                                                  |
+| :------------------------------ | :--------------------------------------------------------------------------------------- |
+| `npm run dev`                   | Starts development server with hot-reload via `tsx watch src/server.ts`.                 |
+| `npm run build`                 | Bundles the application using `tsup` into `dist/server.js`.                              |
+| `npm start`                     | Runs the compiled production server (`node dist/server.js`).                             |
+| `npm run typecheck`             | Runs TypeScript type checking (`tsc --noEmit`) without generating files.                 |
+| `npm run check`                 | Runs Biome checks (linting, formatting, import sorting) in dry-run mode.                 |
+| `npm run check:fix`             | Automatically fixes all Biome linter warnings, formatting issues, and organizes imports. |
+| `npm run prisma:generate`       | Generates TypeScript client types from all `.prisma` files.                              |
+| `npm run prisma:migrate`        | Runs Prisma development migrations.                                                      |
+| `npm run prisma:migrate:deploy` | Applies pending migrations in production / CI environments.                              |
+| `npm run prisma:seed`           | Runs the idempotent seed script (`prisma/seed.ts`).                                      |
+| `npm run prisma:studio`         | Launches interactive Prisma Studio web UI.                                               |
 
 ---
 
@@ -228,6 +238,6 @@ export const getBranchById = async (
 
 Before finishing any task or submitting changes, every AI agent **MUST** run and pass:
 
-1. `pnpm check` (must return **0 errors, 0 warnings**)
-2. `pnpm typecheck` (must return **0 type errors**)
-3. `pnpm build` (must successfully compile to `dist/server.js`)
+4. `npm run check` (must return **0 errors, 0 warnings**)
+5. `npm run typecheck` (must return **0 type errors**)
+6. `npm run build` (must successfully compile to `dist/server.js`)

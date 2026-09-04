@@ -266,6 +266,13 @@ erDiagram
    - Supports Stripe Checkout Sessions, webhooks, and manual cash receipts.
    - Generates immutable PDF payment receipts via `pdfkit`.
 
+7. **Role-Based Registration & Provisioning Flow**:
+   - **`STUDENT`**: Public self-registration via `POST /api/v1/auth/register` or Google onboarding.
+   - **`TEACHER`**: Exclusively provisioned by a Branch `ADMIN` via `POST /api/v1/admin/teachers` (with automated Nodemailer welcome email containing credentials).
+   - **`ADMIN`**: Exclusively provisioned by `SUPER_ADMIN` via `POST /api/v1/admin/branches` with campus profile (`AdminProfile`).
+   - **`SUPER_ADMIN`**: Bootstrapped via startup environment seed script (`src/utils/seedData.ts`).
+   - **Unified Login**: All roles authenticate via `POST /api/v1/auth/login`.
+
 ---
 
 ## 3. Technology Stack
@@ -289,23 +296,23 @@ erDiagram
 
 ```bash
 # Install dependencies
-pnpm install
+npm install
 
 # Run development server with hot-reload
-pnpm dev
+npm run dev
 
 # Generate Prisma client
-pnpm prisma:generate
+npm run prisma:generate
 
 # Run linter and formatter check
-pnpm check
+npm run check
 
 # Auto-fix formatting and imports
-pnpm check:fix
+npm run check:fix
 
 # Run TypeScript typecheck
-pnpm typecheck
+npm run typecheck
 
 # Production build
-pnpm build
+npm run build
 ```

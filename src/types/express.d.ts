@@ -1,4 +1,5 @@
 import 'node:http';
+import type { IJwtPayload } from '../utils/jwt';
 
 declare module 'node:http' {
   interface IncomingMessage {
@@ -10,6 +11,7 @@ declare global {
   namespace Express {
     interface Request {
       rawBody?: Buffer;
+      user?: IJwtPayload;
     }
   }
 }

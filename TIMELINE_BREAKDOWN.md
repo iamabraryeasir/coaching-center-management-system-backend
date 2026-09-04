@@ -43,19 +43,26 @@
 
 **Focus:** Securing the application, establishing session lifecycles, and building foundational entity CRUD.
 
-- [ ] Implement secure password hashing and verification using `bcryptjs`.
-- [ ] Implement JWT token generator and validator (15m Access Token + 30d rotating Refresh Token).
-- [ ] Create authentication middleware (`authenticate`) verifying Bearer JWT tokens.
-- [ ] Create strict **Role-Based Access Control (RBAC)** middleware (`authorizeRoles`) enforcing role boundaries.
-- [ ] Create branch-scoping middleware (`authorizeBranch`) ensuring Admins, Teachers, and Students cannot access cross-branch records.
-- [ ] Create Zod request validation middleware (`validateRequest`) for body, query, and params.
+> [!IMPORTANT]
+> **Role-Based Registration & Provisioning Architecture**:
+>
+> - **`STUDENT`**: Public self-registration via `POST /api/v1/auth/register` (or `POST /api/v1/auth/google/onboard`).
+> - **`TEACHER`**: Strictly provisioned by a Branch `ADMIN` via `POST /api/v1/admin/teachers` (includes auto-dispatched credentials via Nodemailer + EJS).
+> - **`ADMIN`**: Strictly provisioned by `SUPER_ADMIN` via `POST /api/v1/admin/branches` with campus profile (`AdminProfile`).
+> - **`SUPER_ADMIN`**: Seeded via environment variables on startup (`src/utils/seedData.ts`).
+> - **Authentication**: All roles log in via the unified `POST /api/v1/auth/login` endpoint.
+
+- [x] Implement secure password hashing and verification using `bcryptjs`.
+- [x] Implement JWT token generator and validator (15m Access Token + 30d rotating Refresh Token).
+- [x] Create authentication and auth security middleware (`checkAuth`) verifying JWT tokens and enforcing RBAC.
+- [x] Create Zod request validation middleware (`validateRequest`) for body, query, and params.
 - [ ] Build Authentication & Session Endpoints:
-  - [ ] `POST /api/v1/auth/register` — Student self-registration and profile creation.
-  - [ ] `POST /api/v1/auth/login` — Email/password login issuing access token and HttpOnly refresh cookie.
+  - [x] `POST /api/v1/auth/register-student` — Admin/Super Admin registers student under a branch (Protected).
+  - [x] `POST /api/v1/auth/login` — Unified login for all roles issuing access token and HttpOnly refresh cookie.
   - [ ] `POST /api/v1/auth/google` — Google ID Token verification (strictly for students; issues JWT if active, triggers onboarding if new).
   - [ ] `POST /api/v1/auth/google/onboard` — Student completes onboarding details (branch, phone, guardian); creates account in `PENDING_ACTIVATION` state.
-  - [ ] `POST /api/v1/auth/refresh-token` — Token rotation issuing fresh access token.
-  - [ ] `POST /api/v1/auth/logout` — Session revocation and cookie clearing.
+  - [x] `POST /api/v1/auth/refresh-token` — Token rotation issuing fresh access token (RFC 6819).
+  - [x] `POST /api/v1/auth/logout` — Session revocation (current device or all devices) and cookie clearing.
 - [ ] Build User & Profile Management Endpoints:
   - [ ] `GET /api/v1/users/me` — Retrieve logged-in user profile, permissions, and branch.
   - [ ] `PATCH /api/v1/users/me` — Update personal profile details (contact, avatar, address).
@@ -64,12 +71,12 @@
   - [ ] `GET /api/v1/users/:id` — Admin view of detailed user profile and permissions.
   - [ ] `PATCH /api/v1/users/:id/status` — Admin/Super Admin toggle status (`ACTIVE`, `INACTIVE`, `BLOCKED`).
   - [ ] `PATCH /api/v1/users/:id/role` — Super Admin updates user role.
-  - [ ] `POST /api/v1/admin/teachers` — Admin adds a teacher and automatically dispatches a **Welcome Email** (via `nodemailer` + `ejs`) with login credentials and branch info.
-  - [ ] `PATCH /api/v1/admin/students/:id/approve` — Admin approves student account (`PENDING_ACTIVATION` -> `ACTIVE`) and dispatches **Account Activation Welcome Email**.
-- [ ] Build Admin/Branch Operations (Admin = Branch):
+- [ ] Build Role Provisioning & Branch Operations (Admin = Branch):
   - [ ] `POST /api/v1/admin/branches` — Super Admin provisions an Admin with branch campus profile (`branchName`, `branchAddress`, `branchPhone`).
   - [ ] `GET /api/v1/admin/branches` — Super Admin lists all branch admins and campus profiles.
   - [ ] `PATCH /api/v1/admin/branches/:id` — Super Admin updates branch admin credentials or campus info.
+  - [ ] `POST /api/v1/admin/teachers` — Branch Admin provisions a teacher and automatically dispatches a **Welcome Email** (via `nodemailer` + `ejs`) with login credentials and branch info.
+  - [ ] `PATCH /api/v1/admin/students/:id/approve` — Branch Admin approves student account (`PENDING_ACTIVATION` -> `ACTIVE`) and dispatches **Account Activation Welcome Email**.
 - [ ] Build Batches (Core Resource CRUD):
   - [ ] `POST /api/v1/batches` — Admin creates batch/class with name, fee, and status.
   - [ ] `GET /api/v1/batches` — List batches with pagination, search (`?q=`), and filtering (`?adminId=&status=`).

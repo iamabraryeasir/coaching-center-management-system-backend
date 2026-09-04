@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authRouter } from '../modules';
 import { sendResponse } from '../utils';
 
 const rootRouter: Router = Router();
@@ -14,5 +15,7 @@ rootRouter.get('/health', (_req, res) => {
     },
   });
 });
+
+rootRouter.use('/auth', authRouter);
 
 export { rootRouter };
