@@ -83,7 +83,6 @@ export const checkAuth = (...allowedRoles: Role[]) => {
         email: user.email,
         role: user.role,
         status: user.status,
-        adminId: user.adminId,
       };
 
       next();

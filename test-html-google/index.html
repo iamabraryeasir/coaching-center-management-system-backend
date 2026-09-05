@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google OAuth & Student Onboarding Tester</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151e2e;
+      --input-bg: #090d16;
+      --border: #223049;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .card-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .endpoint-tag {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: monospace;
+      font-weight: 500;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+    }
+
+    input, select {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: #223049;
+      color: #cbd5e1;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    .btn-secondary:hover {
+      background: #2e4161;
+      color: white;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+    .badge-error { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid var(--error); }
+
+    pre {
+      background: #060911;
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      overflow-x: auto;
+      max-height: 280px;
+      line-height: 1.5;
+    }
+
+    .google-btn-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 6px 0;
+      min-height: 44px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>🎓 Coaching Center — Google Auth Tester</h1>
+      <p>Test Google ID Token Login (<span class="endpoint-tag">/api/v1/auth/google</span>) and Student Onboarding (<span class="endpoint-tag">/api/v1/auth/google/onboard</span>)</p>
+    </header>
+
+    <!-- Global API & Client Config -->
+    <div class="card">
+      <div class="card-header">
+        <h2>⚙️ Configuration & Institution Details</h2>
+        <span class="endpoint-tag">Setup & Keys</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Backend API Base URL</label>
+          <input type="text" id="apiBaseUrl" value="http://localhost:5000/api/v1" onchange="saveConfig(); fetchInstitution();" />
+        </div>
+        <div class="form-group">
+          <label>Google Client ID (from GCP Console / .env)</label>
+          <input type="text" id="googleClientId" placeholder="e.g. 123456789-abc.apps.googleusercontent.com" onchange="saveConfig()" />
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <button class="btn-secondary" onclick="initializeGoogleGIS()">🔄 Initialize Google Sign-In Button</button>
+        <button class="btn-secondary" onclick="fetchInstitution()">🏛️ Fetch Institution Info</button>
+        <span id="institutionTag" style="font-size: 13px; color: #38bdf8; font-weight: 500;"></span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Step 1: Google Login -->
+      <div class="card">
+        <div class="card-header">
+          <h2>1️⃣ Google Login</h2>
+          <span class="endpoint-tag">POST /auth/google</span>
+        </div>
+        
+        <p style="font-size: 13px; color: var(--text-muted);">
+          Click the official Google button to sign in with your Google Account:
+        </p>
+
+        <div class="google-btn-wrapper">
+          <div id="googleButtonDiv"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Or Paste Raw Google ID Token Manually:</label>
+          <input type="text" id="manualIdToken" placeholder="eyJhbGciOiJSUzI1Ni..." />
+        </div>
+
+        <button onclick="submitGoogleLogin()">🚀 Send POST /auth/google</button>
+
+        <div class="form-group">
+          <label>Auth Status Result:</label>
+          <div id="authStatusBadge"><span class="badge badge-pending">Waiting for login</span></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Student Onboarding -->
+      <div class="card">
+        <div class="card-header">
+          <h2>2️⃣ Student Onboarding</h2>
+          <span class="endpoint-tag">POST /auth/google/onboard</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted);">
+          Auto-filled after Google login for new students:
+        </p>
+
+        <div class="form-group">
+          <label>Google ID (sub)</label>
+          <input type="text" id="onboardGoogleId" placeholder="Auto-populated from Google login" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="onboardName" placeholder="Student Name" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="onboardEmail" placeholder="student@gmail.com" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Student Phone</label>
+          <input type="text" id="onboardPhone" value="+8801700000099" placeholder="+8801700000099" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Guardian Name</label>
+            <input type="text" id="onboardGuardianName" value="Parent Doe" />
+          </div>
+          <div class="form-group">
+            <label>Guardian Phone</label>
+            <input type="text" id="onboardGuardianPhone" value="+8801700000088" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Class Level</label>
+            <input type="text" id="onboardClassLevel" value="Class 10" />
+          </div>
+          <div class="form-group">
+            <label>Roll Number (Optional)</label>
+            <input type="text" id="onboardRoll" value="101" />
+          </div>
+        </div>
+
+        <input type="hidden" id="onboardAvatarUrl" value="" />
+
+        <button onclick="submitOnboarding()">📝 Send POST /auth/google/onboard</button>
+      </div>
+    </div>
+
+    <!-- API Response Log -->
+    <div class="card">
+      <div class="card-header">
+        <h2>📡 Server JSON Response</h2>
+        <span class="endpoint-tag">Response Body</span>
+      </div>
+      <pre id="responseLog">// API responses will appear here...</pre>
+    </div>
+  </div>
+
+  <script>
+    let activeIdToken = "";
+
+    // Save configuration into localStorage
+    function saveConfig() {
+      const baseUrl = document.getElementById("apiBaseUrl").value.trim();
+      const clientId = document.getElementById("googleClientId").value.trim();
+      localStorage.setItem("coaching_api_baseUrl", baseUrl);
+      if (clientId) localStorage.setItem("coaching_google_clientId", clientId);
+    }
+
+    // Load configuration from localStorage
+    function loadConfig() {
+      const savedBaseUrl = localStorage.getItem("coaching_api_baseUrl");
+      const savedClientId = localStorage.getItem("coaching_google_clientId");
+      if (savedBaseUrl) document.getElementById("apiBaseUrl").value = savedBaseUrl;
+      if (savedClientId) document.getElementById("googleClientId").value = savedClientId;
+    }
+
+    // Client-side JWT Decoder to extract Google User Profile immediately
+    function decodeJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        if (!base64Url) return null;
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        console.error("JWT Decode error:", e);
+        return null;
+      }
+    }
+
+    // Automatically load institution details from /institution
+    async function fetchInstitution() {
+      const baseUrl = document.getElementById("apiBaseUrl").value.trim().replace(/\/$/, "");
+      const tag = document.getElementById("institutionTag");
+      tag.textContent = "⏳ Fetching institution...";
+      
+      try {
+        const res = await fetch(`${baseUrl}/institution`);
+        const json = await res.json();
+        
+        if (json.success && json.data?.institution) {
+          tag.textContent = `🏛️ ${json.data.institution.name} (${json.data.institution.address})`;
+        } else {
+          tag.textContent = "⚠️ Could not load institution details";
+        }
+      } catch (err) {
+        console.error("Failed to load institution:", err);
+        tag.textContent = `❌ Server unreachable at ${baseUrl}/institution`;
+      }
+    }
+
+    // 1. Initialize Google Identity Services (GIS) Button
+    function initializeGoogleGIS() {
+      const clientId = document.getElementById("googleClientId").value.trim();
+      if (!clientId) {
+        alert("Please enter your GOOGLE_CLIENT_ID first!");
+        return;
+      }
+      saveConfig();
+
+      if (window.google) {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredentialResponse,
+        });
+
+        google.accounts.id.renderButton(
+          document.getElementById("googleButtonDiv"),
+          { theme: "filled_blue", size: "large", shape: "pill", width: 280 }
+        );
+
+        logResponse({ message: "Google Identity Services initialized successfully." });
+      } else {
+        alert("Google GIS script not loaded yet. Check your internet connection.");
+      }
+    }
+
+    // 2. Callback when Google Sign-In completes on client
+    function handleGoogleCredentialResponse(response) {
+      activeIdToken = response.credential;
+      document.getElementById("manualIdToken").value = activeIdToken;
+      
+      // Decode JWT client-side immediately and auto-fill form
+      const profile = decodeJwt(activeIdToken);
+      if (profile) {
+        document.getElementById("onboardGoogleId").value = profile.sub || "";
+        document.getElementById("onboardEmail").value = profile.email || "";
+        document.getElementById("onboardName").value = profile.name || "";
+        if (profile.picture) document.getElementById("onboardAvatarUrl").value = profile.picture;
+      }
+
+      logResponse({
+        message: "Google Sign-In Successful! ID Token extracted.",
+        decodedProfile: profile,
+        idTokenPreview: activeIdToken.substring(0, 40) + "..."
+      });
+      
+      // Auto-submit to backend
+      submitGoogleLogin();
+    }
+
+    // 3. POST /auth/google
+    async function submitGoogleLogin() {
+      const baseUrl = document.getElementById("apiBaseUrl").value.trim().replace(/\/$/, "");
+      const idToken = document.getElementById("manualIdToken").value.trim() || activeIdToken;
+
+      if (!idToken) {
+        alert("Please sign in with Google or paste an ID token!");
+        return;
+      }
+
+      // Also decode manual token if pasted
+      const profile = decodeJwt(idToken);
+      if (profile) {
+        document.getElementById("onboardGoogleId").value = profile.sub || "";
+        document.getElementById("onboardEmail").value = profile.email || "";
+        document.getElementById("onboardName").value = profile.name || "";
+        if (profile.picture) document.getElementById("onboardAvatarUrl").value = profile.picture;
+      }
+
+      try {
+        const res = await fetch(`${baseUrl}/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // for HttpOnly cookies
+          body: JSON.stringify({ idToken })
+        });
+
+        const json = await res.json();
+        logResponse(json);
+
+        const badge = document.getElementById("authStatusBadge");
+
+        if (json.success) {
+          if (json.data && json.data.isNewUser) {
+            badge.innerHTML = `<span class="badge badge-pending">⚠️ New Student — Fill Onboarding Form</span>`;
+            if (json.data.googleId) document.getElementById("onboardGoogleId").value = json.data.googleId;
+            if (json.data.email) document.getElementById("onboardEmail").value = json.data.email;
+            if (json.data.name) document.getElementById("onboardName").value = json.data.name;
+            if (json.data.avatarUrl) document.getElementById("onboardAvatarUrl").value = json.data.avatarUrl;
+          } else {
+            badge.innerHTML = `<span class="badge badge-success">✅ Active Student — Logged In</span>`;
+          }
+        } else {
+          badge.innerHTML = `<span class="badge badge-error">❌ ${json.message}</span>`;
+        }
+      } catch (err) {
+        logResponse({ error: err.message });
+      }
+    }
+
+    // 4. POST /auth/google/onboard
+    async function submitOnboarding() {
+      const baseUrl = document.getElementById("apiBaseUrl").value.trim().replace(/\/$/, "");
+
+      const payload = {
+        googleId: document.getElementById("onboardGoogleId").value.trim(),
+        name: document.getElementById("onboardName").value.trim(),
+        email: document.getElementById("onboardEmail").value.trim(),
+        phone: document.getElementById("onboardPhone").value.trim(),
+        guardianName: document.getElementById("onboardGuardianName").value.trim(),
+        guardianPhone: document.getElementById("onboardGuardianPhone").value.trim(),
+        institutionName: "Dhaka College",
+        classLevel: document.getElementById("onboardClassLevel").value.trim(),
+        rollNumber: document.getElementById("onboardRoll").value.trim(),
+        avatarUrl: document.getElementById("onboardAvatarUrl").value.trim() || undefined,
+      };
+
+      if (!payload.googleId || !payload.email || !payload.name) {
+        alert("Google ID, Email, and Name are required! Please sign in with Google first.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${baseUrl}/auth/google/onboard`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+        logResponse(json);
+
+        if (res.status === 201 || (json.success && res.status < 400)) {
+          document.getElementById("authStatusBadge").innerHTML = 
+            `<span class="badge badge-pending">⏳ Onboarding Complete — Pending Admin Approval</span>`;
+          alert("🎉 Student Onboarded! Account is now in PENDING_ACTIVATION state awaiting Admin approval.");
+        } else {
+          document.getElementById("authStatusBadge").innerHTML = 
+            `<span class="badge badge-error">❌ ${json.message || 'Onboarding failed'}</span>`;
+        }
+      } catch (err) {
+        logResponse({ error: err.message });
+      }
+    }
+
+    function logResponse(data) {
+      document.getElementById("responseLog").textContent = JSON.stringify(data, null, 2);
+    }
+
+    // Initialize on page load
+    loadConfig();
+    fetchInstitution();
+    window.addEventListener("load", () => {
+      const clientId = document.getElementById("googleClientId").value.trim();
+      if (clientId && window.google) {
+        initializeGoogleGIS();
+      }
+    });
+  </script>
+</body>
+</html>

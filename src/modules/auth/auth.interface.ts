@@ -1,16 +1,30 @@
 import type { Permission, Role, UserStatus } from '@prisma/client';
+import type { IInstitutionSummary } from '../institution';
+
+export type { IInstitutionSummary };
 
 export interface IRegisterStudentInput {
   name: string;
   email: string;
   password: string;
   phone: string;
-  adminId?: string; // Branch Admin ID (auto-populated for branch Admins)
   guardianName: string;
   guardianPhone: string;
   institutionName?: string;
   classLevel: string;
   rollNumber?: string;
+}
+
+export interface IRegisterTeacherInput {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  designation: string;
+  qualification: string;
+  specialization: string;
+  joiningDate?: string;
+  permissions?: Permission[];
 }
 
 export interface ILoginInput {
@@ -45,7 +59,6 @@ export interface IGoogleOnboardInput {
   email: string;
   name: string;
   phone: string;
-  adminId: string; // Managing branch Admin ID
   guardianName: string;
   guardianPhone: string;
   institutionName?: string;
@@ -54,11 +67,24 @@ export interface IGoogleOnboardInput {
   avatarUrl?: string;
 }
 
-export interface IBranchSummary {
+export interface IPendingStudentQuery {
+  search?: string;
+  searchTerm?: string;
+  page?: string | number;
+  limit?: string | number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface IPendingStudentItem {
   id: string;
-  branchName: string;
-  branchAddress: string;
-  branchPhone: string | null;
+  name: string;
+  email: string;
+  phone: string;
+  avatarUrl: string | null;
+  status: UserStatus;
+  createdAt: Date;
+  studentProfile: IStudentProfileSummary | null;
 }
 
 export interface IStudentProfileSummary {
@@ -80,9 +106,10 @@ export interface ITeacherProfileSummary {
 
 export interface IAdminProfileSummary {
   id: string;
-  branchName: string;
-  branchAddress: string;
-  branchPhone: string | null;
+  institutionName: string;
+  institutionAddress: string;
+  institutionPhone: string | null;
+  institutionEmail: string | null;
 }
 
 export interface IBaseAuthUser {
@@ -99,14 +126,14 @@ export interface IBaseAuthUser {
 export interface IStudentAuthUser extends IBaseAuthUser {
   role: 'STUDENT';
   studentProfile: IStudentProfileSummary | null;
-  branch: IBranchSummary | null;
+  institution: IInstitutionSummary | null;
 }
 
 export interface ITeacherAuthUser extends IBaseAuthUser {
   role: 'TEACHER';
   teacherProfile: ITeacherProfileSummary | null;
   permissions: Permission[];
-  branch: IBranchSummary | null;
+  institution: IInstitutionSummary | null;
 }
 
 export interface IAdminAuthUser extends IBaseAuthUser {
@@ -114,11 +141,7 @@ export interface IAdminAuthUser extends IBaseAuthUser {
   adminProfile: IAdminProfileSummary | null;
 }
 
-export interface ISuperAdminAuthUser extends IBaseAuthUser {
-  role: 'SUPER_ADMIN';
-}
-
-export type IAuthUser = IStudentAuthUser | ITeacherAuthUser | IAdminAuthUser | ISuperAdminAuthUser;
+export type IAuthUser = IStudentAuthUser | ITeacherAuthUser | IAdminAuthUser;
 
 export interface IAuthTokens {
   accessToken: string;

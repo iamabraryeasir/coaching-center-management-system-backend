@@ -1,3 +1,4 @@
+import { Permission } from '@prisma/client';
 import { z } from 'zod';
 
 export const registerStudentSchema = z.object({
@@ -6,12 +7,44 @@ export const registerStudentSchema = z.object({
     email: z.string().trim().email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     phone: z.string().trim().min(10, 'Phone must be at least 10 digits'),
-    adminId: z.string().uuid('Invalid branch Admin ID').optional(),
     guardianName: z.string().trim().min(2, 'Guardian name must be at least 2 characters'),
     guardianPhone: z.string().trim().min(10, 'Guardian phone must be at least 10 digits'),
     institutionName: z.string().trim().optional(),
     classLevel: z.string().trim().min(1, 'Class level is required'),
     rollNumber: z.string().trim().optional(),
+  }),
+});
+
+export const registerTeacherSchema = z.object({
+  body: z.object({
+    name: z.string().trim().min(2, 'Name must be at least 2 characters'),
+    email: z.string().trim().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    phone: z.string().trim().min(10, 'Phone must be at least 10 digits'),
+    designation: z.string().trim().min(2, 'Designation must be at least 2 characters'),
+    qualification: z.string().trim().min(2, 'Qualification must be at least 2 characters'),
+    specialization: z.string().trim().min(2, 'Specialization must be at least 2 characters'),
+    joiningDate: z.string().datetime().optional(),
+    permissions: z.array(z.enum(Permission)).optional().default([]),
+  }),
+});
+
+export const getPendingStudentsSchema = z.object({
+  query: z
+    .object({
+      search: z.string().trim().optional(),
+      searchTerm: z.string().trim().optional(),
+      page: z.string().regex(/^\d+$/).optional(),
+      limit: z.string().regex(/^\d+$/).optional(),
+      sortBy: z.string().trim().optional(),
+      sortOrder: z.enum(['asc', 'desc']).optional(),
+    })
+    .optional(),
+});
+
+export const studentIdParamSchema = z.object({
+  params: z.object({
+    id: z.string().uuid('Valid student ID is required'),
   }),
 });
 
@@ -114,7 +147,6 @@ export const googleOnboardSchema = z.object({
     email: z.string().trim().email('Invalid email address'),
     name: z.string().trim().min(2, 'Name must be at least 2 characters'),
     phone: z.string().trim().min(10, 'Phone must be at least 10 digits'),
-    adminId: z.string().uuid('Invalid branch Admin ID'),
     guardianName: z.string().trim().min(2, 'Guardian name must be at least 2 characters'),
     guardianPhone: z.string().trim().min(10, 'Guardian phone must be at least 10 digits'),
     institutionName: z.string().trim().optional(),

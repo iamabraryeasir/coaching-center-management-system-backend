@@ -1,0 +1,460 @@
+{
+  "info": {
+    "_postman_id": "c1f7a0c8-47e1-45f8-8bb0-d7a8d56b02a9",
+    "name": "Coaching Center Management System API",
+    "description": "Production-grade Postman Collection (v2.1) covering Single-Institution Architecture, Authentication, Google OAuth, Student Onboarding & Approvals, Teacher/Student Registration, and Institution Management.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Root System Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Returns uptime, server environment, and system health status."
+          }
+        },
+        {
+          "name": "API v1 Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication & Sessions",
+      "item": [
+        {
+          "name": "Login — Administrator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Authenticates the System Administrator. Automatically stores accessToken and refreshToken in environment."
+          }
+        },
+        {
+          "name": "Login — Teacher",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{teacherEmail}}\",\n  \"password\": \"{{teacherPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Authenticates Teacher account."
+          }
+        },
+        {
+          "name": "Login — Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Authenticates Student account."
+          }
+        },
+        {
+          "name": "Refresh Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh-token"]
+            },
+            "description": "Rotates refresh token and issues fresh access token."
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@coaching.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "forgot-password"]
+            },
+            "description": "Initiates password recovery link via email."
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<PASTE_32_BYTE_RESET_TOKEN_HERE>\",\n  \"newPassword\": \"NewAdmin@123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "reset-password"]
+            },
+            "description": "Resets password using single-use verification token."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\",\n  \"allDevices\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            },
+            "description": "Revokes current session or all device sessions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Registration (Admin Only)",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sadman Sakib\",\n  \"email\": \"sadman.student@example.com\",\n  \"password\": \"Student@123456\",\n  \"phone\": \"+8801711223344\",\n  \"guardianName\": \"Kamal Hossain\",\n  \"guardianPhone\": \"+8801711223355\",\n  \"institutionName\": \"Notre Dame College\",\n  \"classLevel\": \"HSC-1st\",\n  \"rollNumber\": \"102\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register-student",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register-student"]
+            },
+            "description": "Protected: Only authenticated Administrator can register a student directly into the institution."
+          }
+        },
+        {
+          "name": "Register Teacher",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Professor Rafiqul Islam\",\n  \"email\": \"teacher@coaching.com\",\n  \"password\": \"Teacher@123456\",\n  \"phone\": \"+8801799887766\",\n  \"designation\": \"Senior Mathematics Faculty\",\n  \"qualification\": \"M.Sc in Applied Mathematics, DU\",\n  \"specialization\": \"Higher Mathematics & Calculus\",\n  \"joiningDate\": \"2026-01-15T00:00:00.000Z\",\n  \"permissions\": [\"MANAGE_ATTENDANCE\", \"MANAGE_ROUTINES\", \"VIEW_REPORTS\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register-teacher",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register-teacher"]
+            },
+            "description": "Protected: Only authenticated Administrator can register teachers with specific designations and permissions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Google OAuth & Student Onboarding",
+      "item": [
+        {
+          "name": "Google ID Token Verification & Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"{{googleIdToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/google",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "google"]
+            },
+            "description": "Verifies Google Identity Services (GIS) ID token. Returns tokens for approved students or onboarding prompt (isNewUser: true) for new users."
+          }
+        },
+        {
+          "name": "Google Student Onboarding",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"googleId\": \"google_user_sub_1098237198273\",\n  \"email\": \"new.google.student@gmail.com\",\n  \"name\": \"Tanvir Ahmed\",\n  \"phone\": \"+8801812345678\",\n  \"guardianName\": \"Rafiqul Ahmed\",\n  \"guardianPhone\": \"+8801812345679\",\n  \"institutionName\": \"Dhaka City College\",\n  \"classLevel\": \"Class 10\",\n  \"rollNumber\": \"105\",\n  \"avatarUrl\": \"https://lh3.googleusercontent.com/a/default-user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/google/onboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "google", "onboard"]
+            },
+            "description": "Public onboarding for Google students into PENDING_ACTIVATION state."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Student Approval Workflow (Admin Only)",
+      "item": [
+        {
+          "name": "Get Pending Students (QueryBuilder)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.length > 0) {",
+                  "        pm.environment.set(\"pendingStudentId\", json.data[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/pending-students?page=1&limit=10&search=&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "pending-students"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                { "key": "limit", "value": "10", "description": "Items per page" },
+                { "key": "search", "value": "", "description": "Partial search on name, email, phone, guardian info" },
+                { "key": "sortBy", "value": "createdAt", "description": "Sort field" },
+                { "key": "sortOrder", "value": "desc", "description": "asc or desc" }
+              ]
+            },
+            "description": "Protected: Administrator retrieves paginated list of students awaiting activation using universal QueryBuilder."
+          }
+        },
+        {
+          "name": "Approve Student Application",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/pending-students/{{pendingStudentId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "pending-students", "{{pendingStudentId}}", "approve"]
+            },
+            "description": "Protected: Administrator approves student application and transitions user status from PENDING_ACTIVATION to ACTIVE."
+          }
+        },
+        {
+          "name": "Reject Student Application",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/pending-students/{{pendingStudentId}}/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "pending-students", "{{pendingStudentId}}", "reject"]
+            },
+            "description": "Protected: Administrator rejects student application and marks account as INACTIVE with soft deletion."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Institution Management",
+      "item": [
+        {
+          "name": "Get Institution Profile & Stats (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/institution",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "institution"]
+            },
+            "description": "Public: Retrieves institution profile, contact details, branding, and live operational stats (totalStudents, totalTeachers, totalBatches)."
+          }
+        },
+        {
+          "name": "Update Institution Profile (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"institutionName\": \"Radiant Way Academy - Main Campus\",\n  \"institutionAddress\": \"House 12, Road 5, Dhanmondi 27, Dhaka-1209\",\n  \"institutionPhone\": \"+8801700000099\",\n  \"institutionEmail\": \"info@radiantway.edu.bd\",\n  \"adminName\": \"System Administrator\",\n  \"adminPhone\": \"+8801700000001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/institution",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "institution"]
+            },
+            "description": "Protected: Administrator updates institution branding, location, phone, email, and admin contact details."
+          }
+        }
+      ]
+    }
+  ]
+}

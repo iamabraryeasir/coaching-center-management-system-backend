@@ -32,5 +32,3 @@ Thumbs.db
 .tsup/
 .turbo/
 *.tsbuildinfo
-
-test-html-google/

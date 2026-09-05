@@ -8,7 +8,6 @@ export interface IJwtPayload {
   email: string;
   role: Role;
   status: UserStatus;
-  adminId?: string | null;
 }
 
 export const getAccessTokenExpiresInSeconds = (): number => {

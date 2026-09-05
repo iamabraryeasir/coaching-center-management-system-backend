@@ -10,28 +10,41 @@ import {
 import { authService } from './services';
 
 /**
- * Registers a new student under the authenticated branch Admin (ADMIN only)
+ * Registers a new student under the institution (ADMIN only)
  */
 export const registerStudent = catchAsync(async (req: Request, res: Response): Promise<void> => {
   const metadata = extractClientMetadata(req);
 
-  // Strictly enforce that only branch ADMIN can register students (SUPER_ADMIN cannot register students)
   if (!req.user || req.user.role !== Role.ADMIN) {
-    throw ApiError.forbidden('Only branch administrators can register students');
+    throw ApiError.forbidden('Only administrators can register students');
   }
 
-  const result = await authService.registerStudentAccount(
-    {
-      ...req.body,
-      adminId: req.user.userId,
-    },
-    metadata,
-  );
+  const result = await authService.registerStudentAccount(req.body, metadata);
 
   sendResponse(res, {
     statusCode: 201,
     success: true,
     message: 'Student registered successfully',
+    data: result.user,
+  });
+});
+
+/**
+ * Registers a new teacher with profile and permissions under the institution (ADMIN only)
+ */
+export const registerTeacher = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const metadata = extractClientMetadata(req);
+
+  if (!req.user || req.user.role !== Role.ADMIN) {
+    throw ApiError.forbidden('Only administrators can register teachers');
+  }
+
+  const result = await authService.registerTeacherAccount(req.body, metadata);
+
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: 'Teacher registered successfully',
     data: result.user,
   });
 });
@@ -211,15 +224,55 @@ export const googleOnboard = catchAsync(async (req: Request, res: Response): Pro
 });
 
 /**
- * Retrieves public list of coaching branches for registration and onboarding dropdowns
+ * Retrieves paginated list of pending Google onboarding students (ADMIN only)
  */
-export const getBranches = catchAsync(async (_req: Request, res: Response): Promise<void> => {
-  const branches = await authService.getPublicBranches();
+export const getPendingStudents = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  if (!req.user || req.user.role !== Role.ADMIN) {
+    throw ApiError.forbidden('Only administrators can view pending student applications');
+  }
+
+  const result = await authService.getPendingStudents(req.query);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Available branches retrieved successfully',
-    data: branches,
+    message: 'Pending student applications retrieved successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+/**
+ * Approves a pending student application (ADMIN only)
+ */
+export const approveStudent = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  if (!req.user || req.user.role !== Role.ADMIN) {
+    throw ApiError.forbidden('Only administrators can approve student applications');
+  }
+
+  const student = await authService.approveStudent(req.params.id as string, req.user.email);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Student application approved and activated successfully',
+    data: student,
+  });
+});
+
+/**
+ * Rejects a pending student application (ADMIN only)
+ */
+export const rejectStudent = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  if (!req.user || req.user.role !== Role.ADMIN) {
+    throw ApiError.forbidden('Only administrators can reject student applications');
+  }
+
+  const result = await authService.rejectStudent(req.params.id as string, req.user.email);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: result.message,
   });
 });

@@ -14,6 +14,7 @@ import type {
   IClientMetadata,
   IGoogleLoginInput,
   IGoogleLoginResponse,
+  IInstitutionSummary,
 } from '../auth.interface';
 import { formatSessionUserAgent, sanitizeAuthUser } from '../auth.utils';
 
@@ -70,17 +71,13 @@ const validateStudentAccountState = (user: { role: Role; status: UserStatus }): 
   }
 
   if (user.status === UserStatus.BLOCKED) {
-    throw ApiError.forbidden(
-      'Your account has been suspended. Please contact branch administration.',
-    );
+    throw ApiError.forbidden('Your account has been suspended. Please contact administration.');
   }
   if (user.status === UserStatus.INACTIVE) {
-    throw ApiError.forbidden(
-      'Your account is currently inactive. Please contact branch administration.',
-    );
+    throw ApiError.forbidden('Your account is currently inactive. Please contact administration.');
   }
   if (user.status === UserStatus.PENDING_ACTIVATION) {
-    throw ApiError.forbidden('Your account is awaiting approval by a branch administrator.');
+    throw ApiError.forbidden('Your account is awaiting approval by an administrator.');
   }
 };
 
@@ -103,11 +100,6 @@ export const loginWithGoogle = async (
       teacherProfile: true,
       teacherPermissions: true,
       adminProfile: true,
-      admin: {
-        include: {
-          adminProfile: true,
-        },
-      },
     },
   });
 
@@ -140,11 +132,6 @@ export const loginWithGoogle = async (
         teacherProfile: true,
         teacherPermissions: true,
         adminProfile: true,
-        admin: {
-          include: {
-            adminProfile: true,
-          },
-        },
       },
     });
   }
@@ -156,7 +143,6 @@ export const loginWithGoogle = async (
     email: activeUser.email,
     role: activeUser.role,
     status: activeUser.status,
-    adminId: activeUser.adminId,
   };
 
   const accessToken = generateAccessToken(tokenPayload);
@@ -199,9 +185,23 @@ export const loginWithGoogle = async (
     expiresIn,
   };
 
+  let institutionSummary: IInstitutionSummary | null = null;
+  const adminUser = await prisma.user.findFirst({
+    where: { role: Role.ADMIN, deletedAt: null },
+    include: { adminProfile: true },
+  });
+  if (adminUser?.adminProfile) {
+    institutionSummary = {
+      name: adminUser.adminProfile.institutionName,
+      address: adminUser.adminProfile.institutionAddress,
+      phone: adminUser.adminProfile.institutionPhone,
+      email: adminUser.adminProfile.institutionEmail,
+    };
+  }
+
   return {
     isNewUser: false,
-    user: sanitizeAuthUser(activeUser),
+    user: sanitizeAuthUser(activeUser, institutionSummary),
     tokens,
   };
 };

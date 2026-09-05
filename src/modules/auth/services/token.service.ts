@@ -51,7 +51,6 @@ export const refreshUserTokens = async (
     email: session.user.email,
     role: session.user.role,
     status: session.user.status,
-    adminId: session.user.adminId,
   };
 
   const newAccessToken = generateAccessToken(tokenPayload);

@@ -7,37 +7,7 @@ export const seedData = async (): Promise<void> => {
   try {
     logger.info('Starting idempotent database seeding check via seedData...');
 
-    // 1. Seed SuperAdmin
-    const existingSuperAdmin = await prisma.user.findFirst({
-      where: {
-        OR: [{ email: config.SUPER_ADMIN_EMAIL }, { role: Role.SUPER_ADMIN }],
-      },
-    });
-
-    if (!existingSuperAdmin) {
-      logger.info(`Seeding SuperAdmin account: ${config.SUPER_ADMIN_EMAIL}`);
-      const hashedPassword = await bcrypt.hash(
-        config.SUPER_ADMIN_PASSWORD,
-        config.BCRYPT_SALT_ROUNDS,
-      );
-
-      await prisma.user.create({
-        data: {
-          name: config.SUPER_ADMIN_NAME,
-          email: config.SUPER_ADMIN_EMAIL,
-          password: hashedPassword,
-          phone: config.SUPER_ADMIN_PHONE,
-          role: Role.SUPER_ADMIN,
-          status: UserStatus.ACTIVE,
-        },
-      });
-
-      logger.info('SuperAdmin account seeded successfully.');
-    } else {
-      logger.info('SuperAdmin account already exists. Skipping creation.');
-    }
-
-    // 2. Seed Default Branch Admin with Campus Profile (Admin = Branch)
+    // Seed Default Admin with Institution Profile
     const existingAdmin = await prisma.user.findFirst({
       where: {
         OR: [{ email: config.ADMIN_EMAIL }, { phone: config.ADMIN_PHONE }],
@@ -48,7 +18,7 @@ export const seedData = async (): Promise<void> => {
     });
 
     if (!existingAdmin) {
-      logger.info(`Seeding Branch Admin account: ${config.ADMIN_EMAIL}`);
+      logger.info(`Seeding Admin account: ${config.ADMIN_EMAIL}`);
       const hashedPassword = await bcrypt.hash(config.ADMIN_PASSWORD, config.BCRYPT_SALT_ROUNDS);
 
       await prisma.user.create({
@@ -61,29 +31,31 @@ export const seedData = async (): Promise<void> => {
           status: UserStatus.ACTIVE,
           adminProfile: {
             create: {
-              branchName: config.ADMIN_BRANCH_NAME,
-              branchAddress: config.ADMIN_BRANCH_ADDRESS,
-              branchPhone: config.ADMIN_BRANCH_PHONE,
+              institutionName: config.ADMIN_INSTITUTION_NAME,
+              institutionAddress: config.ADMIN_INSTITUTION_ADDRESS,
+              institutionPhone: config.ADMIN_INSTITUTION_PHONE,
+              institutionEmail: config.ADMIN_INSTITUTION_EMAIL,
             },
           },
         },
       });
 
-      logger.info('Branch Admin and Campus Profile seeded successfully.');
+      logger.info('Admin and Institution Profile seeded successfully.');
     } else {
-      logger.info('Branch Admin account already exists. Skipping creation.');
+      logger.info('Admin account already exists. Skipping creation.');
 
-      // Ensure campus profile exists if admin was created without it
+      // Ensure institution profile exists if admin was created without it
       if (!existingAdmin.adminProfile && existingAdmin.role === Role.ADMIN) {
         await prisma.adminProfile.create({
           data: {
             userId: existingAdmin.id,
-            branchName: config.ADMIN_BRANCH_NAME,
-            branchAddress: config.ADMIN_BRANCH_ADDRESS,
-            branchPhone: config.ADMIN_BRANCH_PHONE,
+            institutionName: config.ADMIN_INSTITUTION_NAME,
+            institutionAddress: config.ADMIN_INSTITUTION_ADDRESS,
+            institutionPhone: config.ADMIN_INSTITUTION_PHONE,
+            institutionEmail: config.ADMIN_INSTITUTION_EMAIL,
           },
         });
-        logger.info('Attached missing Campus Profile to existing Branch Admin.');
+        logger.info('Attached missing Institution Profile to existing Admin.');
       }
     }
 

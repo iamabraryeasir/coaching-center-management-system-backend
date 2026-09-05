@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authRouter } from '../modules';
+import { authRouter, institutionRouter } from '../modules';
 import { sendResponse } from '../utils';
 
 const rootRouter: Router = Router();
@@ -17,5 +17,6 @@ rootRouter.get('/health', (_req, res) => {
 });
 
 rootRouter.use('/auth', authRouter);
+rootRouter.use('/institution', institutionRouter);
 
 export { rootRouter };

@@ -2,11 +2,16 @@ import { Role, UserStatus } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import { prisma } from '../../../config';
 import { ApiError } from '../../../utils';
-import type { IAuthUser, IClientMetadata, IRegisterStudentInput } from '../auth.interface';
+import type {
+  IAuthUser,
+  IClientMetadata,
+  IInstitutionSummary,
+  IRegisterStudentInput,
+} from '../auth.interface';
 import { sanitizeAuthUser } from '../auth.utils';
 
 /**
- * Register a new student under a branch Admin (Functional Implementation).
+ * Register a new student under the institution (Admin-only action).
  */
 export const registerStudentAccount = async (
   payload: IRegisterStudentInput,
@@ -28,26 +33,6 @@ export const registerStudentAccount = async (
     throw ApiError.conflict('Phone number is already registered');
   }
 
-  if (!payload.adminId) {
-    throw ApiError.badRequest('Branch Admin ID is required');
-  }
-
-  // Verify branch Admin exists and has ADMIN role
-  const branchAdmin = await prisma.user.findFirst({
-    where: {
-      id: payload.adminId,
-      role: Role.ADMIN,
-      deletedAt: null,
-    },
-    include: {
-      adminProfile: true,
-    },
-  });
-
-  if (!branchAdmin) {
-    throw ApiError.notFound('Branch Admin not found or is no longer active');
-  }
-
   const hashedPassword = await bcryptjs.hash(payload.password, 10);
 
   const result = await prisma.$transaction(async (tx) => {
@@ -59,7 +44,6 @@ export const registerStudentAccount = async (
         phone: normalizedPhone,
         role: Role.STUDENT,
         status: UserStatus.ACTIVE,
-        adminId: payload.adminId,
       },
     });
 
@@ -83,8 +67,6 @@ export const registerStudentAccount = async (
         entityId: newUser.id,
         details: JSON.stringify({
           email: newUser.email,
-          branchAdminId: branchAdmin.id,
-          branchName: branchAdmin.adminProfile?.branchName,
         }),
         ipAddress: metadata?.ipAddress,
         userAgent: metadata?.userAgent,
@@ -94,11 +76,24 @@ export const registerStudentAccount = async (
     return {
       ...newUser,
       studentProfile: newProfile,
-      admin: branchAdmin,
     };
   });
 
+  let institutionSummary: IInstitutionSummary | null = null;
+  const adminUser = await prisma.user.findFirst({
+    where: { role: Role.ADMIN, deletedAt: null },
+    include: { adminProfile: true },
+  });
+  if (adminUser?.adminProfile) {
+    institutionSummary = {
+      name: adminUser.adminProfile.institutionName,
+      address: adminUser.adminProfile.institutionAddress,
+      phone: adminUser.adminProfile.institutionPhone,
+      email: adminUser.adminProfile.institutionEmail,
+    };
+  }
+
   return {
-    user: sanitizeAuthUser(result),
+    user: sanitizeAuthUser(result, institutionSummary),
   };
 };

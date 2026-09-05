@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { UserStatus } from '@prisma/client';
+import { Role, UserStatus } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import { prisma } from '../../../config';
 import {
@@ -9,7 +9,13 @@ import {
   getAccessTokenExpiresInSeconds,
   type IJwtPayload,
 } from '../../../utils';
-import type { IAuthTokens, IClientMetadata, ILoginInput, ILoginResponse } from '../auth.interface';
+import type {
+  IAuthTokens,
+  IClientMetadata,
+  IInstitutionSummary,
+  ILoginInput,
+  ILoginResponse,
+} from '../auth.interface';
 import { DUMMY_BCRYPT_HASH, formatSessionUserAgent, sanitizeAuthUser } from '../auth.utils';
 
 /**
@@ -32,11 +38,6 @@ export const loginUser = async (
       teacherProfile: true,
       teacherPermissions: true,
       adminProfile: true,
-      admin: {
-        include: {
-          adminProfile: true,
-        },
-      },
     },
   });
 
@@ -63,17 +64,13 @@ export const loginUser = async (
 
   // Account status validation
   if (user.status === UserStatus.BLOCKED) {
-    throw ApiError.forbidden(
-      'Your account has been blocked. Please contact branch administration.',
-    );
+    throw ApiError.forbidden('Your account has been blocked. Please contact administration.');
   }
   if (user.status === UserStatus.INACTIVE) {
-    throw ApiError.forbidden(
-      'Your account is currently inactive. Please contact branch administration.',
-    );
+    throw ApiError.forbidden('Your account is currently inactive. Please contact administration.');
   }
   if (user.status === UserStatus.PENDING_ACTIVATION) {
-    throw ApiError.forbidden('Your account is awaiting approval by a branch administrator.');
+    throw ApiError.forbidden('Your account is awaiting approval by an administrator.');
   }
 
   const tokenPayload: IJwtPayload = {
@@ -81,7 +78,6 @@ export const loginUser = async (
     email: user.email,
     role: user.role,
     status: user.status,
-    adminId: user.adminId,
   };
 
   const accessToken = generateAccessToken(tokenPayload);
@@ -125,8 +121,24 @@ export const loginUser = async (
     expiresIn,
   };
 
+  let institutionSummary: IInstitutionSummary | null = null;
+  if (user.role !== Role.ADMIN) {
+    const adminUser = await prisma.user.findFirst({
+      where: { role: Role.ADMIN, deletedAt: null },
+      include: { adminProfile: true },
+    });
+    if (adminUser?.adminProfile) {
+      institutionSummary = {
+        name: adminUser.adminProfile.institutionName,
+        address: adminUser.adminProfile.institutionAddress,
+        phone: adminUser.adminProfile.institutionPhone,
+        email: adminUser.adminProfile.institutionEmail,
+      };
+    }
+  }
+
   return {
-    user: sanitizeAuthUser(user),
+    user: sanitizeAuthUser(user, institutionSummary),
     tokens,
   };
 };

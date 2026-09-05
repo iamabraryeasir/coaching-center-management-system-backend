@@ -8,9 +8,7 @@
 
 ## 1. Project Mission & Domain Context
 
-This backend powers a multi-branch **Coaching Center Management System** designed for coaching institutions in Bangladesh. The system centralizes daily operational and administrative workflows:
-
-- **Organization & Multi-Branch Governance**: Governed at top-level by `SUPER_ADMIN`; operated per-branch by assigned `ADMIN`s.
+- **Institution Governance**: Governed and operated as a single coaching center / academy by the system `ADMIN`.
 - **Academics & Scheduling**: Batches, classes, subjects, rooms, routines, and conflict-free timetable management.
 - **Attendance & Leave Management**: Daily marking and reporting for students and teachers with audit trails for corrections.
 - **Exams & Results**: Marks entry, grading policies, draft/published result pipelines.
@@ -52,7 +50,7 @@ backend/
 ├── .env.example            # Environment template and variable documentation
 ├── .gitignore              # Git ignore rules for node_modules, build, logs, env
 ├── .npmrc                  # pnpm package manager configuration
-├── AGENT.md                # Agent instruction & engineering guidelines (this document)
+├── AGENTS.md               # Agent instruction & engineering guidelines (this document)
 ├── PROJECT_PLAN.md         # High-level business and functional requirements
 ├── biome.json              # Biome linting, formatting & assist configuration
 ├── package.json            # Dependencies, scripts, and package metadata
@@ -61,7 +59,7 @@ backend/
 ├── prisma/
 │   ├── schema.prisma       # Minimal root schema (generator client & datasource db only)
 │   ├── enums.prisma        # Centralized system enums (Role, UserStatus, Permission, etc.)
-│   ├── [model].prisma      # Modular per-model schema files (e.g. branch.prisma, user.prisma)
+│   ├── [model].prisma      # Modular per-model schema files (e.g. user.prisma, batch.prisma)
 │   └── seed.ts             # Idempotent database seeding script
 ├── src/
 │   ├── app.ts              # Express application setup, middleware pipeline, health check
@@ -80,8 +78,9 @@ backend/
 │   │   ├── index.ts        # Utility re-exports
 │   │   ├── api-error.ts    # Custom ApiError class with HTTP status factory methods
 │   │   ├── logger.ts       # Morgan HTTP middleware & structured logger (info/warn/error/audit)
+│   │   ├── query-builder.ts # High-performance universal search/filter/sort/pagination builder
 │   │   └── send-response.ts # Universal API JSON response envelope dispatcher
-│   ├── modules/            # Domain feature modules (auth, user, branch, attendance, fees, etc.)
+│   ├── modules/            # Domain feature modules (auth, user, institution, attendance, fees, etc.)
 │   │   └── [feature]/
 │   │       ├── [feature].interface.ts   # TypeScript interfaces & domain types
 │   │       ├── [feature].validation.ts  # Zod schemas for body, query, and params
@@ -108,11 +107,11 @@ To maintain high maintainability and prevent massive monolithic schema files:
 2. **`prisma/enums.prisma` contains all enums**:
    - All domain enums (`Role`, `UserStatus`, `Gender`, `Permission`, `AttendanceStatus`, `PaymentMethod`, `PaymentStatus`, `ExamStatus`) reside in `prisma/enums.prisma`.
 3. **Modular Per-Model Files (`prisma/*.prisma`)**:
-   - Each domain model entity has its own dedicated `.prisma` file (e.g. `branch.prisma`, `user.prisma`, `student.prisma`, `attendance.prisma`, `fee.prisma`).
+   - Each domain model entity has its own dedicated `.prisma` file (e.g. `user.prisma`, `student.prisma`, `batch.prisma`, `attendance.prisma`, `fee.prisma`).
 4. **`prisma.config.ts` Schema Discovery**:
    - `prisma.config.ts` is configured with `schema: 'prisma'`. Prisma automatically and recursively discovers all `.prisma` files in the folder.
 5. **Prisma 7 Driver Adapter Pattern**:
-   - Client is instantiated in [`src/config/prisma.ts`](file:///d:/01_coding/web-dev/radiant-way-coaching/backend/src/config/prisma.ts) using `PrismaPg` with a managed `pg.Pool` connection pool.
+   - Client is instantiated in [`src/config/prisma.ts`](file:///d:/01_coding/next-level-course/coaching-management-system/src/config/prisma.ts) using `PrismaPg` with a managed `pg.Pool` connection pool.
 
 ---
 
@@ -142,19 +141,19 @@ Whenever implementing or modifying code in this codebase, you **MUST** adhere to
 
 ```typescript
 import type { Request, Response } from "express";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils";
 
-export const getBranchById = async (
-  req: Request,
+export const getInstitution = async (
+  _req: Request,
   res: Response,
 ): Promise<void> => {
-  const branch = await branchService.getBranchById(req.params.id);
+  const data = await institutionService.getInstitution();
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Branch retrieved successfully",
-    data: branch,
+    message: "Institution profile retrieved successfully",
+    data,
   });
 };
 ```
@@ -165,12 +164,12 @@ export const getBranchById = async (
 - Always instantiate or throw `ApiError`:
   - `throw ApiError.badRequest('Invalid parameter supplied')` (400)
   - `throw ApiError.unauthorized('Token expired or invalid')` (401)
-  - `throw ApiError.forbidden('You lack permissions for this branch')` (403)
+  - `throw ApiError.forbidden('You lack permissions for this action')` (403)
   - `throw ApiError.notFound('Record not found')` (404)
-  - `throw ApiError.conflict('Email or username already in use')` (409)
+  - `throw ApiError.conflict('Email or phone already in use')` (409)
   - `throw ApiError.unprocessable('Validation constraint failed', details)` (422)
   - `throw ApiError.internal('Database query failed')` (500)
-- The [`globalErrorHandler`](file:///d:/01_coding/web-dev/radiant-way-coaching/backend/src/middlewares/global-error-handler.ts) middleware intercepts all thrown exceptions, formats them through `sendResponse`, and logs detailed diagnostics.
+- The [`globalErrorHandler`](file:///d:/01_coding/next-level-course/coaching-management-system/src/middlewares/global-error-handler.ts) middleware intercepts all thrown exceptions, formats them through `sendResponse`, and logs detailed diagnostics.
 
 ### 5.4 Structured Logging (`logger`) & Zero `console.*` Usage
 
@@ -180,11 +179,11 @@ export const getBranchById = async (
 - `logger.warn(message, meta?)`: Recoverable warnings or business exceptions.
 - `logger.error(message, error | meta)`: Failures, exceptions, and stack traces.
 - `logger.debug(message, meta?)`: Detailed diagnostic messages (suppressed in production).
-- `logger.audit(action, details)`: High-value administrative actions (e.g. `PAYMENT_COLLECTED`, `MARKS_PUBLISHED`, `USER_BLOCKED`).
+- `logger.audit(action, details)`: High-value administrative actions (e.g. `PAYMENT_COLLECTED`, `MARKS_PUBLISHED`, `USER_BLOCKED`, `STUDENT_APPROVED`).
 
-### 5.5 Security & Multi-Branch Isolation
+### 5.5 Security & Single-Institution Scoping
 
-1. **Strict Branch Scoping**: Every query accessing branch-owned records (students, teachers, classes, attendance, fees, exams) **MUST** filter by `branchId`. Admins and teachers must never access data belonging to another branch.
+1. **Single-Institution Architecture**: The coaching center operates as a single institution governed by the system `ADMIN`. All system entities (students, teachers, batches, routines, attendance, exams, fees) belong directly to the institution without multi-tenant foreign keys (`adminId`).
 2. **Input Validation Before Execution**: Every route accepting `body`, `query`, or `params` must pass through a Zod validation middleware before reaching the controller.
 3. **Transactional Integrity**: Multi-step state transitions, financial records, and balance calculations must execute inside Prisma interactive transactions (`prisma.$transaction`).
 4. **Immutable Financial History**: Never delete or overwrite historical financial transactions or receipts. Corrections must be recorded as explicit adjustments or reversals with audit logs.
@@ -197,22 +196,33 @@ export const getBranchById = async (
 
 ### 5.7 Soft Deletes & Audit Logging Standards
 
-1. **Universal Soft Deletes**: Core resource deletion (e.g. `courses`, `batches`, `users`) must never execute `prisma.[model].delete()`. Always set `deletedAt = new Date()`.
+1. **Universal Soft Deletes**: Core resource deletion (e.g. `batches`, `users`) must never execute `prisma.[model].delete()`. Always set `deletedAt = new Date()`.
 2. **Read Queries Exclude Soft-Deleted Records**: All find queries must filter out records where `deletedAt: null`.
-3. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, fee adjustment) must record an `AuditLog` entry.
+3. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, fee adjustment, student approval) must record an `AuditLog` entry.
 
 ### 5.8 Google Authentication & Student Onboarding Gate
 
 1. **Google ID Token Verification**: Social sign-in uses Google Identity Services client tokens verified server-side with `google-auth-library`. No server-redirect OAuth loops.
-2. **Onboarding Gate for New Users**: Unregistered Google users must complete the onboarding flow (`POST /api/v1/auth/google/onboard`) providing branch, contact, and academic information.
-3. **Mandatory Admin Approval**: Google-onboarded students are created in `PENDING_ACTIVATION` state. They cannot access protected student resources or receive session tokens until explicitly approved by an `ADMIN` via `PATCH /api/v1/admin/students/:id/approve`.
-4. **Strict Student-Only Access**: Google Authentication is strictly restricted to `Role.STUDENT`. If any user with `ADMIN`, `TEACHER`, or `SUPER_ADMIN` attempts Google login, reject with `403 Forbidden`.
+2. **Onboarding Gate for New Users**: Unregistered Google users must complete the onboarding flow (`POST /api/v1/auth/google/onboard`) providing contact and academic information.
+3. **Mandatory Admin Approval**: Google-onboarded students are created in `PENDING_ACTIVATION` state. They cannot access protected student resources or receive session tokens until explicitly approved by an `ADMIN` via `PATCH /api/v1/auth/pending-students/:id/approve`.
+4. **Strict Student-Only Access**: Google Authentication is strictly restricted to `Role.STUDENT`. If any user with `ADMIN` or `TEACHER` attempts Google login, reject with `403 Forbidden`.
 
-### 5.9 Student Registration Authority (Admin-Only Exclusivity)
+### 5.9 Student & Teacher Registration Authority (Admin-Only Exclusivity)
 
-1. **Strict Admin Exclusivity**: Only a branch `ADMIN` has authority to register a student (`POST /api/v1/auth/register-student`). `SUPER_ADMIN` **CANNOT** register students under any circumstances.
-2. **Session-Bound Branch Identity**: A branch `ADMIN` registers students strictly into their own branch. The student's `adminId` is strictly derived from the authenticated admin's session (`req.user.userId`). Request bodies cannot override `adminId`.
-3. **Super Admin Scope**: The `SUPER_ADMIN` governs branches (`POST /api/v1/admin/branches`) and provisions branch `ADMIN` accounts, but never registers students or teachers directly.
+1. **Strict Admin Exclusivity**: Only the `ADMIN` has authority to register students (`POST /api/v1/auth/register-student`), register teachers (`POST /api/v1/auth/register-teacher`), and review/approve pending students (`GET /api/v1/auth/pending-students`, `PATCH /api/v1/auth/pending-students/:id/approve`, `PATCH /api/v1/auth/pending-students/:id/reject`).
+2. **Direct Institution Attachment**: Newly registered students and teachers belong directly to the institution.
+
+### 5.10 Mandatory Bulk Querying & Pagination Standard (`QueryBuilder`)
+
+1. **Universal QueryBuilder Adoption**: Whenever implementing or maintaining any list, collection, search, filter, or pagination service across ANY domain module (e.g. `students`, `teachers`, `institution`, `batches`, `attendance`, `fees`, `exams`, `audit-logs`), you **MUST** use the centralized `QueryBuilder` class from `src/utils` (`QueryBuilder`).
+2. **Standardized Method Chaining Pipeline**:
+   - `.search(['field1', 'field2', 'relation.field'])`: Multi-field case-insensitive partial match using `searchTerm` or `search`.
+   - `.filter({ exclude: [...] })`: Dynamic filtering for query params with auto-casting (booleans, numbers, `in` arrays, `_gte`/`_lte` ranges).
+   - `.where({ ... })`: Programmatic scoping (e.g. `{ deletedAt: null }`).
+   - `.sort(defaultSortBy, defaultSortOrder)`: Multi-field sorting support.
+   - `.paginate(defaultPage, defaultLimit, maxLimit)`: Page/limit clamping and skip/take calculation.
+   - `.getPaginationMeta(totalCount)`: Standardized pagination metadata generation.
+3. **Consistency**: Never manually construct duplicate `where` clauses, `contains` arrays, or `skip`/`take` math across services. Always channel bulk query generation through `QueryBuilder`.
 
 ---
 

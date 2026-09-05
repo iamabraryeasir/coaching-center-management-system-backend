@@ -14,7 +14,7 @@ const startServer = async (): Promise<void> => {
     // Connect to Redis
     await connectRedis();
 
-    // Seed initial SuperAdmin and Branch Admin if they do not exist
+    // Seed initial Administrator and Institution Profile if they do not exist
     await seedData();
 
     server = app.listen(config.PORT, () => {

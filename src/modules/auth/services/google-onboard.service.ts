@@ -5,6 +5,7 @@ import type {
   IClientMetadata,
   IGoogleOnboardInput,
   IGoogleOnboardResponse,
+  IInstitutionSummary,
 } from '../auth.interface';
 import { formatSessionUserAgent, sanitizeAuthUser } from '../auth.utils';
 
@@ -48,22 +49,6 @@ export const onboardGoogleStudent = async (
 
   await checkExistingGoogleStudent(normalizedEmail, normalizedPhone, normalizedGoogleId);
 
-  // Validate that the assigned branch admin exists and is active
-  const branchAdmin = await prisma.user.findFirst({
-    where: {
-      id: payload.adminId,
-      role: Role.ADMIN,
-      deletedAt: null,
-    },
-    include: {
-      adminProfile: true,
-    },
-  });
-
-  if (!branchAdmin) {
-    throw ApiError.notFound('Selected branch administrator was not found or is no longer active');
-  }
-
   const sessionUserAgent = metadata
     ? formatSessionUserAgent(metadata, metadata.deviceName, metadata.platform)
     : undefined;
@@ -79,7 +64,6 @@ export const onboardGoogleStudent = async (
         role: Role.STUDENT,
         status: UserStatus.PENDING_ACTIVATION,
         googleId: normalizedGoogleId,
-        adminId: branchAdmin.id,
       },
     });
 
@@ -103,8 +87,6 @@ export const onboardGoogleStudent = async (
         details: JSON.stringify({
           email: newUser.email,
           googleId: newUser.googleId,
-          branchAdminId: branchAdmin.id,
-          branchName: branchAdmin.adminProfile?.branchName,
         }),
         ipAddress: metadata?.ipAddress,
         userAgent: sessionUserAgent,
@@ -114,12 +96,25 @@ export const onboardGoogleStudent = async (
     return {
       ...newUser,
       studentProfile: newProfile,
-      admin: branchAdmin,
     };
   });
 
+  let institutionSummary: IInstitutionSummary | null = null;
+  const adminUser = await prisma.user.findFirst({
+    where: { role: Role.ADMIN, deletedAt: null },
+    include: { adminProfile: true },
+  });
+  if (adminUser?.adminProfile) {
+    institutionSummary = {
+      name: adminUser.adminProfile.institutionName,
+      address: adminUser.adminProfile.institutionAddress,
+      phone: adminUser.adminProfile.institutionPhone,
+      email: adminUser.adminProfile.institutionEmail,
+    };
+  }
+
   return {
-    user: sanitizeAuthUser(result),
+    user: sanitizeAuthUser(result, institutionSummary),
     message:
       'Onboarding details submitted successfully. Your account is pending administrator approval.',
   };
