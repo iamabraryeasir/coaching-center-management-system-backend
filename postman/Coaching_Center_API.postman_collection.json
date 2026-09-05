@@ -455,6 +455,173 @@
           }
         }
       ]
+    },
+    {
+      "name": "User & Profile Management",
+      "item": [
+        {
+          "name": "Get Current User Profile (/me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "description": "Protected: Authenticated user retrieves their full profile, permissions, and role-specific academic or faculty information."
+          }
+        },
+        {
+          "name": "Update Current User Profile (/me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sadman Sakib Updated\",\n  \"phone\": \"+8801711223399\",\n  \"avatarUrl\": \"https://lh3.googleusercontent.com/a/custom-avatar\",\n  \"guardianName\": \"Kamal Hossain Updated\",\n  \"guardianPhone\": \"+8801711223388\",\n  \"institutionName\": \"Notre Dame College Dhaka\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "description": "Protected: Authenticated user updates their personal details and role-specific profile attributes."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Admin@123456\",\n  \"newPassword\": \"Admin@654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "change-password"]
+            },
+            "description": "Protected: Authenticated user changes their account password. Verifies current password and revokes all other active sessions."
+          }
+        },
+        {
+          "name": "Get All Users (Admin Only — QueryBuilder)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.length > 0) {",
+                  "        pm.environment.set(\"targetUserId\", json.data[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?page=1&limit=10&search=&role=STUDENT&status=ACTIVE&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number (1-indexed)" },
+                { "key": "limit", "value": "10", "description": "Items per page (max 100)" },
+                { "key": "search", "value": "", "description": "Partial search on name, email, phone" },
+                { "key": "role", "value": "STUDENT", "description": "Filter by role: ADMIN, TEACHER, STUDENT" },
+                { "key": "status", "value": "ACTIVE", "description": "Filter by status: PENDING_ACTIVATION, ACTIVE, INACTIVE, BLOCKED" },
+                { "key": "sortBy", "value": "createdAt", "description": "Field to sort by" },
+                { "key": "sortOrder", "value": "desc", "description": "Sort order: asc or desc" }
+              ]
+            },
+            "description": "Protected: Administrator retrieves filtered, searched, and paginated users across the entire institution."
+          }
+        },
+        {
+          "name": "Get User By ID (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{targetUserId}}"]
+            },
+            "description": "Protected: Administrator retrieves complete profile details of a specific user by ID."
+          }
+        },
+        {
+          "name": "Update User Status (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"BLOCKED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{targetUserId}}", "status"]
+            },
+            "description": "Protected: Administrator updates a user's operational status (ACTIVE, INACTIVE, BLOCKED). Automatically revokes active sessions if set to BLOCKED or INACTIVE. Admin self-blocking is rejected."
+          }
+        },
+        {
+          "name": "Delete User (Admin Only — Soft Delete)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{targetUserId}}"]
+            },
+            "description": "Protected: Administrator soft-deletes a user account (sets deletedAt timestamp, sets status to INACTIVE, revokes all sessions). Admin self-deletion is strictly prevented."
+          }
+        }
+      ]
     }
   ]
 }
