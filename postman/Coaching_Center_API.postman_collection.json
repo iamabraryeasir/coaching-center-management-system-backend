@@ -1772,6 +1772,247 @@
           }
         }
       ]
+    },
+    {
+      "name": "Payment & Fee Management",
+      "item": [
+        {
+          "name": "Create Stripe Checkout Session (Student / Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.transactionId) {",
+                  "    pm.environment.set(\"transactionId\", res.data.transactionId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchId\": \"{{batchId}}\",\n  \"currency\": \"bdt\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/create-checkout-session",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments", "create-checkout-session"]
+            },
+            "description": "Protected: Initializes a real Stripe Checkout Session for student batch tuition fee."
+          }
+        },
+        {
+          "name": "Collect Manual Fee Payment (Admin Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.environment.set(\"receiptId\", res.data.id);",
+                  "    pm.environment.set(\"transactionId\", res.data.transactionId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"batchId\": \"{{batchId}}\",\n  \"amount\": 3500,\n  \"paymentMethod\": \"BKASH\",\n  \"referenceNumber\": \"TRX897234982\",\n  \"notes\": \"Collected at counter\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/manual-collect",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments", "manual-collect"]
+            },
+            "description": "Protected: Admin records manual payment collection (Cash, bKash, Nagad, Bank) and immediately issues receipt."
+          }
+        },
+        {
+          "name": "My Payment History (Student Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/my?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments", "my"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Protected: Student retrieves their complete paginated payment history and receipts."
+          }
+        },
+        {
+          "name": "All System Payment Transactions (Admin Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments?page=1&limit=10&status=COMPLETED",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "COMPLETED" }
+              ]
+            },
+            "description": "Protected: Admin explores all payments across the academy using QueryBuilder."
+          }
+        },
+        {
+          "name": "Executive Financial Dashboard & Stats (Admin Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments", "stats"]
+            },
+            "description": "Protected: Admin retrieves total revenue, payment method breakdowns, and monthly trends."
+          }
+        },
+        {
+          "name": "Get Receipt by Receipt ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/receipts/{{receiptId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments", "receipts", "{{receiptId}}"]
+            },
+            "description": "Protected: Fetches complete receipt invoice details."
+          }
+        },
+        {
+          "name": "Get Receipt by Transaction ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/receipts/by-transaction/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payments", "receipts", "by-transaction", "{{transactionId}}"]
+            },
+            "description": "Protected: Fetches receipt for a given payment transaction."
+          }
+        }
+      ]
     }
   ]
 }
