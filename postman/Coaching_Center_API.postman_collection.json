@@ -1443,6 +1443,258 @@
           }
         }
       ]
+    },
+    {
+      "name": "Exams, Marks & Results Pipeline",
+      "description": "Endpoints for exam scheduling, bulk marks submission with auto-grading, draft-to-published result lifecycle, batch merit rankings, and student self-service report cards.",
+      "item": [
+        {
+          "name": "Create Exam (Admin or Authorized Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.environment.set('examId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchId\": \"{{batchId}}\",\n  \"title\": \"Weekly Assessment: Algebra & Polynomials\",\n  \"description\": \"Chapters 3 & 4 covering polynomials and quadratic equations\",\n  \"totalMarks\": 100,\n  \"passMarks\": 40,\n  \"examDate\": \"2026-09-15\",\n  \"status\": \"UPCOMING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams"]
+            },
+            "description": "Protected: Creates a new exam for a specific batch with total/pass marks and scheduled calendar date."
+          }
+        },
+        {
+          "name": "Get Exams List (All Roles)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Protected: Retrieves paginated exams. Staff view all; students view exams for their active batch enrollments."
+          }
+        },
+        {
+          "name": "Get Single Exam Details (All Roles)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}"]
+            },
+            "description": "Protected: Retrieves single exam details including statistics (highest/lowest/average mark) if published or requested by staff."
+          }
+        },
+        {
+          "name": "Update Exam Metadata (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Weekly Assessment: Advanced Algebra\",\n  \"status\": \"ONGOING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}"]
+            },
+            "description": "Protected: Updates exam schedule, title, or status."
+          }
+        },
+        {
+          "name": "Bulk Marks Entry (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"records\": [\n    {\n      \"studentId\": \"{{targetUserId}}\",\n      \"marksObtained\": 88.5,\n      \"remarks\": \"Excellent problem solving\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/marks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}", "marks"]
+            },
+            "description": "Protected: Bulk submits marks for enrolled students with atomic transactional upsert and automatic grade calculation."
+          }
+        },
+        {
+          "name": "Update Single Student Mark (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marksObtained\": 92.0,\n  \"remarks\": \"Re-evaluation added 3.5 marks\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/marks/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}", "marks", "{{targetUserId}}"]
+            },
+            "description": "Protected: Corrects a single student's exam mark with structured audit logging."
+          }
+        },
+        {
+          "name": "Publish Exam Results (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/publish",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}", "publish"]
+            },
+            "description": "Protected: Publishes results (DRAFT -> PUBLISHED), transitions exam status to COMPLETED, and releases marks to students."
+          }
+        },
+        {
+          "name": "Get Batch Exam Results / Merit List (All Roles)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/results",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}", "results"]
+            },
+            "description": "Protected: Retrieves sorted batch merit list with merit rankings and overall pass rate."
+          }
+        },
+        {
+          "name": "Unpublish Exam Results (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/unpublish",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}", "unpublish"]
+            },
+            "description": "Protected: Admin reverts published results back to DRAFT state."
+          }
+        },
+        {
+          "name": "Get My Report Card (Student Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/my/results",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "my", "results"]
+            },
+            "description": "Protected: Authenticated student views their complete academic performance across all published exams."
+          }
+        },
+        {
+          "name": "Get My Single Exam Result (Student Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/my/results/{{examId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "my", "results", "{{examId}}"]
+            },
+            "description": "Protected: Authenticated student views their detailed marks, letter grade, rank, and batch stats for a specific exam."
+          }
+        },
+        {
+          "name": "Delete Exam (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "exams", "{{examId}}"]
+            },
+            "description": "Protected: Deletes exam record and cascades to remove all associated marks."
+          }
+        }
+      ]
     }
   ]
 }

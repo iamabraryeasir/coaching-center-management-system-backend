@@ -4,6 +4,7 @@ import {
   attendanceRouter,
   authRouter,
   batchRouter,
+  examRouter,
   institutionRouter,
   routineRouter,
   userRouter,
@@ -27,6 +28,7 @@ rootRouter.get('/health', (_req, res) => {
 rootRouter.use('/attendance', attendanceRouter);
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/batches', batchRouter);
+rootRouter.use('/exams', examRouter);
 rootRouter.use('/institution', institutionRouter);
 rootRouter.use('/routines', routineRouter);
 rootRouter.use('/users', userRouter);
