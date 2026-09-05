@@ -1,4 +1,5 @@
 export * from './attendance';
+export * from './audit-log';
 export * from './auth';
 export * from './batch';
 export * from './exam';

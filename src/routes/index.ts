@@ -2,6 +2,7 @@ import { formatISO } from 'date-fns';
 import { Router } from 'express';
 import {
   attendanceRouter,
+  auditLogRouter,
   authRouter,
   batchRouter,
   examRouter,
@@ -28,6 +29,7 @@ rootRouter.get('/health', (_req, res) => {
 });
 
 rootRouter.use('/attendance', attendanceRouter);
+rootRouter.use('/audit-logs', auditLogRouter);
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/batches', batchRouter);
 rootRouter.use('/exams', examRouter);
