@@ -1,4 +1,5 @@
 import { type Batch, DayOfWeek, type TeacherProfile, type User } from '@prisma/client';
+import { areIntervalsOverlapping, parse } from 'date-fns';
 import { prisma } from '../../config';
 import { ApiError } from '../../utils';
 import type { IDayTimetableGroup, IRoutineResponse } from './routine.interface';
@@ -29,15 +30,7 @@ type RawRoutineWithRelations = {
 };
 
 /**
- * Converts "HH:mm" time string to minutes from midnight
- */
-export const timeToMinutes = (timeStr: string): number => {
-  const [hours, minutes] = timeStr.split(':').map(Number);
-  return (hours || 0) * 60 + (minutes || 0);
-};
-
-/**
- * Checks if two time intervals [startA, endA) and [startB, endB) overlap
+ * Checks if two time intervals [startA, endA) and [startB, endB) overlap using date-fns
  */
 export const isTimeOverlapping = (
   startA: string,
@@ -45,7 +38,13 @@ export const isTimeOverlapping = (
   startB: string,
   endB: string,
 ): boolean => {
-  return startA < endB && endA > startB;
+  const baseDate = new Date(0);
+  const aStart = parse(startA, 'HH:mm', baseDate);
+  const aEnd = parse(endA, 'HH:mm', baseDate);
+  const bStart = parse(startB, 'HH:mm', baseDate);
+  const bEnd = parse(endB, 'HH:mm', baseDate);
+
+  return areIntervalsOverlapping({ start: aStart, end: aEnd }, { start: bStart, end: bEnd });
 };
 
 /**

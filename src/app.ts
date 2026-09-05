@@ -1,5 +1,6 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { formatISO } from 'date-fns';
 import express, { type Application } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -74,7 +75,7 @@ app.get('/health', (_req, res) => {
     data: {
       status: 'UP',
       uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
+      timestamp: formatISO(new Date()),
       environment: config.NODE_ENV,
     },
   });

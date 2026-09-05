@@ -1,3 +1,4 @@
+import { formatISO } from 'date-fns';
 import { Router } from 'express';
 import {
   attendanceRouter,
@@ -18,7 +19,7 @@ rootRouter.get('/health', (_req, res) => {
     message: 'Coaching Management System API v1 is operating normally',
     data: {
       uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
+      timestamp: formatISO(new Date()),
     },
   });
 });

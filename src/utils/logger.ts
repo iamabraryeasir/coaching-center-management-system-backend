@@ -1,3 +1,4 @@
+import { formatISO } from 'date-fns';
 import type { Request, RequestHandler, Response } from 'express';
 import morgan from 'morgan';
 import { config } from '../config';
@@ -8,7 +9,7 @@ type LogLevel = 'INFO' | 'HTTP' | 'WARN' | 'ERROR' | 'DEBUG' | 'AUDIT';
  * Formats a log line into standard ISO timestamped bracketed format
  */
 const formatLog = (level: LogLevel, message: string, meta?: unknown): string => {
-  const timestamp = new Date().toISOString();
+  const timestamp = formatISO(new Date());
   const metaString = meta ? ` | Meta: ${JSON.stringify(meta)}` : '';
   return `[${timestamp}] [${level}] ${message}${metaString}`;
 };
