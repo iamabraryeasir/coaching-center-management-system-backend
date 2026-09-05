@@ -1152,6 +1152,297 @@
           }
         }
       ]
+    },
+    {
+      "name": "Daily Attendance Tracking",
+      "description": "Endpoints for bulk daily attendance marking, single-record audit-logged corrections, batch attendance statistical sheets, and student attendance self-service summaries.",
+      "item": [
+        {
+          "name": "Mark Bulk Daily Attendance (Admin or Authorized Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.records && jsonData.data.records.length > 0) {",
+                  "    pm.environment.set('attendanceId', jsonData.data.records[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"studentId\": \"{{targetUserId}}\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On time\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/batches/{{batchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "batches", "{{batchId}}"]
+            },
+            "description": "Protected: Marks or updates daily attendance in bulk for enrolled students in a batch with transactional integrity and audit logging."
+          }
+        },
+        {
+          "name": "Get Batch Attendance Sheet (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/batches/{{batchId}}?date=2026-09-05&page=1&limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "batches", "{{batchId}}"],
+              "query": [
+                { "key": "date", "value": "2026-09-05" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "50" }
+              ]
+            },
+            "description": "Protected: Retrieves paginated attendance records and aggregated statistics (present/absent/late counts & attendance rate) for a batch on a specific date or date range."
+          }
+        },
+        {
+          "name": "Update Single Attendance Record (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"LATE\",\n  \"remarks\": \"Arrived 15 minutes late with prior notice\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/{{attendanceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "{{attendanceId}}"]
+            },
+            "description": "Protected: Updates single attendance record with audit trail logging prior and new status."
+          }
+        },
+        {
+          "name": "Get Student Attendance History (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/students/{{targetUserId}}?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "students", "{{targetUserId}}"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Protected: Retrieves full attendance history and overall attendance percentage for a specific student across all batches."
+          }
+        },
+        {
+          "name": "Get My Attendance Summary (Authenticated Student)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/my/summary?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "my", "summary"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Protected: Student self-service endpoint to view their own attendance history and aggregate attendance rate."
+          }
+        },
+        {
+          "name": "Teacher Self Check-In (Teacher Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.environment.set('teacherAttendanceId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"Checked in from campus office\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/check-in",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "teachers", "check-in"]
+            },
+            "description": "Protected: Teacher records their own attendance check-in for the current calendar date."
+          }
+        },
+        {
+          "name": "Get My Teacher Attendance Summary (Teacher Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/my/summary?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "teachers", "my", "summary"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Protected: Teacher retrieves their own attendance history and aggregate statistics."
+          }
+        },
+        {
+          "name": "Mark Bulk Teacher Attendance (Admin or Authorized Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.records && jsonData.data.records.length > 0) {",
+                  "    pm.environment.set('teacherAttendanceId', jsonData.data.records[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"teacherId\": \"{{teacherUserId}}\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On campus full day\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "teachers", "bulk"]
+            },
+            "description": "Protected: Admin or Authorized Teacher marks daily faculty attendance in bulk with transactional integrity and audit logging."
+          }
+        },
+        {
+          "name": "Get Teacher Attendance Sheet (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers?date=2026-09-05&page=1&limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "teachers"],
+              "query": [
+                { "key": "date", "value": "2026-09-05" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "50" }
+              ]
+            },
+            "description": "Protected: Retrieves paginated teacher attendance records and aggregate statistics (present, absent, late, leave counts & attendance rate)."
+          }
+        },
+        {
+          "name": "Get Specific Teacher Attendance Summary (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/{{teacherUserId}}/summary?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "teachers", "{{teacherUserId}}", "summary"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Protected: Retrieves full attendance history and statistics for a specific teacher."
+          }
+        },
+        {
+          "name": "Update Single Teacher Attendance Record (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"LEAVE\",\n  \"remarks\": \"Approved personal leave with prior notice\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/{{teacherAttendanceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "teachers", "{{teacherAttendanceId}}"]
+            },
+            "description": "Protected: Updates single teacher attendance record with audit trail logging prior and new status."
+          }
+        }
+      ]
     }
   ]
 }

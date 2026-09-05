@@ -13,18 +13,20 @@ model User {
   deletedAt DateTime? // Universal soft delete
 
   // Profiles & Auth
-  adminProfile       AdminProfile?
-  studentProfile     StudentProfile?
-  teacherProfile     TeacherProfile?
-  teacherPermissions TeacherPermission[]
-  sessions           Session[]
-  auditLogs          AuditLog[]
-  teacherRoutines    ClassRoutine[]       @relation("TeacherRoutines")
-  enrollments        Enrollment[]         @relation("StudentEnrollments")
-  studentAttendance  AttendanceRecord[]   @relation("StudentAttendance")
-  markedAttendance   AttendanceRecord[]   @relation("MarkedAttendance")
-  examResults        ExamResult[]         @relation("StudentExamResults")
-  payments           PaymentTransaction[] @relation("StudentPayments")
+  adminProfile             AdminProfile?
+  studentProfile           StudentProfile?
+  teacherProfile           TeacherProfile?
+  teacherPermissions       TeacherPermission[]
+  sessions                 Session[]
+  auditLogs                AuditLog[]
+  teacherRoutines          ClassRoutine[]            @relation("TeacherRoutines")
+  enrollments              Enrollment[]              @relation("StudentEnrollments")
+  studentAttendance        AttendanceRecord[]        @relation("StudentAttendance")
+  markedAttendance         AttendanceRecord[]        @relation("MarkedAttendance")
+  teacherAttendanceRecords TeacherAttendanceRecord[] @relation("TeacherAttendance")
+  markedTeacherAttendance  TeacherAttendanceRecord[] @relation("MarkedTeacherAttendance")
+  examResults              ExamResult[]              @relation("StudentExamResults")
+  payments                 PaymentTransaction[]      @relation("StudentPayments")
 
   @@index([role])
   @@index([status])

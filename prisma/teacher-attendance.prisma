@@ -1,0 +1,22 @@
+model TeacherAttendanceRecord {
+  id          String           @id @default(uuid())
+  teacherId   String // The Teacher whose attendance is recorded
+  markedById  String // The Admin, Authorized Teacher, or Self
+  date        DateTime         @db.Date // Strictly calendar date (YYYY-MM-DD)
+  status      AttendanceStatus @default(PRESENT)
+  checkInTime DateTime? // Exact check-in timestamp
+  remarks     String? // Optional note or excuse
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  teacher  User @relation("TeacherAttendance", fields: [teacherId], references: [id], onDelete: Cascade)
+  markedBy User @relation("MarkedTeacherAttendance", fields: [markedById], references: [id])
+
+  // Constraints & Indexes
+  @@unique([teacherId, date]) // 1 record per teacher per day
+  @@index([teacherId])
+  @@index([date])
+  @@index([status])
+  @@map("teacher_attendance_records")
+}

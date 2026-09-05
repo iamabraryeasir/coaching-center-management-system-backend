@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { getYear } from 'date-fns';
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 import { config } from '../config';
@@ -45,7 +46,7 @@ export const sendEmail = async <T extends Record<string, unknown> = Record<strin
   // Render the EJS template into styled HTML
   const html = await ejs.renderFile(templatePath, {
     ...data,
-    year: data.year || new Date().getFullYear(),
+    year: data.year || getYear(new Date()),
   });
 
   // Development Fallback: If SMTP credentials are not configured, print to terminal
@@ -90,7 +91,7 @@ export const sendPasswordResetEmail = async (
     data: {
       name,
       resetUrl,
-      year: new Date().getFullYear(),
+      year: getYear(new Date()),
     },
     text: `Hello ${name},\n\nWe received a request to reset your password. Use the link below to choose a new password:\n\n${resetUrl}\n\nThis link is valid for 15 minutes.\n\nIf you did not make this request, please ignore this email.`,
   });

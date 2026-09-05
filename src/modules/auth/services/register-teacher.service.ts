@@ -1,5 +1,6 @@
 import { type Permission, Role, UserStatus } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { parseISO } from 'date-fns';
 import { config, prisma } from '../../../config';
 import { ApiError, logger } from '../../../utils';
 import type {
@@ -60,7 +61,7 @@ export const registerTeacherAccount = async (
             designation: payload.designation.trim(),
             qualification: payload.qualification.trim(),
             specialization: payload.specialization.trim(),
-            ...(payload.joiningDate ? { joiningDate: new Date(payload.joiningDate) } : {}),
+            ...(payload.joiningDate ? { joiningDate: parseISO(payload.joiningDate) } : {}),
           },
         },
         ...(payload.permissions && payload.permissions.length > 0

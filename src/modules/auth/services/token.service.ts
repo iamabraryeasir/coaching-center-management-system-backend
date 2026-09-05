@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { UserStatus } from '@prisma/client';
+import { addDays } from 'date-fns';
 import { prisma } from '../../../config';
 import {
   ApiError,
@@ -58,7 +59,7 @@ export const refreshUserTokens = async (
   const expiresIn = getAccessTokenExpiresInSeconds();
 
   const newRefreshTokenHash = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const expiresAt = addDays(new Date(), 30);
   const sessionUserAgent = formatSessionUserAgent(metadata, metadata.deviceName, metadata.platform);
 
   await prisma.session.create({

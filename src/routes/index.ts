@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { authRouter, batchRouter, institutionRouter, routineRouter, userRouter } from '../modules';
+import {
+  attendanceRouter,
+  authRouter,
+  batchRouter,
+  institutionRouter,
+  routineRouter,
+  userRouter,
+} from '../modules';
 import { sendResponse } from '../utils';
 
 const rootRouter: Router = Router();
@@ -16,6 +23,7 @@ rootRouter.get('/health', (_req, res) => {
   });
 });
 
+rootRouter.use('/attendance', attendanceRouter);
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/batches', batchRouter);
 rootRouter.use('/institution', institutionRouter);

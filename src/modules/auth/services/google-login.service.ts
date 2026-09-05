@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { Role, UserStatus } from '@prisma/client';
+import { addDays } from 'date-fns';
 import { OAuth2Client } from 'google-auth-library';
 import { config, prisma } from '../../../config';
 import {
@@ -150,7 +151,7 @@ export const loginWithGoogle = async (
   const expiresIn = getAccessTokenExpiresInSeconds();
 
   const refreshTokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+  const expiresAt = addDays(new Date(), 30); // 30 days
 
   await prisma.session.create({
     data: {

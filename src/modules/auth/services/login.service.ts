@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { Role, UserStatus } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
+import { addDays } from 'date-fns';
 import { prisma } from '../../../config';
 import {
   ApiError,
@@ -85,7 +86,7 @@ export const loginUser = async (
   const expiresIn = getAccessTokenExpiresInSeconds();
 
   const refreshTokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+  const expiresAt = addDays(new Date(), 30); // 30 days
 
   // Store session in DB for active session management and instant revocation
   await prisma.session.create({
