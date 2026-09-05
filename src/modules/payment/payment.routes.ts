@@ -18,11 +18,11 @@ const router = Router();
 router.post('/webhook', paymentController.handleStripeWebhook);
 
 /**
- * Stripe Online Checkout Session (Student / Admin)
+ * Stripe Online Checkout Session (Student Only)
  */
 router.post(
   '/create-checkout-session',
-  checkAuth(Role.STUDENT, Role.ADMIN),
+  checkAuth(Role.STUDENT),
   validateRequest(createCheckoutSessionSchema),
   paymentController.createCheckoutSession,
 );
