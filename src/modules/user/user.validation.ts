@@ -71,13 +71,13 @@ export const getUsersQuerySchema = z.object({
 
 export const userIdParamSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Valid user ID is required'),
+    id: z.uuid('Valid user ID is required'),
   }),
 });
 
 export const updateUserStatusSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Valid user ID is required'),
+    id: z.uuid('Valid user ID is required'),
   }),
   body: z.object({
     status: z.enum(UserStatus, {

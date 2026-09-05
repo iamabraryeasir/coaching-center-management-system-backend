@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authRouter, institutionRouter, userRouter } from '../modules';
+import { authRouter, batchRouter, institutionRouter, userRouter } from '../modules';
 import { sendResponse } from '../utils';
 
 const rootRouter: Router = Router();
@@ -17,6 +17,7 @@ rootRouter.get('/health', (_req, res) => {
 });
 
 rootRouter.use('/auth', authRouter);
+rootRouter.use('/batches', batchRouter);
 rootRouter.use('/institution', institutionRouter);
 rootRouter.use('/users', userRouter);
 
