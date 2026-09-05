@@ -939,6 +939,219 @@
           }
         }
       ]
+    },
+    {
+      "name": "Class Routines & Timetable Scheduling",
+      "item": [
+        {
+          "name": "Create Routine Slot (Admin or Authorized Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.id) {",
+                  "        pm.environment.set(\"routineId\", json.data.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchId\": \"{{batchId}}\",\n  \"dayOfWeek\": \"SATURDAY\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:30\",\n  \"subject\": \"Higher Mathematics\",\n  \"room\": \"Room 101\",\n  \"teacherId\": \"{{teacherUserId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines"]
+            },
+            "description": "Protected: Admin or Teacher with MANAGE_ROUTINES creates a class routine slot with room, teacher, and batch conflict validation."
+          }
+        },
+        {
+          "name": "Get All Routines (QueryBuilder)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.length > 0) {",
+                  "        pm.environment.set(\"routineId\", json.data[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines?page=1&limit=10&search=&batchId={{batchId}}&dayOfWeek=SATURDAY&room=&subject=&sortBy=startTime&sortOrder=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number (1-indexed)" },
+                { "key": "limit", "value": "10", "description": "Items per page (max 100)" },
+                { "key": "search", "value": "", "description": "Search subject, room, teacher name, or batch name" },
+                { "key": "batchId", "value": "{{batchId}}", "description": "Filter by batch ID" },
+                { "key": "dayOfWeek", "value": "SATURDAY", "description": "Filter by day of week" },
+                { "key": "room", "value": "", "description": "Filter by room" },
+                { "key": "subject", "value": "", "description": "Filter by subject" },
+                { "key": "sortBy", "value": "startTime", "description": "Sort field" },
+                { "key": "sortOrder", "value": "asc", "description": "Sort order: asc or desc" }
+              ]
+            },
+            "description": "Protected: Authenticated user lists routine slots with universal QueryBuilder search, filters, and pagination."
+          }
+        },
+        {
+          "name": "Get Routine Slot by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/{{routineId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "{{routineId}}"]
+            },
+            "description": "Protected: Retrieves single routine slot details with assigned faculty and batch metadata."
+          }
+        },
+        {
+          "name": "Get Batch Timetable (Day-Wise Grouped)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/batch/{{batchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "batch", "{{batchId}}"]
+            },
+            "description": "Protected: Retrieves complete day-grouped weekly schedule (SATURDAY through FRIDAY) for a specific batch."
+          }
+        },
+        {
+          "name": "Get Teacher Teaching Schedule",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/teacher/{{teacherUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "teacher", "{{teacherUserId}}"]
+            },
+            "description": "Protected: Administrator or Teacher retrieves full teaching schedule for a specific teacher."
+          }
+        },
+        {
+          "name": "Get My Teaching Schedule (Teacher Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/my/teacher-schedule",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "my", "teacher-schedule"]
+            },
+            "description": "Protected: Authenticated teacher retrieves their personal weekly teaching schedule grouped by day."
+          }
+        },
+        {
+          "name": "Get My Class Timetable (Student Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/my/student-schedule",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "my", "student-schedule"]
+            },
+            "description": "Protected: Authenticated student retrieves aggregated weekly class timetable across all their active batch enrollments."
+          }
+        },
+        {
+          "name": "Update Routine Slot (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"09:30\",\n  \"endTime\": \"11:00\",\n  \"room\": \"Room 102\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/{{routineId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "{{routineId}}"]
+            },
+            "description": "Protected: Updates routine slot parameters with conflict validation excluding current slot."
+          }
+        },
+        {
+          "name": "Delete Routine Slot (Admin or Authorized Teacher)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routines/{{routineId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routines", "{{routineId}}"]
+            },
+            "description": "Protected: Deletes routine slot and releases room / teacher assignment."
+          }
+        }
+      ]
     }
   ]
 }
