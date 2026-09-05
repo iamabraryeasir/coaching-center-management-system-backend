@@ -1,6 +1,7 @@
 import { Role } from '@prisma/client';
 import { Router } from 'express';
-import { checkAuth, validateRequest } from '../../middlewares';
+import { checkAuth, singleImageUpload, validateRequest } from '../../middlewares';
+import { uploadController } from '../upload';
 import * as userController from './user.controller';
 import {
   changePasswordSchema,
@@ -14,12 +15,23 @@ const router = Router();
 
 // Self profile & password management (Authenticated users: Student, Teacher, Admin)
 router.get('/me', checkAuth(), userController.getMyProfile);
+
 router.patch(
   '/me',
   checkAuth(),
   validateRequest(updateMyProfileSchema),
   userController.updateMyProfile,
 );
+
+router.patch(
+  '/me/avatar',
+  checkAuth(),
+  singleImageUpload('avatar'),
+  uploadController.uploadMyAvatar,
+);
+
+router.delete('/me/avatar', checkAuth(), uploadController.deleteMyAvatar);
+
 router.patch(
   '/change-password',
   checkAuth(),
@@ -34,18 +46,21 @@ router.get(
   validateRequest(getUsersQuerySchema),
   userController.getAllUsers,
 );
+
 router.get(
   '/:id',
   checkAuth(Role.ADMIN),
   validateRequest(userIdParamSchema),
   userController.getUserById,
 );
+
 router.patch(
   '/:id/status',
   checkAuth(Role.ADMIN),
   validateRequest(updateUserStatusSchema),
   userController.updateUserStatus,
 );
+
 router.delete(
   '/:id',
   checkAuth(Role.ADMIN),

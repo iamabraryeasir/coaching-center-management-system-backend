@@ -7,6 +7,7 @@ import {
   examRouter,
   institutionRouter,
   routineRouter,
+  uploadRouter,
   userRouter,
 } from '../modules';
 import { sendResponse } from '../utils';
@@ -31,6 +32,7 @@ rootRouter.use('/batches', batchRouter);
 rootRouter.use('/exams', examRouter);
 rootRouter.use('/institution', institutionRouter);
 rootRouter.use('/routines', routineRouter);
+rootRouter.use('/uploads', uploadRouter);
 rootRouter.use('/users', userRouter);
 
 export { rootRouter };

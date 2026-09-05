@@ -1695,6 +1695,83 @@
           }
         }
       ]
+    },
+    {
+      "name": "Profile Picture & Media Storage",
+      "description": "Endpoints for profile avatar upload and removal, administrative avatar assignment, and Cloudinary media asset storage.",
+      "item": [
+        {
+          "name": "Upload My Avatar (All Roles)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me", "avatar"]
+            },
+            "description": "Protected: Uploads or replaces the authenticated user's profile avatar on Cloudinary."
+          }
+        },
+        {
+          "name": "Delete My Avatar (All Roles)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me", "avatar"]
+            },
+            "description": "Protected: Deletes the authenticated user's avatar from Cloudinary and clears avatarUrl."
+          }
+        },
+        {
+          "name": "Upload User Avatar by ID (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/users/{{targetUserId}}/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "users", "{{targetUserId}}", "avatar"]
+            },
+            "description": "Protected: Admin assigns or updates the avatar of a specific student or teacher."
+          }
+        }
+      ]
     }
   ]
 }

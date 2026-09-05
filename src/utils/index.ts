@@ -6,3 +6,4 @@ export * from './mail';
 export * from './query-builder';
 export * from './seedData';
 export * from './send-response';
+export * from './storage';
