@@ -1,6 +1,11 @@
 import { EnrollmentStatus, PaymentStatus, Role } from '@prisma/client';
 import { prisma } from '../../../config';
-import { ApiError, logger } from '../../../utils';
+import {
+  ApiError,
+  generateReceiptPdfBuffer,
+  logger,
+  sendPaymentReceiptEmail,
+} from '../../../utils';
 import type { IManualPaymentInput, IReceiptResponse } from '../payment.interface';
 import { generateReceiptNumber } from '../payment.utils';
 
@@ -9,7 +14,6 @@ export const collectManualPaymentService = async (
 ): Promise<IReceiptResponse> => {
   const { studentId, batchId, amount, paymentMethod, referenceNumber } = input;
 
-  // 1. Verify student exists and is a STUDENT
   const student = await prisma.user.findFirst({
     where: {
       id: studentId,
@@ -22,7 +26,6 @@ export const collectManualPaymentService = async (
     throw ApiError.notFound('Student not found');
   }
 
-  // 2. Verify batch exists
   const batch = await prisma.batch.findFirst({
     where: {
       id: batchId,
@@ -34,11 +37,9 @@ export const collectManualPaymentService = async (
     throw ApiError.notFound('Batch not found');
   }
 
-  // 3. Atomically record transaction, activate enrollment, and issue receipt
-  return await prisma.$transaction(async (tx) => {
-    const receiptNumber = generateReceiptNumber();
+  const receiptNumber = generateReceiptNumber();
 
-    // A. Create Completed Payment Transaction
+  const receiptResponse = await prisma.$transaction(async (tx) => {
     const transaction = await tx.paymentTransaction.create({
       data: {
         studentId,
@@ -52,7 +53,6 @@ export const collectManualPaymentService = async (
       },
     });
 
-    // B. Activate Student Enrollment in Batch
     await tx.enrollment.upsert({
       where: {
         batchId_studentId: {
@@ -70,7 +70,6 @@ export const collectManualPaymentService = async (
       },
     });
 
-    // C. Create Receipt
     const receipt = await tx.receipt.create({
       data: {
         transactionId: transaction.id,
@@ -79,7 +78,6 @@ export const collectManualPaymentService = async (
       },
     });
 
-    // D. Structured Audit Log
     logger.audit('MANUAL_PAYMENT_COLLECTED', {
       transactionId: transaction.id,
       receiptNumber,
@@ -116,4 +114,37 @@ export const collectManualPaymentService = async (
       downloadUrl: receipt.downloadUrl,
     };
   });
+
+  // Asynchronous in-memory PDF generation & email dispatch (Zero Cloud Storage)
+  generateReceiptPdfBuffer({
+    receiptNumber: receiptResponse.receiptNumber,
+    issuedAt: receiptResponse.issuedAt,
+    paidAt: receiptResponse.paidAt,
+    amount: receiptResponse.amount,
+    currency: receiptResponse.currency,
+    paymentMethod: receiptResponse.paymentMethod,
+    status: receiptResponse.status,
+    transactionId: receiptResponse.transactionId,
+    student: receiptResponse.student,
+    batch: receiptResponse.batch,
+  })
+    .then((pdfBuffer) => {
+      return sendPaymentReceiptEmail(
+        student.email,
+        student.name,
+        receiptResponse.receiptNumber,
+        receiptResponse.amount,
+        receiptResponse.currency,
+        batch.name,
+        pdfBuffer,
+      );
+    })
+    .catch((emailErr) => {
+      logger.error(
+        'Failed to generate/dispatch PDF receipt email for manual collection:',
+        emailErr,
+      );
+    });
+
+  return receiptResponse;
 };

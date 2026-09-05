@@ -6,7 +6,9 @@ import { getExamResultsService } from './get-exam-results.service';
 import { getExamsService } from './get-exams.service';
 import { getMyExamResultsService } from './get-my-exam-results.service';
 import { getMySingleExamResultService } from './get-my-single-exam-result.service';
+import { getStudentReportCardPdfService } from './get-student-report-card-pdf.service';
 import { publishExamResultsService } from './publish-exam-results.service';
+import { sendStudentReportCardEmailService } from './send-student-report-card-email.service';
 import { unpublishExamResultsService } from './unpublish-exam-results.service';
 import { updateExamService } from './update-exam.service';
 import { updateStudentMarkService } from './update-student-mark.service';
@@ -24,6 +26,8 @@ export const examService = Object.freeze({
   getExamResults: getExamResultsService,
   getMyExamResults: getMyExamResultsService,
   getMySingleExamResult: getMySingleExamResultService,
+  getStudentReportCardPdf: getStudentReportCardPdfService,
+  sendStudentReportCardEmail: sendStudentReportCardEmailService,
 });
 
 export {
@@ -35,7 +39,9 @@ export {
   getExamsService,
   getMyExamResultsService,
   getMySingleExamResultService,
+  getStudentReportCardPdfService,
   publishExamResultsService,
+  sendStudentReportCardEmailService,
   unpublishExamResultsService,
   updateExamService,
   updateStudentMarkService,

@@ -8,6 +8,7 @@ import {
   examIdParamSchema,
   getExamsQuerySchema,
   getStudentReportsQuerySchema,
+  studentExamParamSchema,
   updateExamSchema,
   updateStudentMarkSchema,
 } from './exam.validation';
@@ -46,6 +47,23 @@ router.get(
   checkAuth(Role.ADMIN, Role.TEACHER, Role.STUDENT),
   validateRequest(getExamsQuerySchema),
   examController.getExams,
+);
+
+/**
+ * PDF Report Card & Email Dispatch
+ */
+router.get(
+  '/:id/students/:studentId/report-card/pdf',
+  checkAuth(Role.ADMIN, Role.TEACHER, Role.STUDENT),
+  validateRequest(studentExamParamSchema),
+  examController.getStudentReportCardPdf,
+);
+
+router.post(
+  '/:id/students/:studentId/send-report-card',
+  checkAuth(Role.ADMIN, Role.TEACHER),
+  validateRequest(studentExamParamSchema),
+  examController.sendStudentReportCardEmail,
 );
 
 /**

@@ -12,14 +12,8 @@ import {
 
 const router = Router();
 
-/**
- * Stripe Cryptographic Webhook (Unprotected by JWT, verified via Stripe Webhook Signature)
- */
 router.post('/webhook', paymentController.handleStripeWebhook);
 
-/**
- * Stripe Online Checkout Session (Student Only)
- */
 router.post(
   '/create-checkout-session',
   checkAuth(Role.STUDENT),
@@ -27,9 +21,6 @@ router.post(
   paymentController.createCheckoutSession,
 );
 
-/**
- * Manual Fee Payment Collection (Admin Only)
- */
 router.post(
   '/manual-collect',
   checkAuth(Role.ADMIN),
@@ -37,9 +28,6 @@ router.post(
   paymentController.collectManualPayment,
 );
 
-/**
- * Authenticated Student Payment History (Student Only)
- */
 router.get(
   '/my',
   checkAuth(Role.STUDENT),
@@ -47,14 +35,22 @@ router.get(
   paymentController.getMyPayments,
 );
 
-/**
- * Executive Financial Dashboard & Revenue Statistics (Admin Only)
- */
 router.get('/stats', checkAuth(Role.ADMIN), paymentController.getPaymentStats);
 
-/**
- * Receipt Lookup by Transaction ID (Admin / Student owner)
- */
+router.get(
+  '/receipts/:receiptId/pdf',
+  checkAuth(Role.ADMIN, Role.STUDENT),
+  validateRequest(receiptIdParamSchema),
+  paymentController.getReceiptPdf,
+);
+
+router.get(
+  '/receipts/by-transaction/:transactionId/pdf',
+  checkAuth(Role.ADMIN, Role.STUDENT),
+  validateRequest(transactionIdParamSchema),
+  paymentController.getReceiptPdfByTransactionId,
+);
+
 router.get(
   '/receipts/by-transaction/:transactionId',
   checkAuth(Role.ADMIN, Role.STUDENT),
@@ -62,9 +58,6 @@ router.get(
   paymentController.getReceiptByTransactionId,
 );
 
-/**
- * Receipt Lookup by Receipt ID (Admin / Student owner)
- */
 router.get(
   '/receipts/:receiptId',
   checkAuth(Role.ADMIN, Role.STUDENT),
@@ -72,9 +65,6 @@ router.get(
   paymentController.getReceiptById,
 );
 
-/**
- * All System Payment Transactions Explorer (Admin Only)
- */
 router.get(
   '/',
   checkAuth(Role.ADMIN),

@@ -1,7 +1,13 @@
 import { EnrollmentStatus, PaymentStatus } from '@prisma/client';
 import type Stripe from 'stripe';
 import { config, prisma } from '../../../config';
-import { ApiError, logger, stripe } from '../../../utils';
+import {
+  ApiError,
+  generateReceiptPdfBuffer,
+  logger,
+  sendPaymentReceiptEmail,
+  stripe,
+} from '../../../utils';
 import { generateReceiptNumber } from '../payment.utils';
 
 export const handleStripeWebhookService = async (
@@ -47,22 +53,18 @@ export const handleStripeWebhookService = async (
   return { received: true };
 };
 
-/**
- * Handles successful Stripe Checkout Session completions idempotently
- */
 const processCheckoutSessionCompleted = async (session: Stripe.Checkout.Session): Promise<void> => {
   const sessionId = session.id;
   const transactionId = session.metadata?.transactionId;
   const paymentIntentId =
     typeof session.payment_intent === 'string' ? session.payment_intent : null;
 
-  // 1. Locate existing transaction record
   const transaction = await prisma.paymentTransaction.findFirst({
     where: {
       OR: [{ id: transactionId }, { stripeSessionId: sessionId }],
     },
     include: {
-      student: { select: { id: true, name: true, email: true } },
+      student: { select: { id: true, name: true, email: true, phone: true } },
       batch: { select: { id: true, name: true, fee: true } },
       receipt: true,
     },
@@ -73,15 +75,14 @@ const processCheckoutSessionCompleted = async (session: Stripe.Checkout.Session)
     return;
   }
 
-  // 2. Idempotency check: If already completed, do not duplicate actions
   if (transaction.status === PaymentStatus.COMPLETED) {
     logger.info(`PaymentTransaction ${transaction.id} is already completed. Skipping.`);
     return;
   }
 
-  // 3. Atomically update transaction, activate enrollment, and issue receipt
+  let assignedReceiptNumber = transaction.receipt?.receiptNumber;
+
   await prisma.$transaction(async (tx) => {
-    // A. Update Payment Transaction
     const updatedTransaction = await tx.paymentTransaction.update({
       where: { id: transaction.id },
       data: {
@@ -91,7 +92,6 @@ const processCheckoutSessionCompleted = async (session: Stripe.Checkout.Session)
       },
     });
 
-    // B. Activate Student Batch Enrollment (if not already active)
     await tx.enrollment.upsert({
       where: {
         batchId_studentId: {
@@ -109,20 +109,17 @@ const processCheckoutSessionCompleted = async (session: Stripe.Checkout.Session)
       },
     });
 
-    // C. Generate Immutable Receipt
-    let receiptNumber = transaction.receipt?.receiptNumber;
     if (!transaction.receipt) {
-      receiptNumber = generateReceiptNumber();
+      assignedReceiptNumber = generateReceiptNumber();
       await tx.receipt.create({
         data: {
           transactionId: transaction.id,
-          receiptNumber,
+          receiptNumber: assignedReceiptNumber,
           issuedAt: new Date(),
         },
       });
     }
 
-    // D. Audit Log
     logger.audit('PAYMENT_COMPLETED', {
       transactionId: updatedTransaction.id,
       stripeSessionId: sessionId,
@@ -131,22 +128,47 @@ const processCheckoutSessionCompleted = async (session: Stripe.Checkout.Session)
       batchId: transaction.batchId,
       batchName: transaction.batch.name,
       amount: Number(transaction.amount),
-      receiptNumber,
+      receiptNumber: assignedReceiptNumber,
     });
   });
 
   logger.info(
-    'Successfully processed payment completion for transaction: ' +
-      transaction.id +
-      ' (Student: ' +
-      transaction.student.email +
-      ')',
+    `Successfully processed payment completion for transaction: ${transaction.id} (Student: ${transaction.student.email})`,
   );
+
+  // Generate In-Memory PDF Receipt & Dispatch Automated Email (Zero Cloud Storage)
+  try {
+    const pdfBuffer = await generateReceiptPdfBuffer({
+      receiptNumber: assignedReceiptNumber || 'REC-CONFIRMED',
+      issuedAt: new Date(),
+      paidAt: new Date(),
+      amount: Number(transaction.amount),
+      currency: transaction.currency,
+      paymentMethod: transaction.paymentMethod,
+      status: PaymentStatus.COMPLETED,
+      transactionId: transaction.id,
+      student: transaction.student,
+      batch: {
+        id: transaction.batch.id,
+        name: transaction.batch.name,
+        fee: Number(transaction.batch.fee),
+      },
+    });
+
+    await sendPaymentReceiptEmail(
+      transaction.student.email,
+      transaction.student.name,
+      assignedReceiptNumber || 'REC-CONFIRMED',
+      Number(transaction.amount),
+      transaction.currency,
+      transaction.batch.name,
+      pdfBuffer,
+    );
+  } catch (emailError) {
+    logger.error('Failed to generate/email PDF receipt for online checkout:', emailError);
+  }
 };
 
-/**
- * Handles failed Stripe Payment Intents
- */
 const processPaymentIntentFailed = async (paymentIntent: Stripe.PaymentIntent): Promise<void> => {
   const transaction = await prisma.paymentTransaction.findFirst({
     where: {
@@ -161,11 +183,7 @@ const processPaymentIntentFailed = async (paymentIntent: Stripe.PaymentIntent): 
     });
 
     logger.warn(
-      'Payment failed for transaction ' +
-        transaction.id +
-        ' (Stripe PaymentIntent: ' +
-        paymentIntent.id +
-        ')',
+      `Payment failed for transaction ${transaction.id} (Stripe PaymentIntent: ${paymentIntent.id})`,
     );
   }
 };

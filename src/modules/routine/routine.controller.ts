@@ -1,6 +1,6 @@
 import type { Role } from '@prisma/client';
 import type { Request, Response } from 'express';
-import { catchAsync, sendResponse } from '../../utils';
+import { catchAsync, sendResponse, streamPdf } from '../../utils';
 import { routineService } from './services';
 
 export const createRoutine = catchAsync(async (req: Request, res: Response): Promise<void> => {
@@ -11,20 +11,20 @@ export const createRoutine = catchAsync(async (req: Request, res: Response): Pro
   sendResponse(res, {
     statusCode: 201,
     success: true,
-    message: 'Class routine slot created successfully',
+    message: 'Class routine slot scheduled successfully',
     data: routine,
   });
 });
 
 export const getAllRoutines = catchAsync(async (req: Request, res: Response): Promise<void> => {
-  const { meta, data } = await routineService.getAllRoutines(req.query);
+  const result = await routineService.getAllRoutines(req.query);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Class routines retrieved successfully',
-    meta,
-    data,
+    message: 'Routines retrieved successfully',
+    meta: result.meta,
+    data: result.data,
   });
 });
 
@@ -35,7 +35,7 @@ export const getRoutineById = catchAsync(async (req: Request, res: Response): Pr
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Class routine slot details retrieved successfully',
+    message: 'Routine slot details retrieved successfully',
     data: routine,
   });
 });
@@ -120,6 +120,14 @@ export const deleteRoutine = catchAsync(async (req: Request, res: Response): Pro
   });
 });
 
+export const getBatchRoutinePdf = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const batchId = req.params.batchId as string;
+  const isDownload = req.query.download === 'true';
+
+  const { buffer, filename } = await routineService.getBatchRoutinePdf(batchId);
+  streamPdf(res, buffer, filename, isDownload);
+});
+
 export const routineController = Object.freeze({
   createRoutine,
   getAllRoutines,
@@ -130,4 +138,5 @@ export const routineController = Object.freeze({
   getMyStudentSchedule,
   updateRoutine,
   deleteRoutine,
+  getBatchRoutinePdf,
 });

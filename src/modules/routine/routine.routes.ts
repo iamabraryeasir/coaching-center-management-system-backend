@@ -21,8 +21,15 @@ router.get('/my/student-schedule', checkAuth(Role.STUDENT), routineController.ge
 router.get('/my/teacher-schedule', checkAuth(Role.TEACHER), routineController.getMyTeacherSchedule);
 
 /**
- * Targeted Timetables
+ * Targeted Timetables & PDF Generation
  */
+router.get(
+  '/batches/:batchId/pdf',
+  checkAuth(Role.ADMIN, Role.TEACHER, Role.STUDENT),
+  validateRequest(routineBatchIdParamSchema),
+  routineController.getBatchRoutinePdf,
+);
+
 router.get(
   '/batch/:batchId',
   checkAuth(),

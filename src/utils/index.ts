@@ -3,6 +3,7 @@ export * from './catch-async';
 export * from './jwt';
 export * from './logger';
 export * from './mail';
+export * from './pdf';
 export * from './query-builder';
 export * from './seedData';
 export * from './send-response';

@@ -137,6 +137,13 @@ export const examIdParamSchema = z.object({
   }),
 });
 
+export const studentExamParamSchema = z.object({
+  params: z.object({
+    id: z.string().uuid('Invalid exam ID format'),
+    studentId: z.string().uuid('Invalid student ID format'),
+  }),
+});
+
 export const getExamsQuerySchema = z.object({
   query: z.object({
     page: z.string().regex(/^\d+$/, 'Page must be a positive integer').transform(Number).optional(),

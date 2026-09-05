@@ -1,6 +1,6 @@
 import type { Role } from '@prisma/client';
 import type { Request, Response } from 'express';
-import { catchAsync, sendResponse } from '../../utils';
+import { catchAsync, sendResponse, streamPdf } from '../../utils';
 import { paymentService } from './services';
 
 export const createCheckoutSession = catchAsync(
@@ -112,6 +112,28 @@ export const getReceiptByTransactionId = catchAsync(
   },
 );
 
+export const getReceiptPdf = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const receiptId = req.params.receiptId as string;
+  const userId = req.user?.userId as string;
+  const role = req.user?.role as Role;
+  const isDownload = req.query.download === 'true';
+
+  const { buffer, filename } = await paymentService.getReceiptPdf(receiptId, userId, role);
+  streamPdf(res, buffer, filename, isDownload);
+});
+
+export const getReceiptPdfByTransactionId = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const transactionId = req.params.transactionId as string;
+    const userId = req.user?.userId as string;
+    const role = req.user?.role as Role;
+    const isDownload = req.query.download === 'true';
+
+    const { buffer, filename } = await paymentService.getReceiptPdf(transactionId, userId, role);
+    streamPdf(res, buffer, filename, isDownload);
+  },
+);
+
 export const paymentController = Object.freeze({
   createCheckoutSession,
   handleStripeWebhook,
@@ -121,4 +143,6 @@ export const paymentController = Object.freeze({
   getPaymentStats,
   getReceiptById,
   getReceiptByTransactionId,
+  getReceiptPdf,
+  getReceiptPdfByTransactionId,
 });
