@@ -21,29 +21,35 @@ async function main(): Promise<void> {
   logger.info('🚀 Starting Idempotent Database Seeding Pipeline...');
   logger.info('================================================================');
 
-  const defaultPassword = await bcrypt.hash('Admin@123456', 10);
-  const studentPassword = await bcrypt.hash('Student@123456', 10);
-  const teacherPassword = await bcrypt.hash('Teacher@123456', 10);
+  const adminPasswordHash = await bcrypt.hash(
+    config.ADMIN_PASSWORD || 'Admin@123456',
+    config.BCRYPT_SALT_ROUNDS || 10,
+  );
+  const studentPassword = await bcrypt.hash('Student@123456', config.BCRYPT_SALT_ROUNDS || 10);
+  const teacherPassword = await bcrypt.hash('Teacher@123456', config.BCRYPT_SALT_ROUNDS || 10);
 
   // 1. Seed System Admin
   logger.info('1. Bootstrapping Admin User & Institution Profile...');
-  const adminEmail = config.ADMIN_EMAIL || 'admin@apexacademy.edu';
+  const adminEmail = config.ADMIN_EMAIL || 'admin@coaching.com';
+  const adminName = config.ADMIN_NAME || 'System Administrator';
+  const adminPhone = config.ADMIN_PHONE || '+8801700000001';
+
   const adminUser = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
-      name: 'Super Administrator',
-      phone: '+8801700000001',
+      name: adminName,
+      phone: adminPhone,
       role: Role.ADMIN,
       status: UserStatus.ACTIVE,
-      password: defaultPassword,
+      password: adminPasswordHash,
     },
     create: {
       email: adminEmail,
-      name: 'Super Administrator',
-      phone: '+8801700000001',
+      name: adminName,
+      phone: adminPhone,
       role: Role.ADMIN,
       status: UserStatus.ACTIVE,
-      password: defaultPassword,
+      password: adminPasswordHash,
       adminProfile: {
         create: {
           institutionName: config.ADMIN_INSTITUTION_NAME,

@@ -537,18 +537,25 @@ backend/
 
 ## 👥 Pre-Seeded Demo Credentials
 
-Executing `npm run prisma:seed` populates the database with the following demo accounts:
+> [!CAUTION]
+> **Production Security Notice**: The credentials listed below are **strictly for local development, automated testing, and evaluation via `npm run prisma:seed`**.
+>
+> - **Never** deploy a production server with default passwords.
+> - **Never** run `npm run prisma:seed` on a live production database.
+> - Configure your own unique, high-entropy administrator credentials in `.env` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`).
 
-| Role                  | Name                | Email                           | Password         | Assigned Permissions / Meta                            |
-| :-------------------- | :------------------ | :------------------------------ | :--------------- | :----------------------------------------------------- |
-| **System Admin**      | Super Administrator | `admin@coaching.com`            | `Admin@123456`   | Full System Governance                                 |
-| **Teacher**           | Dr. Sarah Jenkins   | `sarah.jenkins@apexacademy.edu` | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES` |
-| **Teacher**           | Prof. Alan Walker   | `alan.walker@apexacademy.edu`   | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`                    |
-| **Teacher**           | Ms. Emily Watson    | `emily.watson@apexacademy.edu`  | `Teacher@123456` | `MANAGE_ATTENDANCE`                                    |
-| **Student**           | Rahim Ahmed         | `rahim.ahmed@student.apex.edu`  | `Student@123456` | HSC Class 12 (Active, Enrolled)                        |
-| **Student**           | Nusrat Jahan        | `nusrat.jahan@student.apex.edu` | `Student@123456` | HSC Class 12 (Active, Enrolled)                        |
-| **Student**           | Tanvir Hasan        | `tanvir.hasan@student.apex.edu` | `Student@123456` | Class 10 (Active, Enrolled)                            |
-| **Student (Pending)** | Sadia Afrin         | `sadia.afrin@student.apex.edu`  | `Student@123456` | Awaiting Admin Approval                                |
+Executing `npm run prisma:seed` in your local environment populates the database with the following demo accounts (Admin credentials automatically inherit from your `.env`):
+
+| Role                  | Name               | Email                           | Password         | Assigned Permissions / Meta                            |
+| :-------------------- | :----------------- | :------------------------------ | :--------------- | :----------------------------------------------------- |
+| **System Admin**      | Configured in .env | _(Inherited from `.env`)_       | _(From `.env`)_  | Full System Governance                                 |
+| **Teacher**           | Dr. Sarah Jenkins  | `sarah.jenkins@apexacademy.edu` | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES` |
+| **Teacher**           | Prof. Alan Walker  | `alan.walker@apexacademy.edu`   | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`                    |
+| **Teacher**           | Ms. Emily Watson   | `emily.watson@apexacademy.edu`  | `Teacher@123456` | `MANAGE_ATTENDANCE`                                    |
+| **Student**           | Rahim Ahmed        | `rahim.ahmed@student.apex.edu`  | `Student@123456` | HSC Class 12 (Active, Enrolled)                        |
+| **Student**           | Nusrat Jahan       | `nusrat.jahan@student.apex.edu` | `Student@123456` | HSC Class 12 (Active, Enrolled)                        |
+| **Student**           | Tanvir Hasan       | `tanvir.hasan@student.apex.edu` | `Student@123456` | Class 10 (Active, Enrolled)                            |
+| **Student (Pending)** | Sadia Afrin        | `sadia.afrin@student.apex.edu`  | `Student@123456` | Awaiting Admin Approval                                |
 
 ---
 
@@ -569,17 +576,17 @@ JWT_ACCESS_SECRET="your-super-secret-access-key-minimum-32-chars-long"
 JWT_ACCESS_EXPIRES_IN="15m"
 JWT_REFRESH_SECRET="your-super-secret-refresh-key-minimum-32-chars-long"
 JWT_REFRESH_EXPIRES_IN="30d"
-BCRYPT_SALT_ROUNDS=10
+BCRYPT_SALT_ROUNDS=12
 
-# Root Admin Startup Bootstrapper
-ADMIN_NAME="Super Administrator"
-ADMIN_EMAIL="admin@coaching.com"
-ADMIN_PHONE="+8801700000001"
-ADMIN_PASSWORD="Admin@123456"
-ADMIN_INSTITUTION_NAME="Apex Science & Academic Academy"
-ADMIN_INSTITUTION_ADDRESS="Level 4, Science Tower, Dhanmondi 27, Dhaka-1209"
+# Root Admin Startup Bootstrapper (Set your own secure credentials)
+ADMIN_NAME="System Administrator"
+ADMIN_EMAIL="admin@yourdomain.com"
+ADMIN_PHONE="+8801700000000"
+ADMIN_PASSWORD="ReplaceWithYourStrongPassword123!"
+ADMIN_INSTITUTION_NAME="Radiant Way Academy"
+ADMIN_INSTITUTION_ADDRESS="House 12, Road 5, Dhanmondi, Dhaka"
 ADMIN_INSTITUTION_PHONE="+880 1700-000000"
-ADMIN_INSTITUTION_EMAIL="info@apexacademy.edu"
+ADMIN_INSTITUTION_EMAIL="info@yourdomain.com"
 
 # Google Identity Services (GIS) OAuth
 GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
