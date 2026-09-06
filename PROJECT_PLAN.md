@@ -2,7 +2,7 @@
 
 > **Version**: 2.5.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 88 Verified Endpoints across 14 Modules  
+> **API Standard**: RESTful v1 with 89 Verified Endpoints across 14 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 
 ---
@@ -60,7 +60,7 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
 | **Date & Time**        | date-fns (v4+)                      | Timezone-safe immutable date/time arithmetic and calendar formatting.                                                                                 |
 | **Linter & Formatter** | Biome (v2.5+)                       | Enterprise linter, formatter, and import organizer (`biome.json`).                                                                                    |
 | **Dev & Bundler**      | tsx + tsup                          | Hot reload dev server (`tsx watch`) and esbuild-based production bundler (`tsup`).                                                                    |
-| **Documentation**      | Postman Collection (v2.1)           | Production API testing suite covering 88 endpoints with automated token management.                                                                   |
+| **Documentation**      | Postman Collection (v2.1)           | Production API testing suite covering 89 endpoints (90 runnable requests) with automated token management.                                            |
 
 ---
 
@@ -115,7 +115,7 @@ stateDiagram-v2
 
 ---
 
-## 6. Complete Master API Specification (88 Endpoints across 14 Modules)
+## 6. Complete Master API Specification (89 Endpoints across 14 Modules)
 
 ### 6.1 Health Checks & System Telemetry (2 Endpoints)
 
@@ -229,7 +229,7 @@ stateDiagram-v2
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 6.13 Payments, Fee Collection, Webhooks & Receipt PDF (9 Endpoints)
+### 6.13 Payments, Fee Collection, Webhooks & Receipt PDF (10 Endpoints)
 
 - `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for batch fee.
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
@@ -309,9 +309,9 @@ stateDiagram-v2
 
 | Quality Gate                   | Requirement                           | Actual Status                                        |
 | :----------------------------- | :------------------------------------ | :--------------------------------------------------- |
-| **Biome Linter & Formatter**   | 0 errors, 0 warnings across all files | **PASSED (180 files checked, 0 errors)**             |
+| **Biome Linter & Formatter**   | 0 errors, 0 warnings across all files | **PASSED (182 files checked, 0 errors)**             |
 | **TypeScript Strict Compiler** | 0 type errors (`tsc --noEmit`)        | **PASSED (0 errors)**                                |
-| **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled, 289.88 KB)**    |
+| **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled, 292.21 KB)**    |
 | **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (10/10 stages completed)**                  |
 | **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Receipt, Routine & Report Card verified)** |
-| **Postman Test Suite**         | 88 endpoints with environment         | **PASSED (Coaching_Center_API v2.1 synced)**         |
+| **Postman Test Suite**         | 89 endpoints (90 runnable requests)   | **PASSED (Coaching_Center_API v2.1 synced)**         |

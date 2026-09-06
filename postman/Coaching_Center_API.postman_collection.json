@@ -319,6 +319,68 @@
 						},
 						"description": "Revokes current session or all device sessions."
 					}
+				},
+				{
+					"name": "Logout from All Devices (Authenticated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/logout-all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout-all"
+							]
+						},
+						"description": "Revokes all active login sessions across all devices for the authenticated user and clears current device cookies."
+					},
+					"response": []
+				},
+				{
+					"name": "List Active Login Sessions (Authenticated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/sessions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"sessions"
+							]
+						},
+						"description": "Lists all active, non-revoked login sessions for the authenticated user with IP, device/user agent, created timestamp, and expiration timestamp."
+					},
+					"response": []
 				}
 			]
 		},

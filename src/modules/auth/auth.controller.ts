@@ -108,7 +108,7 @@ export const refreshToken = catchAsync(async (req: Request, res: Response): Prom
 });
 
 /**
- * Terminates active session on current device or across all devices
+ * Terminates active session on current device
  */
 export const logout = catchAsync(async (req: Request, res: Response): Promise<void> => {
   // 1. Primary for Web browsers: automatically sent via HttpOnly cookie
@@ -142,6 +142,49 @@ export const logout = catchAsync(async (req: Request, res: Response): Promise<vo
     success: true,
     message: allDevices ? 'Logged out successfully from all devices' : 'Logged out successfully',
     data: null,
+  });
+});
+
+/**
+ * Terminates all active sessions across all devices for the authenticated user
+ */
+export const logoutAll = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const userId = req.user?.userId as string;
+  const metadata = extractClientMetadata(req);
+  const result = await authService.logoutAllDevices(userId, metadata);
+
+  // Clear cookies from current device
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    secure: config.NODE_ENV === 'production',
+    sameSite: config.NODE_ENV === 'production' ? 'none' : 'lax',
+  });
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: config.NODE_ENV === 'production',
+    sameSite: config.NODE_ENV === 'production' ? 'none' : 'lax',
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: result.message,
+    data: { revokedCount: result.revokedCount },
+  });
+});
+
+/**
+ * Retrieves all active sessions for the authenticated user
+ */
+export const getActiveSessions = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const userId = req.user?.userId as string;
+  const sessions = await authService.getUserSessions(userId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Active login sessions retrieved successfully',
+    data: sessions,
   });
 });
 

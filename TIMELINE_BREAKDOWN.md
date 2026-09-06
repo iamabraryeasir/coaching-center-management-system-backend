@@ -2,20 +2,20 @@
 
 > **Version**: 2.5.0 (Production Verified)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 88 Verified Endpoints across 14 Modules  
+> **API Standard**: RESTful v1 with 89 Verified Endpoints across 14 Modules  
 > **Postman Suite**: Comprehensive Collection (v2.1) + Local Environment
 
 ---
 
 ### 🗓️ High-Level Project Timeline Overview
 
-|  Day  | Focus Area                                            |    Status     | Key Deliverables & Verified Output                                                                                                                                                       |
-| :---: | :---------------------------------------------------- | :-----------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | **Planning, Architecture & Multi-File Prisma Schema** | **COMPLETED** | System specifications, ERD, modular multi-file Prisma 7 schema, PostgreSQL adapter pool, security pipeline, and startup seeder.                                                          |
-| **2** | **Authentication, RBAC, User Profiles & Media**       | **COMPLETED** | Credential auth (RFC 6819 rotating refresh tokens), Google ID token GIS login, student onboarding gate, Cloudinary AI face-gravity avatar cropping, and user CRUD.                       |
-| **3** | **Academic Operations, Routines & Attendance**        | **COMPLETED** | Academic batches, concurrency-safe enrollment transactions, multi-dimensional conflict-free routine engine, and daily student/teacher attendance tracking with audit trails.             |
-| **4** | **Exams, Stripe Payments & Financial Ledger**         | **COMPLETED** | Exam assessments, bulk marks entry, auto-grading & GPA calculation, result publication, real Stripe checkout & cryptographic webhooks, manual fee collection, and receipts.              |
-| **5** | **PDF Subsystem, Email Dispatch, Auditing & Polish**  | **COMPLETED** | Zero Cloud Storage in-memory PDF generators (Receipts, Routines, Report Cards), automated email dispatch with PDF attachments, centralized audit logging, and 88-endpoint Postman suite. |
+|  Day  | Focus Area                                            |    Status     | Key Deliverables & Verified Output                                                                                                                                                      |
+| :---: | :---------------------------------------------------- | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **Planning, Architecture & Multi-File Prisma Schema** | **COMPLETED** | System specifications, ERD, modular multi-file Prisma 7 schema, PostgreSQL adapter pool, security pipeline, and startup seeder.                                                         |
+| **2** | **Authentication, RBAC, User Profiles & Media**       | **COMPLETED** | Credential auth (RFC 6819 rotating refresh tokens), Google ID token GIS login, student onboarding gate, Cloudinary AI face-gravity avatar cropping, and user CRUD.                      |
+| **3** | **Academic Operations, Routines & Attendance**        | **COMPLETED** | Academic batches, concurrency-safe enrollment transactions, multi-dimensional conflict-free routine engine, and daily student/teacher attendance tracking with audit trails.            |
+| **4** | **Exams, Stripe Payments & Financial Ledger**         | **COMPLETED** | Exam assessments, bulk marks entry, auto-grading & GPA calculation, result publication, real Stripe checkout & cryptographic webhooks, manual fee collection, and receipts.             |
+| **5** | **PDF Subsystem, Email Dispatch, Auditing & Polish**  | **COMPLETED** | Zero Cloud Storage in-memory PDF generators (Receipts, Routines, Report Cards), automated email dispatch with PDF attachments, centralized audit logging, and 90-request Postman suite. |
 
 ---
 
@@ -113,15 +113,15 @@
   - Password Reset Email (`sendPasswordResetEmail`)
 - [x] Build Centralized Audit Logging Subsystem (`GET /api/v1/audit-logs`, `GET /audit-logs/stats`, `GET /audit-logs/:id`).
 - [x] Build Comprehensive Idempotent Database Seeder (`prisma/seed.ts` via `npm run prisma:seed`) bootstrapping Admin, Faculty, Batches, Routines, Students, Attendance, Exams, Payments, and Audit Logs.
-- [x] Complete Postman Collection (v2.1) covering **88 verified endpoints** with automated token propagation and environment variables.
-- [x] Pass 100% of Quality Gates:
-  - `npm run check`: **0 errors, 0 warnings (180 files checked)**
+- [x] Complete Postman Collection (v2.1) covering **89 verified endpoints** (90 Postman requests with role personas) with automated token propagation and environment variables.
+- [x] Full test pass:
+  - `npm run check`: **0 errors, 0 warnings (182 files checked)**
   - `npm run typecheck`: **0 errors**
   - `npm run build`: **Production bundle generated (`dist/server.js`)**
 
 ---
 
-## 📚 Master Catalog of All 88 API Endpoints
+## 📚 Master Catalog of All 89 API Endpoints
 
 ### 1. Health & Server Monitoring (2 Endpoints)
 
@@ -259,7 +259,7 @@
 | 75  | `DELETE` | `/api/v1/users/me/avatar`          | Authenticated | Delete personal avatar from Cloudinary                      |
 | 76  | `POST`   | `/api/v1/uploads/users/:id/avatar` | Admin Only    | Upload avatar for specific user by ID                       |
 
-### 13. Payments, Fee Collection, Webhooks & Receipt PDF (9 Endpoints)
+### 13. Payments, Fee Collection, Webhooks & Receipt PDF (10 Endpoints)
 
 |  #  | Method | Route                                                         | Access          | Description                                                        |
 | :-: | :----- | :------------------------------------------------------------ | :-------------- | :----------------------------------------------------------------- |

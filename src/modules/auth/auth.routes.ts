@@ -4,11 +4,13 @@ import { checkAuth, validateRequest } from '../../middlewares';
 import {
   approveStudent,
   forgotPassword,
+  getActiveSessions,
   getPendingStudents,
   googleLogin,
   googleOnboard,
   login,
   logout,
+  logoutAll,
   refreshToken,
   registerStudent,
   registerTeacher,
@@ -92,9 +94,19 @@ authRouter.post('/login', validateRequest(loginSchema), login);
 authRouter.post('/refresh-token', validateRequest(refreshTokenSchema), refreshToken);
 
 /**
- * Logout user
+ * Logout user from current device
  */
 authRouter.post('/logout', validateRequest(logoutSchema), logout);
+
+/**
+ * Revoke all active login sessions across all devices (Protected)
+ */
+authRouter.post('/logout-all', checkAuth(), logoutAll);
+
+/**
+ * List all active login sessions for authenticated user (Protected)
+ */
+authRouter.get('/sessions', checkAuth(), getActiveSessions);
 
 /**
  * Request password recovery email
