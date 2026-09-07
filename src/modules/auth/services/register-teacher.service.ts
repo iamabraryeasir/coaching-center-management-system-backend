@@ -54,6 +54,7 @@ export const registerTeacherAccount = async (
         email: normalizedEmail,
         password: hashedPassword,
         phone: normalizedPhone,
+        gender: payload.gender || null,
         role: Role.TEACHER,
         status: UserStatus.ACTIVE,
         teacherProfile: {

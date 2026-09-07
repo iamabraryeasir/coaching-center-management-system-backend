@@ -1,7 +1,8 @@
-import { PaymentMethod, PaymentStatus, Role } from '@prisma/client';
+import { EnrollmentStatus, PaymentMethod, PaymentStatus, Role } from '@prisma/client';
 import { config, prisma } from '../../../config';
 import { ApiError, ensureStripeConfigured, logger, stripe } from '../../../utils';
 import type { ICheckoutSessionResponse, ICreateCheckoutSessionInput } from '../payment.interface';
+import { formatBillingPeriod } from '../payment.utils';
 
 export const createCheckoutSessionService = async (
   studentId: string,
@@ -9,7 +10,8 @@ export const createCheckoutSessionService = async (
 ): Promise<ICheckoutSessionResponse> => {
   ensureStripeConfigured();
 
-  const { batchId, currency = 'bdt' } = input;
+  const { batchId, billingMonth, billingYear, currency = 'bdt' } = input;
+  const billingPeriod = formatBillingPeriod(billingMonth, billingYear);
 
   // 1. Verify student exists and is active
   const student = await prisma.user.findFirst({
@@ -46,17 +48,25 @@ export const createCheckoutSessionService = async (
     },
   });
 
-  // 4. Check if payment was already completed for this batch
+  if (!enrollment || enrollment.status !== EnrollmentStatus.ENROLLED) {
+    throw ApiError.badRequest('You must be actively enrolled in this batch to pay tuition fees.');
+  }
+
+  // 4. Check if payment was already completed for this specific billing month and year
   const existingCompletedPayment = await prisma.paymentTransaction.findFirst({
     where: {
       studentId,
       batchId,
+      billingMonth,
+      billingYear,
       status: PaymentStatus.COMPLETED,
     },
   });
 
   if (existingCompletedPayment) {
-    throw ApiError.conflict('Payment for this batch has already been completed.');
+    throw ApiError.conflict(
+      `Tuition fee for ${batch.name} (${billingPeriod}) has already been paid.`,
+    );
   }
 
   // 5. Initialize pending transaction in database first to obtain a stable transactionId
@@ -64,11 +74,14 @@ export const createCheckoutSessionService = async (
     data: {
       studentId,
       batchId,
-      enrollmentId: enrollment?.id,
+      enrollmentId: enrollment.id,
       amount: batch.fee,
       currency: currency.toLowerCase(),
       paymentMethod: PaymentMethod.STRIPE,
       status: PaymentStatus.PENDING,
+      billingMonth,
+      billingYear,
+      notes: `Monthly tuition fee for ${billingPeriod}`,
     },
   });
 
@@ -85,8 +98,8 @@ export const createCheckoutSessionService = async (
           price_data: {
             currency: currency.toLowerCase(),
             product_data: {
-              name: `${batch.name} Tuition Fee`,
-              description: `Batch enrollment & academic fee for ${batch.name}`,
+              name: `${batch.name} - Monthly Tuition Fee`,
+              description: `Tuition fee for ${billingPeriod} (${batch.name})`,
             },
             unit_amount: unitAmount,
           },
@@ -97,12 +110,12 @@ export const createCheckoutSessionService = async (
         transactionId: transaction.id,
         studentId: student.id,
         batchId: batch.id,
-        enrollmentId: enrollment?.id || '',
+        enrollmentId: enrollment.id,
+        billingMonth: String(billingMonth),
+        billingYear: String(billingYear),
+        billingPeriod,
       },
-      success_url:
-        config.FRONTEND_URL +
-        '/payments/success?session_id={CHECKOUT_SESSION_ID}&transaction_id=' +
-        transaction.id,
+      success_url: `${config.FRONTEND_URL}/payments/success?session_id={CHECKOUT_SESSION_ID}&transaction_id=${transaction.id}`,
       cancel_url: `${config.FRONTEND_URL}/payments/cancel?transaction_id=${transaction.id}`,
     });
 
@@ -114,7 +127,9 @@ export const createCheckoutSessionService = async (
       },
     });
 
-    logger.info(`Created Stripe checkout session: ${session.id} for student ${student.email}`);
+    logger.info(
+      `Created Stripe checkout session: ${session.id} for student ${student.email} (${billingPeriod})`,
+    );
 
     return {
       sessionId: session.id,

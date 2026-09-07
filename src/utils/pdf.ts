@@ -41,6 +41,9 @@ export interface IReceiptPdfData {
   paymentMethod: string;
   status: string;
   transactionId: string;
+  billingMonth?: number;
+  billingYear?: number;
+  notes?: string | null;
   student: {
     id: string;
     name: string;
@@ -54,11 +57,28 @@ export interface IReceiptPdfData {
   };
 }
 
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 /**
  * Generates an official payment receipt PDF buffer
  */
 export const generateReceiptPdfBuffer = async (data: IReceiptPdfData): Promise<Buffer> => {
   const doc = new PDFDocument({ size: 'A4', margin: 40 });
+  const monthName = MONTH_NAMES[(data.billingMonth || 1) - 1] || 'Month';
+  const billingPeriod = `${monthName} ${data.billingYear || new Date().getFullYear()}`;
 
   // Header Banner
   doc.rect(0, 0, 595.28, 90).fill(PRIMARY_COLOR);
@@ -83,55 +103,65 @@ export const generateReceiptPdfBuffer = async (data: IReceiptPdfData): Promise<B
 
   // Receipt Meta Box
   const metaTop = 145;
-  doc.rect(40, metaTop, 515, 60).fill(BG_LIGHT).strokeColor(BORDER_COLOR).stroke();
+  doc.rect(40, metaTop, 515, 75).fill(BG_LIGHT).strokeColor(BORDER_COLOR).stroke();
 
   doc
     .fillColor(SECONDARY_COLOR)
     .fontSize(9)
     .font('Helvetica-Bold')
-    .text('RECEIPT NO:', 55, metaTop + 12);
+    .text('RECEIPT NO:', 55, metaTop + 10);
   doc
     .fillColor('#000000')
     .font('Helvetica')
-    .text(data.receiptNumber, 130, metaTop + 12);
+    .text(data.receiptNumber, 150, metaTop + 10);
 
   doc
     .fillColor(SECONDARY_COLOR)
     .font('Helvetica-Bold')
-    .text('ISSUE DATE:', 55, metaTop + 27);
+    .text('ISSUE DATE:', 55, metaTop + 24);
   doc
     .fillColor('#000000')
     .font('Helvetica')
-    .text(format(data.issuedAt, 'dd MMM yyyy, hh:mm a'), 130, metaTop + 27);
+    .text(format(data.issuedAt, 'dd MMM yyyy, hh:mm a'), 150, metaTop + 24);
 
   doc
     .fillColor(SECONDARY_COLOR)
     .font('Helvetica-Bold')
-    .text('PAYMENT ID:', 55, metaTop + 42);
+    .text('BILLING PERIOD:', 55, metaTop + 38);
+  doc
+    .fillColor(PRIMARY_COLOR)
+    .font('Helvetica-Bold')
+    .text(billingPeriod.toUpperCase(), 150, metaTop + 38);
+
+  doc
+    .fillColor(SECONDARY_COLOR)
+    .font('Helvetica-Bold')
+    .text('TRANSACTION ID:', 55, metaTop + 52);
   doc
     .fillColor('#000000')
     .font('Helvetica')
-    .text(data.transactionId, 130, metaTop + 42);
+    .text(data.transactionId, 150, metaTop + 52);
 
   // Paid Stamp Badge
-  doc.rect(430, metaTop + 10, 110, 40).fill(ACCENT_COLOR);
+  doc.rect(430, metaTop + 12, 110, 48).fill(ACCENT_COLOR);
   doc
     .fillColor('#ffffff')
     .fontSize(14)
     .font('Helvetica-Bold')
-    .text('PAID', 430, metaTop + 18, { width: 110, align: 'center' });
+    .text('PAID', 430, metaTop + 20, { width: 110, align: 'center' });
   doc
     .fontSize(8)
     .font('Helvetica')
-    .text(data.paymentMethod.toUpperCase(), 430, metaTop + 36, { width: 110, align: 'center' });
+    .text(data.paymentMethod.toUpperCase(), 430, metaTop + 40, { width: 110, align: 'center' });
 
   // Student Profile Box
-  const studentTop = 220;
+  const studentTop = 235;
   doc
     .fillColor(PRIMARY_COLOR)
     .fontSize(11)
     .font('Helvetica-Bold')
     .text('BILLED TO (STUDENT):', 40, studentTop);
+
   doc
     .rect(40, studentTop + 15, 515, 50)
     .strokeColor(BORDER_COLOR)
@@ -154,32 +184,34 @@ export const generateReceiptPdfBuffer = async (data: IReceiptPdfData): Promise<B
   doc.text(`Student ID: ${data.student.id}`, 55, studentTop + 52);
 
   // Itemized Table
-  const tableTop = 300;
+  const tableTop = 315;
   doc.rect(40, tableTop, 515, 25).fill(PRIMARY_COLOR);
   doc.fillColor('#ffffff').fontSize(9).font('Helvetica-Bold');
   doc.text('SL', 50, tableTop + 8);
   doc.text('DESCRIPTION / BATCH', 80, tableTop + 8);
-  doc.text('METHOD', 350, tableTop + 8);
+  doc.text('FEE PERIOD', 310, tableTop + 8);
+  doc.text('METHOD', 400, tableTop + 8);
   doc.text('AMOUNT', 480, tableTop + 8, { width: 65, align: 'right' });
 
   // Row
   doc
-    .rect(40, tableTop + 25, 515, 30)
+    .rect(40, tableTop + 25, 515, 32)
     .strokeColor(BORDER_COLOR)
     .stroke();
   doc.fillColor('#000000').fontSize(9).font('Helvetica');
-  doc.text('1', 50, tableTop + 35);
-  doc.text(`${data.batch.name} - Tuition & Academic Fee`, 80, tableTop + 35);
-  doc.text(data.paymentMethod, 350, tableTop + 35);
+  doc.text('1', 50, tableTop + 36);
+  doc.text(`${data.batch.name} - Monthly Tuition`, 80, tableTop + 36, { width: 220 });
+  doc.text(billingPeriod, 310, tableTop + 36);
+  doc.text(data.paymentMethod, 400, tableTop + 36);
   doc
     .font('Helvetica-Bold')
-    .text(`${data.currency.toUpperCase()} ${data.amount.toFixed(2)}`, 480, tableTop + 35, {
+    .text(`${data.currency.toUpperCase()} ${data.amount.toFixed(2)}`, 480, tableTop + 36, {
       width: 65,
       align: 'right',
     });
 
   // Total Summary
-  const totalTop = tableTop + 65;
+  const totalTop = tableTop + 68;
   doc.rect(340, totalTop, 215, 30).fill(BG_LIGHT).strokeColor(BORDER_COLOR).stroke();
   doc
     .fillColor(PRIMARY_COLOR)
@@ -193,8 +225,16 @@ export const generateReceiptPdfBuffer = async (data: IReceiptPdfData): Promise<B
       align: 'right',
     });
 
+  if (data.notes) {
+    doc
+      .fillColor(SECONDARY_COLOR)
+      .fontSize(9)
+      .font('Helvetica-Oblique')
+      .text(`Notes: ${data.notes}`, 40, totalTop + 45);
+  }
+
   // Signatures and Footer
-  const footerTop = 450;
+  const footerTop = 460;
   doc.moveTo(400, footerTop).lineTo(540, footerTop).strokeColor(SECONDARY_COLOR).stroke();
   doc
     .fillColor(SECONDARY_COLOR)

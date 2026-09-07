@@ -61,6 +61,7 @@ export const getPendingStudentsService = async (
     name: s.name,
     email: s.email,
     phone: s.phone,
+    gender: s.gender,
     avatarUrl: s.avatarUrl,
     status: s.status,
     createdAt: s.createdAt,

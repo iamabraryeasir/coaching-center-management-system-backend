@@ -1,4 +1,4 @@
-import type { Permission, Role, UserStatus } from '@prisma/client';
+import type { Gender, Permission, Role, UserStatus } from '@prisma/client';
 import type { IInstitutionSummary } from '../institution';
 
 export type { IInstitutionSummary };
@@ -8,6 +8,7 @@ export interface IRegisterStudentInput {
   email: string;
   password: string;
   phone: string;
+  gender?: Gender;
   guardianName: string;
   guardianPhone: string;
   institutionName?: string;
@@ -20,6 +21,7 @@ export interface IRegisterTeacherInput {
   email: string;
   password: string;
   phone: string;
+  gender?: Gender;
   designation: string;
   qualification: string;
   specialization: string;
@@ -59,6 +61,7 @@ export interface IGoogleOnboardInput {
   email: string;
   name: string;
   phone: string;
+  gender?: Gender;
   guardianName: string;
   guardianPhone: string;
   institutionName?: string;
@@ -81,6 +84,7 @@ export interface IPendingStudentItem {
   name: string;
   email: string;
   phone: string;
+  gender: Gender | null;
   avatarUrl: string | null;
   status: UserStatus;
   createdAt: Date;
@@ -117,6 +121,7 @@ export interface IBaseAuthUser {
   name: string;
   email: string;
   phone: string;
+  gender: Gender | null;
   avatarUrl: string | null;
   role: Role;
   status: UserStatus;

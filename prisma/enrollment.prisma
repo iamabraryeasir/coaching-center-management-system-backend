@@ -1,12 +1,16 @@
 model Enrollment {
-  id         String           @id @default(uuid())
-  studentId  String // The Student (User with role STUDENT)
-  batchId    String // The Batch (Class)
-  status     EnrollmentStatus @default(PENDING) // PENDING -> ENROLLED (or REJECTED)
-  enrolledAt DateTime         @default(now()) // When the student requested to join
-  approvedAt DateTime? // When the Admin verified/approved the enrollment
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  id                String           @id @default(uuid())
+  studentId         String // The Student (User with role STUDENT)
+  batchId           String // The Batch (Class)
+  status            EnrollmentStatus @default(PENDING) // PENDING -> ENROLLED (or REJECTED)
+  startBillingMonth Int? // Starting billing month (1-12)
+  startBillingYear  Int? // Starting billing year (e.g. 2026)
+  openingDue        Decimal          @default(0.00) @db.Decimal(10, 2) // Opening arrear balance
+  discountAmount    Decimal          @default(0.00) @db.Decimal(10, 2) // Flat monthly fee waiver / scholarship amount
+  enrolledAt        DateTime         @default(now()) // When the student requested to join
+  approvedAt        DateTime? // When the Admin verified/approved the enrollment
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   // Relations
   student  User                 @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)

@@ -1,5 +1,6 @@
 import {
   type AdminProfile,
+  type Gender,
   type Permission,
   Role,
   type StudentProfile,
@@ -24,6 +25,7 @@ export const formatUserProfile = (
     name: user.name,
     email: user.email,
     phone: user.phone,
+    gender: user.gender || null,
     avatarUrl: user.avatarUrl,
     role: user.role,
     status: user.status,
@@ -89,12 +91,20 @@ export const fetchInstitutionSummary = async (): Promise<IInstitutionSummary | n
 };
 
 export const extractBaseUserUpdates = (payload: IUpdateMyProfileInput) => {
-  const baseData: { name?: string; phone?: string; avatarUrl?: string | null } = {};
+  const baseData: {
+    name?: string;
+    phone?: string;
+    gender?: Gender | null;
+    avatarUrl?: string | null;
+  } = {};
   if (payload.name !== undefined) {
     baseData.name = payload.name;
   }
   if (payload.phone !== undefined) {
     baseData.phone = payload.phone;
+  }
+  if (payload.gender !== undefined) {
+    baseData.gender = payload.gender;
   }
   if (payload.avatarUrl !== undefined) {
     baseData.avatarUrl = payload.avatarUrl;

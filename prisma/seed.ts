@@ -13,7 +13,7 @@ import {
   Role,
   UserStatus,
 } from '@prisma/client';
-import { config, prisma } from '../src/config';
+import { config, pool, prisma } from '../src/config';
 import { logger } from '../src/utils';
 
 async function main(): Promise<void> {
@@ -422,36 +422,54 @@ async function main(): Promise<void> {
 
   // 6. Seed Enrollments
   logger.info('6. Bootstrapping Batch Enrollments...');
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
   const enrollmentsData = [
     {
       studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
       batchId: batch1Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
+      startBillingMonth: currentMonth,
+      startBillingYear: currentYear,
+      openingDue: 0,
     },
     {
       studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
       batchId: batch1Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
+      startBillingMonth: currentMonth,
+      startBillingYear: currentYear,
+      openingDue: 0,
     },
     {
       studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
       batchId: batch2Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
+      startBillingMonth: currentMonth,
+      startBillingYear: currentYear,
+      openingDue: 500.0,
     },
     {
       studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
       batchId: batch3Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
+      startBillingMonth: currentMonth,
+      startBillingYear: currentYear,
+      openingDue: 0,
     },
     {
       studentId: seededStudents['sadia.afrin@student.apex.edu'].id,
       batchId: batch2Id,
       status: EnrollmentStatus.PENDING,
       approvedAt: null,
+      startBillingMonth: currentMonth,
+      startBillingYear: currentYear,
+      openingDue: 0,
     },
   ];
 
@@ -468,12 +486,16 @@ async function main(): Promise<void> {
       update: {
         status: enr.status,
         approvedAt: enr.approvedAt,
+        startBillingMonth: enr.startBillingMonth,
+        startBillingYear: enr.startBillingYear,
+        openingDue: enr.openingDue,
       },
       create: enr,
     });
 
     seededEnrollments[`${enr.batchId}_${enr.studentId}`] = { id: enrollment.id };
   }
+
 
   // 7. Seed Daily Attendance Records (Past 3 days)
   logger.info('7. Bootstrapping Attendance Records...');
@@ -725,6 +747,9 @@ async function main(): Promise<void> {
       currency: 'bdt',
       paymentMethod: PaymentMethod.STRIPE,
       status: PaymentStatus.COMPLETED,
+      billingMonth: currentMonth,
+      billingYear: currentYear,
+      notes: 'Online Stripe card payment',
       stripeSessionId: 'cs_test_seed_rahim_001',
       stripePaymentIntentId: 'pi_test_seed_rahim_001',
       paidAt: subDays(today, 10),
@@ -741,6 +766,9 @@ async function main(): Promise<void> {
       currency: 'bdt',
       paymentMethod: PaymentMethod.BKASH,
       status: PaymentStatus.COMPLETED,
+      billingMonth: currentMonth,
+      billingYear: currentYear,
+      notes: 'bKash Merchant Payment (Trx: BK88291)',
       stripeSessionId: null,
       stripePaymentIntentId: null,
       paidAt: subDays(today, 8),
@@ -757,6 +785,9 @@ async function main(): Promise<void> {
       currency: 'bdt',
       paymentMethod: PaymentMethod.CASH,
       status: PaymentStatus.COMPLETED,
+      billingMonth: currentMonth,
+      billingYear: currentYear,
+      notes: 'Cash received at reception',
       stripeSessionId: null,
       stripePaymentIntentId: null,
       paidAt: subDays(today, 5),
@@ -767,9 +798,21 @@ async function main(): Promise<void> {
   for (const pay of paymentsData) {
     let tx = await prisma.paymentTransaction.findFirst({
       where: {
-        studentId: pay.studentId,
-        batchId: pay.batchId,
-        status: PaymentStatus.COMPLETED,
+        OR: [
+          ...(pay.stripeSessionId ? [{ stripeSessionId: pay.stripeSessionId }] : []),
+          {
+            studentId: pay.studentId,
+            batchId: pay.batchId,
+            billingMonth: pay.billingMonth,
+            billingYear: pay.billingYear,
+            status: PaymentStatus.COMPLETED,
+          },
+          {
+            receipt: {
+              receiptNumber: pay.receiptNumber,
+            },
+          },
+        ],
       },
       include: { receipt: true },
     });
@@ -784,6 +827,9 @@ async function main(): Promise<void> {
           currency: pay.currency,
           paymentMethod: pay.paymentMethod,
           status: pay.status,
+          billingMonth: pay.billingMonth,
+          billingYear: pay.billingYear,
+          notes: pay.notes,
           stripeSessionId: pay.stripeSessionId,
           stripePaymentIntentId: pay.stripePaymentIntentId,
           paidAt: pay.paidAt,
@@ -797,6 +843,7 @@ async function main(): Promise<void> {
       });
     }
   }
+
 
   // 10. Seed Initial Audit Logs
   logger.info('10. Bootstrapping Immutable Administrative Audit Trail...');
@@ -873,4 +920,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
+    await pool.end();
   });

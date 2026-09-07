@@ -1,9 +1,10 @@
-import type { Permission, Role, UserStatus } from '@prisma/client';
+import type { Gender, Permission, Role, UserStatus } from '@prisma/client';
 import type { IInstitutionSummary } from '../institution';
 
 export interface IUpdateMyProfileInput {
   name?: string;
   phone?: string;
+  gender?: Gender | null;
   avatarUrl?: string | null;
   // Student Profile fields
   guardianName?: string;
@@ -72,6 +73,7 @@ export interface IUserProfileResponse {
   name: string;
   email: string;
   phone: string;
+  gender: Gender | null;
   avatarUrl: string | null;
   role: Role;
   status: UserStatus;

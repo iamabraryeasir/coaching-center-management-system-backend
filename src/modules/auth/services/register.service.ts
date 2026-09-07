@@ -42,6 +42,7 @@ export const registerStudentAccount = async (
         email: normalizedEmail,
         password: hashedPassword,
         phone: normalizedPhone,
+        gender: payload.gender || null,
         role: Role.STUDENT,
         status: UserStatus.ACTIVE,
       },

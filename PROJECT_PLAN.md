@@ -115,7 +115,7 @@ stateDiagram-v2
 
 ---
 
-## 6. Complete Master API Specification (90 Endpoints across 14 Modules)
+## 6. Complete Master API Specification (91 Endpoints across 14 Modules)
 
 ### 6.1 Health Checks & System Telemetry (2 Endpoints)
 
@@ -230,18 +230,19 @@ stateDiagram-v2
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 6.13 Payments, Fee Collection, Webhooks & Receipt PDF (10 Endpoints)
+### 6.13 Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 Endpoints)
 
-- `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for batch fee.
+- `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
-- `POST /api/v1/payments/manual-collect` — Admin collects offline fee (Cash, bKash, Nagad, Bank).
+- `POST /api/v1/payments/manual-collect` — Admin collects offline monthly fee (Cash, bKash, Nagad, Bank) with billing period and notes.
+- `PATCH /api/v1/payments/enrollments/:enrollmentId/previous-dues` — Admin adjusts historical start billing period & opening dues on student enrollment.
+- `GET /api/v1/payments/my/dues` — Student calculates unpaid monthly fees and total outstanding dues across active batches.
+- `GET /api/v1/payments/dues` — Admin monitors all students with outstanding dues & defaulters list.
 - `GET /api/v1/payments/my` — Student views personal payment transactions and receipts.
 - `GET /api/v1/payments` — Admin system-wide payment transaction ledger (`QueryBuilder`).
 - `GET /api/v1/payments/stats` — Admin executive financial revenue dashboard & analytics.
-- `GET /api/v1/payments/receipts/:receiptId` — Retrieve payment receipt metadata by receipt ID.
-- `GET /api/v1/payments/receipts/by-transaction/:transactionId` — Retrieve receipt metadata by transaction ID.
-- `GET /api/v1/payments/receipts/:receiptId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Receipt ID**.
-- `GET /api/v1/payments/receipts/by-transaction/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
+- `GET /api/v1/payments/transactions/:transactionId/receipt` — Retrieve payment receipt metadata by Transaction ID.
+- `GET /api/v1/payments/transactions/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
 
 ### 6.14 Centralized Audit Logging & Security Explorer (3 Endpoints)
 

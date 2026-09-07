@@ -103,10 +103,12 @@ export const sendPaymentReceiptEmail = async (
   currency: string,
   batchName: string,
   pdfBuffer: Buffer,
+  billingPeriod?: string,
 ): Promise<void> => {
+  const periodText = billingPeriod ? ` (${billingPeriod})` : '';
   await sendEmail({
     to: email,
-    subject: `Payment Confirmation & Invoice Receipt [${receiptNumber}] — ${config.ADMIN_INSTITUTION_NAME}`,
+    subject: `Payment Confirmation & Receipt [${receiptNumber}]${periodText} — ${config.ADMIN_INSTITUTION_NAME}`,
     templateName: 'payment-receipt',
     data: {
       name,
@@ -114,8 +116,9 @@ export const sendPaymentReceiptEmail = async (
       amount,
       currency: currency.toUpperCase(),
       batchName,
+      billingPeriod,
     },
-    text: `Hello ${name},\n\nThank you for your payment of ${currency.toUpperCase()} ${amount.toFixed(2)} for ${batchName}. Your official receipt (${receiptNumber}) is attached to this email.`,
+    text: `Hello ${name},\n\nThank you for your payment of ${currency.toUpperCase()} ${amount.toFixed(2)} for ${batchName}${periodText}. Your official receipt (${receiptNumber}) is attached to this email.`,
     attachments: [
       {
         filename: `Receipt-${receiptNumber}.pdf`,

@@ -44,6 +44,42 @@ export const collectManualPayment = catchAsync(
   },
 );
 
+export const setPreviousDues = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const enrollmentId = req.params.enrollmentId as string;
+  const adminId = req.user?.userId as string;
+  const result = await paymentService.setPreviousDues(enrollmentId, req.body, adminId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Previous dues and billing period updated successfully',
+    data: result,
+  });
+});
+
+export const getMyDues = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const studentId = req.user?.userId as string;
+  const result = await paymentService.getMyDues(studentId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Outstanding dues and unpaid billing months calculated successfully',
+    data: result,
+  });
+});
+
+export const getAllDues = catchAsync(async (req: Request, res: Response): Promise<void> => {
+  const result = await paymentService.getAllDues(req.query);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'All outstanding student dues retrieved successfully',
+    data: result,
+  });
+});
+
 export const getMyPayments = catchAsync(async (req: Request, res: Response): Promise<void> => {
   const studentId = req.user?.userId as string;
   const result = await paymentService.getStudentPayments(studentId, req.query);
@@ -80,21 +116,6 @@ export const getPaymentStats = catchAsync(async (_req: Request, res: Response): 
   });
 });
 
-export const getReceiptById = catchAsync(async (req: Request, res: Response): Promise<void> => {
-  const receiptId = req.params.receiptId as string;
-  const userId = req.user?.userId as string;
-  const role = req.user?.role as Role;
-
-  const data = await paymentService.getReceiptById(receiptId, userId, role);
-
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: 'Payment receipt retrieved successfully',
-    data,
-  });
-});
-
 export const getReceiptByTransactionId = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const transactionId = req.params.transactionId as string;
@@ -112,16 +133,6 @@ export const getReceiptByTransactionId = catchAsync(
   },
 );
 
-export const getReceiptPdf = catchAsync(async (req: Request, res: Response): Promise<void> => {
-  const receiptId = req.params.receiptId as string;
-  const userId = req.user?.userId as string;
-  const role = req.user?.role as Role;
-  const isDownload = req.query.download === 'true';
-
-  const { buffer, filename } = await paymentService.getReceiptPdf(receiptId, userId, role);
-  streamPdf(res, buffer, filename, isDownload);
-});
-
 export const getReceiptPdfByTransactionId = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const transactionId = req.params.transactionId as string;
@@ -138,11 +149,12 @@ export const paymentController = Object.freeze({
   createCheckoutSession,
   handleStripeWebhook,
   collectManualPayment,
+  setPreviousDues,
+  getMyDues,
+  getAllDues,
   getMyPayments,
   getAllPayments,
   getPaymentStats,
-  getReceiptById,
   getReceiptByTransactionId,
-  getReceiptPdf,
   getReceiptPdfByTransactionId,
 });

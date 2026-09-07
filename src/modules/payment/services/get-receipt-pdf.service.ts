@@ -3,13 +3,13 @@ import { prisma } from '../../../config';
 import { ApiError, generateReceiptPdfBuffer } from '../../../utils';
 
 export const getReceiptPdfService = async (
-  receiptIdOrTransactionId: string,
+  transactionId: string,
   requestingUserId: string,
   requestingUserRole: Role,
 ): Promise<{ buffer: Buffer; filename: string }> => {
   const receipt = await prisma.receipt.findFirst({
     where: {
-      OR: [{ id: receiptIdOrTransactionId }, { transactionId: receiptIdOrTransactionId }],
+      OR: [{ transactionId }, { id: transactionId }],
     },
     include: {
       transaction: {
@@ -35,7 +35,7 @@ export const getReceiptPdfService = async (
   });
 
   if (!receipt) {
-    throw ApiError.notFound('Receipt not found');
+    throw ApiError.notFound('Receipt not found for this transaction');
   }
 
   if (requestingUserRole === Role.STUDENT && receipt.transaction.studentId !== requestingUserId) {
@@ -51,6 +51,9 @@ export const getReceiptPdfService = async (
     paymentMethod: receipt.transaction.paymentMethod,
     status: receipt.transaction.status,
     transactionId: receipt.transaction.id,
+    billingMonth: receipt.transaction.billingMonth,
+    billingYear: receipt.transaction.billingYear,
+    notes: receipt.transaction.notes,
     student: receipt.transaction.student,
     batch: {
       id: receipt.transaction.batch.id,

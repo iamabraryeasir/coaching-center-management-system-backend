@@ -2,17 +2,17 @@ model ClassRoutine {
   id        String    @id @default(uuid())
   batchId   String
   dayOfWeek DayOfWeek
-  startTime String    // e.g. "10:00"
-  endTime   String    // e.g. "11:30"
-  subject   String?   // e.g. "General Math", "Physics"
-  room      String?   // e.g. "Room 101"
-  teacherId String?   // Specific subject teacher for this slot
+  startTime String // e.g. "10:00"
+  endTime   String // e.g. "11:30"
+  subject   String? // e.g. "General Math", "Physics"
+  room      String? // e.g. "Room 101"
+  teacherId String? // Specific subject teacher for this slot
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   // Relations
-  batch     Batch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  teacher   User?     @relation("TeacherRoutines", fields: [teacherId], references: [id])
+  batch   Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  teacher User? @relation("TeacherRoutines", fields: [teacherId], references: [id], onDelete: SetNull)
 
   @@index([batchId])
   @@index([dayOfWeek])

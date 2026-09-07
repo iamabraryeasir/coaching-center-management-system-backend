@@ -1,4 +1,4 @@
-import { type Permission, Role, type UserStatus } from '@prisma/client';
+import { type Gender, type Permission, Role, type UserStatus } from '@prisma/client';
 import type { CookieOptions, Request } from 'express';
 import { config } from '../../config';
 import type { IAuthUser, IClientMetadata, IInstitutionSummary } from './auth.interface';
@@ -132,6 +132,7 @@ export const sanitizeAuthUser = (
     name: string;
     email: string;
     phone: string;
+    gender?: Gender | null;
     avatarUrl: string | null;
     role: Role;
     status: UserStatus;
@@ -167,6 +168,7 @@ export const sanitizeAuthUser = (
     name: user.name,
     email: user.email,
     phone: user.phone,
+    gender: user.gender || null,
     avatarUrl: user.avatarUrl,
     status: user.status,
     createdAt: user.createdAt,

@@ -60,6 +60,7 @@ export const onboardGoogleStudent = async (
         email: normalizedEmail,
         password: null, // Google OAuth accounts do not have local passwords
         phone: normalizedPhone,
+        gender: payload.gender || null,
         avatarUrl: payload.avatarUrl?.trim() || null,
         role: Role.STUDENT,
         status: UserStatus.PENDING_ACTIVATION,

@@ -173,16 +173,16 @@
 
 ### 7. User & Profile Management (8 Endpoints)
 
-|  #  | Method   | Route                                   | Access        | Description                                                   |
-| :-: | :------- | :-------------------------------------- | :------------ | :------------------------------------------------------------ |
-| 19  | `GET`    | `/api/v1/users/me`                      | Authenticated | Get current authenticated user profile & role                 |
-| 20  | `PATCH`  | `/api/v1/users/me`                      | Authenticated | Update personal profile information                           |
-| 21  | `PATCH`  | `/api/v1/users/change-password`         | Authenticated | Change account password with old password verification        |
-| 22  | `GET`    | `/api/v1/users`                         | Admin Only    | List users with pagination, search & filters (`QueryBuilder`) |
-| 23  | `GET`    | `/api/v1/users/:id`                     | Admin Only    | Get detailed user profile by ID                               |
-| 24  | `PATCH`  | `/api/v1/users/teachers/:id/permissions`| Admin Only    | Update & delegate teacher operational permissions             |
-| 25  | `PATCH`  | `/api/v1/users/:id/status`              | Admin Only    | Update user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`)  |
-| 27  | `DELETE` | `/api/v1/users/:id`                     | Admin Only    | Universal soft-delete user account (`deletedAt`)              |
+|  #  | Method   | Route                                    | Access        | Description                                                   |
+| :-: | :------- | :--------------------------------------- | :------------ | :------------------------------------------------------------ |
+| 19  | `GET`    | `/api/v1/users/me`                       | Authenticated | Get current authenticated user profile & role                 |
+| 20  | `PATCH`  | `/api/v1/users/me`                       | Authenticated | Update personal profile information                           |
+| 21  | `PATCH`  | `/api/v1/users/change-password`          | Authenticated | Change account password with old password verification        |
+| 22  | `GET`    | `/api/v1/users`                          | Admin Only    | List users with pagination, search & filters (`QueryBuilder`) |
+| 23  | `GET`    | `/api/v1/users/:id`                      | Admin Only    | Get detailed user profile by ID                               |
+| 24  | `PATCH`  | `/api/v1/users/teachers/:id/permissions` | Admin Only    | Update & delegate teacher operational permissions             |
+| 25  | `PATCH`  | `/api/v1/users/:id/status`               | Admin Only    | Update user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`)  |
+| 27  | `DELETE` | `/api/v1/users/:id`                      | Admin Only    | Universal soft-delete user account (`deletedAt`)              |
 
 ### 8. Academic Batches & Enrollments (13 Endpoints)
 
@@ -260,25 +260,26 @@
 | 76  | `DELETE` | `/api/v1/users/me/avatar`          | Authenticated | Delete personal avatar from Cloudinary                      |
 | 77  | `POST`   | `/api/v1/uploads/users/:id/avatar` | Admin Only    | Upload avatar for specific user by ID                       |
 
-### 13. Payments, Fee Collection, Webhooks & Receipt PDF (10 Endpoints)
+### 13. Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 Endpoints)
 
-|  #  | Method | Route                                                         | Access          | Description                                                        |
-| :-: | :----- | :------------------------------------------------------------ | :-------------- | :----------------------------------------------------------------- |
-| 78  | `POST` | `/api/v1/payments/create-checkout-session`                    | Student Only    | Create Stripe Checkout session for batch fee                       |
-| 79  | `POST` | `/api/v1/payments/webhook`                                    | Stripe Webhook  | Cryptographically verified webhook listener                        |
-| 80  | `POST` | `/api/v1/payments/manual-collect`                             | Admin Only      | Collect offline payment (Cash, bKash, Nagad, Bank)                 |
-| 81  | `GET`  | `/api/v1/payments/my`                                         | Student Only    | Student personal payment history & receipts                        |
-| 82  | `GET`  | `/api/v1/payments`                                            | Admin Only      | System-wide payment transaction ledger (`QueryBuilder`)            |
-| 83  | `GET`  | `/api/v1/payments/stats`                                      | Admin Only      | Executive financial revenue dashboard & stats                      |
-| 84  | `GET`  | `/api/v1/payments/receipts/:receiptId`                        | Admin / Student | Get payment receipt metadata by receipt ID                         |
-| 85  | `GET`  | `/api/v1/payments/receipts/by-transaction/:transactionId`     | Admin / Student | Get payment receipt metadata by transaction ID                     |
-| 86  | `GET`  | `/api/v1/payments/receipts/:receiptId/pdf`                    | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Receipt ID**     |
-| 87  | `GET`  | `/api/v1/payments/receipts/by-transaction/:transactionId/pdf` | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Transaction ID** |
+|  #  | Method  | Route                                                      | Access          | Description                                                        |
+| :-: | :------ | :--------------------------------------------------------- | :-------------- | :----------------------------------------------------------------- |
+| 78  | `POST`  | `/api/v1/payments/create-checkout-session`                 | Student Only    | Create Stripe Checkout session for monthly tuition fee             |
+| 79  | `POST`  | `/api/v1/payments/webhook`                                 | Stripe Webhook  | Cryptographically verified webhook listener                        |
+| 80  | `POST`  | `/api/v1/payments/manual-collect`                          | Admin Only      | Collect offline monthly fee with billing period and notes          |
+| 81  | `PATCH` | `/api/v1/payments/enrollments/:enrollmentId/previous-dues` | Admin Only      | Configure historical start billing period & opening due balance    |
+| 82  | `GET`   | `/api/v1/payments/my/dues`                                 | Student Only    | Calculate student unpaid monthly fees & total outstanding dues     |
+| 83  | `GET`   | `/api/v1/payments/dues`                                    | Admin Only      | Monitor all students with outstanding dues & defaulters list       |
+| 84  | `GET`   | `/api/v1/payments/my`                                      | Student Only    | Student personal payment transaction history                       |
+| 85  | `GET`   | `/api/v1/payments`                                         | Admin Only      | System-wide payment transaction ledger (`QueryBuilder`)            |
+| 86  | `GET`   | `/api/v1/payments/stats`                                   | Admin Only      | Executive financial revenue dashboard & stats                      |
+| 87  | `GET`   | `/api/v1/payments/transactions/:transactionId/receipt`     | Admin / Student | Get payment receipt metadata by Transaction ID                     |
+| 88  | `GET`   | `/api/v1/payments/transactions/:transactionId/pdf`         | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Transaction ID** |
 
 ### 14. Centralized Audit Logging & Security Explorer (3 Endpoints)
 
 |  #  | Method | Route                      | Access     | Description                                       |
 | :-: | :----- | :------------------------- | :--------- | :------------------------------------------------ |
-| 88  | `GET`  | `/api/v1/audit-logs`       | Admin Only | System-wide audit log explorer (`QueryBuilder`)   |
-| 89  | `GET`  | `/api/v1/audit-logs/stats` | Admin Only | Audit activity statistics & operational breakdown |
-| 90  | `GET`  | `/api/v1/audit-logs/:id`   | Admin Only | Get single audit log record details by ID         |
+| 89  | `GET`  | `/api/v1/audit-logs`       | Admin Only | System-wide audit log explorer (`QueryBuilder`)   |
+| 90  | `GET`  | `/api/v1/audit-logs/stats` | Admin Only | Audit activity statistics & operational breakdown |
+| 91  | `GET`  | `/api/v1/audit-logs/:id`   | Admin Only | Get single audit log record details by ID         |

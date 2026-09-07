@@ -174,6 +174,9 @@ erDiagram
         string studentId FK
         string batchId FK
         EnrollmentStatus status "PENDING | ENROLLED | REJECTED"
+        int startBillingMonth "Nullable (1-12)"
+        int startBillingYear "Nullable"
+        decimal openingDue "10,2 default 0.00"
         datetime enrolledAt
         datetime approvedAt "Nullable"
     }
@@ -223,14 +226,18 @@ erDiagram
         string studentId FK
         string batchId FK
         string enrollmentId FK "Nullable"
+        int billingMonth "1-12"
+        int billingYear "e.g. 2026"
         decimal amount "10,2"
         string currency "bdt"
         PaymentMethod paymentMethod "STRIPE | CASH | BKASH | NAGAD | BANK_TRANSFER"
         PaymentStatus status "PENDING | COMPLETED | FAILED | REFUNDED"
+        string notes "Nullable"
         string stripeSessionId UK "Nullable"
         string stripePaymentIntentId "Nullable"
         datetime paidAt "Nullable"
     }
+
 
     Receipt {
         string id PK "UUID"
@@ -498,7 +505,8 @@ backend/
 ├── prisma.config.ts             # Prisma 7 multi-file schema folder configuration
 ├── tsconfig.json                # TypeScript compiler configuration (bundler resolution)
 ├── postman/
-│   ├── Coaching_Center_API.postman_collection.json # Production Postman collection (90 APIs / 91 Requests)
+│   ├── Coaching_Center_API.postman_collection.json # Production Postman collection (91 APIs / 91 Requests)
+
 │   └── Coaching_Center_Local.postman_environment.json # Local testing environment variables
 ├── prisma/
 │   ├── schema.prisma            # Minimal root schema (generator client & datasource only)
