@@ -587,15 +587,6 @@ Each domain feature module in `src/modules/` adheres to a strict, action-decompo
 
 ## 👥 Pre-Seeded Demo Credentials
 
-> [!CAUTION]
-> **Production Security Notice**: The credentials listed below are **strictly for local development, automated testing, and evaluation via `npm run prisma:seed`**.
->
-> - **Never** deploy a production server with default passwords.
-> - **Never** run `npm run prisma:seed` on a live production database.
-> - Configure your own unique, high-entropy administrator credentials in `.env` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`).
-
-Executing `npm run prisma:seed` in your local environment populates the database with the following demo accounts (Admin credentials automatically inherit from your `.env`):
-
 | Role                  | Name               | Email                           | Password         | Assigned Permissions / Meta                            |
 | :-------------------- | :----------------- | :------------------------------ | :--------------- | :----------------------------------------------------- |
 | **System Admin**      | Configured in .env | _(Inherited from `.env`)_       | _(From `.env`)_  | Full System Governance                                 |
