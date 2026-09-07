@@ -21,7 +21,7 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 4. [Role-Based Access Control & Permission Matrix](#-role-based-access-control--permission-matrix)
 5. [Authentication & Student Onboarding State Machine](#-authentication--student-onboarding-state-machine)
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
-7. [Master API Catalog (90 Verified Endpoints)](#-master-api-catalog-90-verified-endpoints)
+7. [Master API Catalog (93 Verified Endpoints)](#-master-api-catalog-93-verified-endpoints)
 8. [Directory Structure](#-directory-structure)
 9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
 10. [Environment Variables Reference](#-environment-variables-reference)
@@ -471,18 +471,19 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 13. Payments, Fee Collection, Webhooks & Receipt PDF (10 APIs)
+### 13. Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 APIs)
 
-- `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for batch fee.
+- `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
-- `POST /api/v1/payments/manual-collect` — Admin collects offline fee (Cash, bKash, Nagad, Bank).
+- `POST /api/v1/payments/manual-collect` — Admin collects offline monthly fee (Cash, bKash, Nagad, Bank) with billing period and notes.
+- `PATCH /api/v1/payments/enrollments/:enrollmentId/previous-dues` — Admin adjusts historical start billing period, opening dues, and flat monthly discount on student enrollment.
+- `GET /api/v1/payments/my/dues` — Student calculates unpaid monthly fees and total outstanding dues across active batches.
+- `GET /api/v1/payments/dues` — Admin monitors all students with outstanding dues & defaulters list.
 - `GET /api/v1/payments/my` — Student views personal payment transactions and receipts.
 - `GET /api/v1/payments` — Admin system-wide payment transaction ledger (`QueryBuilder`).
 - `GET /api/v1/payments/stats` — Admin executive financial revenue dashboard & analytics.
-- `GET /api/v1/payments/receipts/:receiptId` — Retrieve payment receipt metadata by receipt ID.
-- `GET /api/v1/payments/receipts/by-transaction/:transactionId` — Retrieve receipt metadata by transaction ID.
-- `GET /api/v1/payments/receipts/:receiptId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Receipt ID**.
-- `GET /api/v1/payments/receipts/by-transaction/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
+- `GET /api/v1/payments/transactions/:transactionId/receipt` — Retrieve payment receipt metadata by Transaction ID.
+- `GET /api/v1/payments/transactions/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
 
 ### 14. Centralized Audit Logging & Security Explorer (3 APIs)
 

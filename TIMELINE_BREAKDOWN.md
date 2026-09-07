@@ -1,9 +1,9 @@
 # Coaching Center Management System — Backend Timeline & Comprehensive API Breakdown
 
-> **Version**: 2.5.0 (Production Verified)  
+> **Version**: 2.6.0 (Production Verified)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 90 Verified Endpoints across 14 Modules  
-> **Postman Suite**: Comprehensive Collection (v2.1) + Local Environment
+> **API Standard**: RESTful v1 with 93 Verified Endpoints across 14 Modules  
+> **Postman Suite**: Comprehensive Collection (v2.1) + Local Environment (95 Runnable Requests)
 
 ---
 

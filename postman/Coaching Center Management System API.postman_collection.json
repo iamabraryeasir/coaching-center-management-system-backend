@@ -1,16 +1,17 @@
 {
   "info": {
-    "_postman_id": "c1f7a0c8-47e1-45f8-8bb0-d7a8d56b02a9",
+    "_postman_id": "d8b7e56d-5205-48e5-98e1-47e0a06bdcfd",
     "name": "Coaching Center Management System API",
     "description": "Production-grade Postman Collection (v2.1) covering Single-Institution Architecture, Authentication, Google OAuth, Student Onboarding & Approvals, Teacher/Student Registration, and Institution Management.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40701677"
   },
   "item": [
     {
-      "name": "Health Checks",
+      "name": "✅ Health Checks",
       "item": [
         {
-          "name": "Root System Health",
+          "name": "✅ Root System Health",
           "request": {
             "method": "GET",
             "header": [],
@@ -24,10 +25,11 @@
               ]
             },
             "description": "Returns uptime, server environment, and system health status."
-          }
+          },
+          "response": []
         },
         {
-          "name": "API v1 Health",
+          "name": "✅ API v1 Health",
           "request": {
             "method": "GET",
             "header": [],
@@ -42,29 +44,26 @@
                 "health"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "Authentication & Sessions",
+      "name": "✅ Authentication & Sessions",
       "item": [
         {
-          "name": "Login — Administrator",
+          "name": "✅ Login — Administrator",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.tokens) {",
-                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
-                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -78,7 +77,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+              "raw": "{\n  \"email\": \"<adminEmail>\",\n  \"password\": \"<adminPassword>\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
@@ -93,24 +92,21 @@
               ]
             },
             "description": "Authenticates the System Administrator. Automatically stores accessToken and refreshToken in environment."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Login — Teacher",
+          "name": "✅ Login — Teacher",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.tokens) {",
-                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
-                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -124,7 +120,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{teacherEmail}}\",\n  \"password\": \"{{teacherPassword}}\"\n}"
+              "raw": "{\n    \"email\": \"sarah.jenkins@apexacademy.edu\",\n    \"password\": \"Teacher@123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
@@ -139,24 +135,21 @@
               ]
             },
             "description": "Authenticates Teacher account."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Login — Student",
+          "name": "✅ Login — Student",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.tokens) {",
-                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
-                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -170,7 +163,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\"\n}"
+              "raw": "{\n  \"email\": \"abraryeasir.dev@gmail.com\",\n  \"password\": \"Student@123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
@@ -185,24 +178,21 @@
               ]
             },
             "description": "Authenticates Student account."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Refresh Access Token",
+          "name": "✅ Refresh Access Token",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.tokens) {",
-                  "        pm.environment.set(\"accessToken\", json.data.tokens.accessToken);",
-                  "        pm.environment.set(\"refreshToken\", json.data.tokens.refreshToken);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -216,7 +206,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+              "raw": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNmVkNTU1MC1hMjc5LTQ2OTctOTgzZC0zMGY1YmQ2OGI3ZTgiLCJlbWFpbCI6InJhaGltLmFobWVkQHN0dWRlbnQuYXBleC5lZHUiLCJyb2xlIjoiU1RVREVOVCIsInN0YXR1cyI6IkFDVElWRSIsImlhdCI6MTc4ODY4NjE3NSwiZXhwIjoxNzkxMjc4MTc1fQ.NNkzFf2mhadqsyTVaDGVEhPv3nLzeFhqu9Ze4OGu1lI\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/refresh-token",
@@ -231,10 +221,11 @@
               ]
             },
             "description": "Rotates refresh token and issues fresh access token."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Forgot Password",
+          "name": "✅ Forgot Password",
           "request": {
             "method": "POST",
             "header": [
@@ -245,7 +236,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@coaching.com\"\n}"
+              "raw": "{\n  \"email\": \"abraryeasir.dev@gmail.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
@@ -260,10 +251,11 @@
               ]
             },
             "description": "Initiates password recovery link via email."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Reset Password",
+          "name": "✅ Reset Password",
           "request": {
             "method": "POST",
             "header": [
@@ -274,7 +266,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"<PASTE_32_BYTE_RESET_TOKEN_HERE>\",\n  \"newPassword\": \"NewAdmin@123456\"\n}"
+              "raw": "{\n  \"token\": \"b98e3fe5e43ff63a903d836e2bc2a707cc23a8e67a08de1d872ae90989b586cc\",\n  \"newPassword\": \"Student@123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/reset-password",
@@ -289,10 +281,11 @@
               ]
             },
             "description": "Resets password using single-use verification token."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Logout",
+          "name": "✅ Logout",
           "request": {
             "method": "POST",
             "header": [
@@ -301,10 +294,6 @@
                 "value": "application/json"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\",\n  \"allDevices\": false\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/logout",
               "host": [
@@ -318,20 +307,14 @@
               ]
             },
             "description": "Revokes current session or all device sessions."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Logout from All Devices (Authenticated)",
+          "name": "✅ Logout from All Devices (Authenticated)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [],
@@ -352,7 +335,7 @@
           "response": []
         },
         {
-          "name": "List Active Login Sessions (Authenticated)",
+          "name": "✅ List Active Login Sessions (Authenticated)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -385,20 +368,13 @@
       ]
     },
     {
-      "name": "User Registration (Admin Only)",
+      "name": "✅ User Registration (Admin Only)",
       "item": [
         {
-          "name": "Register Student",
+          "name": "✅ Register Student",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -409,7 +385,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Sadman Sakib\",\n  \"email\": \"sadman.student@example.com\",\n  \"password\": \"Student@123456\",\n  \"phone\": \"+8801711223344\",\n  \"guardianName\": \"Kamal Hossain\",\n  \"guardianPhone\": \"+8801711223355\",\n  \"institutionName\": \"Notre Dame College\",\n  \"classLevel\": \"HSC-1st\",\n  \"rollNumber\": \"102\"\n}"
+              "raw": "{\n  \"name\": \"Abrar Student\",\n  \"email\": \"abraryeasir.dev@gmail.com\",\n  \"password\": \"Student@123456\",\n  \"phone\": \"+8801619534181\",\n  \"guardianName\": \"Abul Kalam Azad\",\n  \"guardianPhone\": \"+8801819782838\",\n  \"institutionName\": \"Omorgoni MES College\",\n  \"classLevel\": \"HSC-2023\",\n  \"rollNumber\": \"101\",\n  \"gender\": \"MALE\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/register-student",
@@ -423,21 +399,15 @@
                 "register-student"
               ]
             },
-            "description": "Protected: Only authenticated Administrator can register a student directly into the institution."
-          }
+            "description": "Protected (Admin): Register a new student with contact, academic info, guardian details, and optional gender (MALE, FEMALE, OTHER)."
+          },
+          "response": []
         },
         {
-          "name": "Register Teacher",
+          "name": "✅ Register Teacher",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -448,7 +418,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Professor Rafiqul Islam\",\n  \"email\": \"teacher@coaching.com\",\n  \"password\": \"Teacher@123456\",\n  \"phone\": \"+8801799887766\",\n  \"designation\": \"Senior Mathematics Faculty\",\n  \"qualification\": \"M.Sc in Applied Mathematics, DU\",\n  \"specialization\": \"Higher Mathematics & Calculus\",\n  \"joiningDate\": \"2026-01-15T00:00:00.000Z\",\n  \"permissions\": [\"MANAGE_ATTENDANCE\", \"MANAGE_ROUTINES\", \"VIEW_REPORTS\"]\n}"
+              "raw": "{\n  \"name\": \"Abrar Teacher\",\n  \"email\": \"abraryeasir.ai@gmail.com\",\n  \"password\": \"Teacher@123456\",\n  \"phone\": \"+8801799887766\",\n  \"designation\": \"Senior CS Faculty\",\n  \"qualification\": \"M.Sc in Artificial Intelligence, DU\",\n  \"specialization\": \"Programming Python\",\n  \"joiningDate\": \"2026-01-15T00:00:00.000Z\",\n  \"permissions\": [],\n  \"gender\": \"FEMALE\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/register-teacher",
@@ -462,16 +432,17 @@
                 "register-teacher"
               ]
             },
-            "description": "Protected: Only authenticated Administrator can register teachers with specific designations and permissions."
-          }
+            "description": "Protected (Admin): Register a new teacher faculty member with qualifications, specialization, joining date, optional gender, and delegated permissions."
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "Google OAuth & Student Onboarding",
+      "name": "✅ Google OAuth & Student Onboarding",
       "item": [
         {
-          "name": "Google ID Token Verification & Login",
+          "name": "✅ Google ID Token Verification & Login",
           "request": {
             "method": "POST",
             "header": [
@@ -482,7 +453,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idToken\": \"{{googleIdToken}}\"\n}"
+              "raw": "{\n  \"idToken\": \"googleIdToken\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/google",
@@ -497,10 +468,11 @@
               ]
             },
             "description": "Verifies Google Identity Services (GIS) ID token. Returns tokens for approved students or onboarding prompt (isNewUser: true) for new users."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Google Student Onboarding",
+          "name": "✅ Google Student Onboarding",
           "request": {
             "method": "POST",
             "header": [
@@ -511,7 +483,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"googleId\": \"google_user_sub_1098237198273\",\n  \"email\": \"new.google.student@gmail.com\",\n  \"name\": \"Tanvir Ahmed\",\n  \"phone\": \"+8801812345678\",\n  \"guardianName\": \"Rafiqul Ahmed\",\n  \"guardianPhone\": \"+8801812345679\",\n  \"institutionName\": \"Dhaka City College\",\n  \"classLevel\": \"Class 10\",\n  \"rollNumber\": \"105\",\n  \"avatarUrl\": \"https://lh3.googleusercontent.com/a/default-user\"\n}"
+              "raw": "{\n  \"googleId\": \"google_user_sub_1098237198273\",\n  \"email\": \"new.google.student@gmail.com\",\n  \"name\": \"Tanvir Ahmed\",\n  \"phone\": \"+8801812345678\",\n  \"guardianName\": \"Rafiqul Ahmed\",\n  \"guardianPhone\": \"+8801812345679\",\n  \"institutionName\": \"Dhaka City College\",\n  \"classLevel\": \"Class 10\",\n  \"rollNumber\": \"105\",\n  \"avatarUrl\": \"https://lh3.googleusercontent.com/a/default-user\",\n  \"gender\": \"MALE\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/google/onboard",
@@ -526,16 +498,17 @@
                 "onboard"
               ]
             },
-            "description": "Public onboarding for Google students into PENDING_ACTIVATION state."
-          }
+            "description": "Public/Onboarding: Unregistered Google OAuth students submit their profile details, contact, and gender. Account enters PENDING_ACTIVATION awaiting Admin review."
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "Student Approval Workflow (Admin Only)",
+      "name": "✅ Student Approval Workflow (Admin Only)",
       "item": [
         {
-          "name": "Get Pending Students (QueryBuilder)",
+          "name": "✅ Get Pending Students (QueryBuilder)",
           "event": [
             {
               "listen": "test",
@@ -605,10 +578,11 @@
               ]
             },
             "description": "Protected: Administrator retrieves paginated list of students awaiting activation using universal QueryBuilder."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Approve Student Application",
+          "name": "✅ Approve Student Application",
           "request": {
             "auth": {
               "type": "bearer",
@@ -623,7 +597,7 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/pending-students/{{pendingStudentId}}/approve",
+              "raw": "{{baseUrl}}/api/v1/auth/pending-students/:pendingStudentId/approve",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -632,15 +606,22 @@
                 "v1",
                 "auth",
                 "pending-students",
-                "{{pendingStudentId}}",
+                ":pendingStudentId",
                 "approve"
+              ],
+              "variable": [
+                {
+                  "key": "pendingStudentId",
+                  "value": "14524034-c84e-4f64-b500-76dc2cc11a70"
+                }
               ]
             },
             "description": "Protected: Administrator approves student application and transitions user status from PENDING_ACTIVATION to ACTIVE."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Reject Student Application",
+          "name": "✅ Reject Student Application",
           "request": {
             "auth": {
               "type": "bearer",
@@ -655,7 +636,7 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/pending-students/{{pendingStudentId}}/reject",
+              "raw": "{{baseUrl}}/api/v1/auth/pending-students/:pendingStudentId/reject",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -664,20 +645,27 @@
                 "v1",
                 "auth",
                 "pending-students",
-                "{{pendingStudentId}}",
+                ":pendingStudentId",
                 "reject"
+              ],
+              "variable": [
+                {
+                  "key": "pendingStudentId",
+                  "value": "14524034-c84e-4f64-b500-76dc2cc11a70"
+                }
               ]
             },
             "description": "Protected: Administrator rejects student application and marks account as INACTIVE with soft deletion."
-          }
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "Institution Management",
+      "name": "✅ Institution Management",
       "item": [
         {
-          "name": "Get Institution Profile & Stats (Public)",
+          "name": "✅ Get Institution Profile & Stats (Public)",
           "request": {
             "method": "GET",
             "header": [],
@@ -693,20 +681,14 @@
               ]
             },
             "description": "Public: Retrieves institution profile, contact details, branding, and live operational stats (totalStudents, totalTeachers, totalBatches)."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Institution Profile (Admin Only)",
+          "name": "✅ Update Institution Profile (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -717,7 +699,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"institutionName\": \"Radiant Way Academy - Main Campus\",\n  \"institutionAddress\": \"House 12, Road 5, Dhanmondi 27, Dhaka-1209\",\n  \"institutionPhone\": \"+8801700000099\",\n  \"institutionEmail\": \"info@radiantway.edu.bd\",\n  \"adminName\": \"System Administrator\",\n  \"adminPhone\": \"+8801700000001\"\n}"
+              "raw": "{\n  \"institutionName\": \"Radiant Way Coaching Home\",\n  \"institutionAddress\": \"Ambagan, Khulshi, Chattagram\",\n  \"institutionPhone\": \"+8801700000099\",\n  \"institutionEmail\": \"info@radiantway.edu.bd\",\n  \"adminName\": \"Abrar Yeasir\",\n  \"adminPhone\": \"+8801860700650\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/institution",
@@ -731,25 +713,19 @@
               ]
             },
             "description": "Protected: Administrator updates institution branding, location, phone, email, and admin contact details."
-          }
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "User & Profile Management",
+      "name": "✅ User & Profile Management",
       "item": [
         {
-          "name": "Get Current User Profile (/me)",
+          "name": "✅ Get Current User Profile (/me)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -766,20 +742,14 @@
               ]
             },
             "description": "Protected: Authenticated user retrieves their full profile, permissions, and role-specific academic or faculty information."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Current User Profile (/me)",
+          "name": "✅ Update Current User Profile (/me)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -790,7 +760,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Sadman Sakib Updated\",\n  \"phone\": \"+8801711223399\",\n  \"avatarUrl\": \"https://lh3.googleusercontent.com/a/custom-avatar\",\n  \"guardianName\": \"Kamal Hossain Updated\",\n  \"guardianPhone\": \"+8801711223388\",\n  \"institutionName\": \"Notre Dame College Dhaka\"\n}"
+              "raw": "{\n  \"name\": \"Sarah Jenkins\",\n  \"gender\": \"FEMALE\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/me",
@@ -805,20 +775,14 @@
               ]
             },
             "description": "Protected: Authenticated user updates their personal details and role-specific profile attributes."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Change Password",
+          "name": "✅ Change Password",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -829,7 +793,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"Admin@123456\",\n  \"newPassword\": \"Admin@654321\"\n}"
+              "raw": "{\n  \"currentPassword\": \"Teacher@123456@#\",\n  \"newPassword\": \"Teacher@123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/change-password",
@@ -844,41 +808,32 @@
               ]
             },
             "description": "Protected: Authenticated user changes their account password. Verifies current password and revokes all other active sessions."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get All Users (Admin Only — QueryBuilder)",
+          "name": "✅ Get All Users (Admin Only — QueryBuilder)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.length > 0) {",
-                  "        pm.environment.set(\"targetUserId\", json.data[0].id);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users?page=1&limit=10&search=&role=STUDENT&status=ACTIVE&sortBy=createdAt&sortOrder=desc",
+              "raw": "{{baseUrl}}/api/v1/users?role=STUDENT",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -891,17 +846,20 @@
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (1-indexed)"
+                  "description": "Page number (1-indexed)",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
                   "value": "10",
-                  "description": "Items per page (max 100)"
+                  "description": "Items per page (max 100)",
+                  "disabled": true
                 },
                 {
                   "key": "search",
                   "value": "",
-                  "description": "Partial search on name, email, phone"
+                  "description": "Partial search on name, email, phone",
+                  "disabled": true
                 },
                 {
                   "key": "role",
@@ -911,40 +869,37 @@
                 {
                   "key": "status",
                   "value": "ACTIVE",
-                  "description": "Filter by status: PENDING_ACTIVATION, ACTIVE, INACTIVE, BLOCKED"
+                  "description": "Filter by status: PENDING_ACTIVATION, ACTIVE, INACTIVE, BLOCKED",
+                  "disabled": true
                 },
                 {
                   "key": "sortBy",
                   "value": "createdAt",
-                  "description": "Field to sort by"
+                  "description": "Field to sort by",
+                  "disabled": true
                 },
                 {
                   "key": "sortOrder",
                   "value": "desc",
-                  "description": "Sort order: asc or desc"
+                  "description": "Sort order: asc or desc",
+                  "disabled": true
                 }
               ]
             },
             "description": "Protected: Administrator retrieves filtered, searched, and paginated users across the entire institution."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get User By ID (Admin Only)",
+          "name": "✅ Get User By ID (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}",
+              "raw": "{{baseUrl}}/api/v1/users/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -952,24 +907,24 @@
                 "api",
                 "v1",
                 "users",
-                "{{targetUserId}}"
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                }
               ]
             },
             "description": "Protected: Administrator retrieves complete profile details of a specific user by ID."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update User Status (Admin Only)",
+          "name": "✅ Update User Status (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -980,10 +935,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"BLOCKED\"\n}"
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}/status",
+              "raw": "{{baseUrl}}/api/v1/users/:userId/status",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -991,15 +946,22 @@
                 "api",
                 "v1",
                 "users",
-                "{{targetUserId}}",
+                ":userId",
                 "status"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                }
               ]
             },
             "description": "Protected: Administrator updates a user's operational status (ACTIVE, INACTIVE, BLOCKED). Automatically revokes active sessions if set to BLOCKED or INACTIVE. Admin self-blocking is rejected."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Delete User (Admin Only — Soft Delete)",
+          "name": "✅ Delete User (Admin Only — Soft Delete)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1014,7 +976,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}",
+              "raw": "{{baseUrl}}/api/v1/users/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1022,39 +984,38 @@
                 "api",
                 "v1",
                 "users",
-                "{{targetUserId}}"
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                }
               ]
             },
             "description": "Protected: Administrator soft-deletes a user account (sets deletedAt timestamp, sets status to INACTIVE, revokes all sessions). Admin self-deletion is strictly prevented."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Teacher Operational Permissions (Admin Only)",
+          "name": "✅ Update Teacher Delegated Permissions (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"permissions\": [\n    \"MANAGE_ATTENDANCE\",\n    \"MANAGE_EXAMS\",\n    \"MANAGE_ROUTINES\",\n    \"VIEW_REPORTS\"\n  ]\n}"
+              "raw": "{\n  \"permissions\": [\n    \"MANAGE_ATTENDANCE\",\n    \"MANAGE_EXAMS\",\n    \"MANAGE_ROUTINES\"\n  ]\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/teachers/{{teacherUserId}}/permissions",
+              "raw": "{{baseUrl}}/api/v1/users/teachers/:id/permissions",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1063,47 +1024,44 @@
                 "v1",
                 "users",
                 "teachers",
-                "{{teacherUserId}}",
+                ":id",
                 "permissions"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{teacherId}}",
+                  "description": "Target teacher user UUID"
+                }
               ]
             },
-            "description": "Admin endpoint to update and delegate operational permissions to a teacher faculty member (MANAGE_STUDENTS, MANAGE_ATTENDANCE, MANAGE_EXAMS, MANAGE_ROUTINES, VIEW_REPORTS)."
+            "description": "Protected (Admin): Grant or update delegated administrative permissions (MANAGE_ATTENDANCE, MANAGE_EXAMS, MANAGE_ROUTINES) for a specific teacher."
           },
           "response": []
         }
       ]
     },
     {
-      "name": "Academic Batches & Enrollments",
+      "name": "✅ Academic Batches & Enrollments",
       "item": [
         {
-          "name": "Create Batch (Admin Only)",
+          "name": "✅ Create Batch (Admin Only)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 201) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.id) {",
-                  "        pm.environment.set(\"batchId\", json.data.id);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -1114,7 +1072,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"HSC-2026 Higher Mathematics Batch A\",\n  \"fee\": 3500,\n  \"status\": \"ONGOING\"\n}"
+              "raw": "{\n  \"name\": \"SSC-2027\",\n  \"fee\": 1500,\n  \"status\": \"ONGOING\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/batches",
@@ -1128,41 +1086,32 @@
               ]
             },
             "description": "Protected: Administrator creates a new academic batch with name, fee, and status. Sets batchId in environment."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get All Batches (QueryBuilder)",
+          "name": "✅ Get All Batches (QueryBuilder)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.length > 0) {",
-                  "        pm.environment.set(\"batchId\", json.data[0].id);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches?page=1&limit=10&search=&status=ONGOING&fee_gte=&fee_lte=&sortBy=createdAt&sortOrder=desc",
+              "raw": "{{baseUrl}}/api/v1/batches",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1175,50 +1124,59 @@
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (1-indexed)"
+                  "description": "Page number (1-indexed)",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
                   "value": "10",
-                  "description": "Items per page (max 100)"
+                  "description": "Items per page (max 100)",
+                  "disabled": true
                 },
                 {
                   "key": "search",
                   "value": "",
-                  "description": "Search batch name"
+                  "description": "Search batch name",
+                  "disabled": true
                 },
                 {
                   "key": "status",
                   "value": "ONGOING",
-                  "description": "Filter by status: UPCOMING, ONGOING, COMPLETED, CANCELLED"
+                  "description": "Filter by status: UPCOMING, ONGOING, COMPLETED, CANCELLED",
+                  "disabled": true
                 },
                 {
                   "key": "fee_gte",
                   "value": "",
-                  "description": "Minimum fee filter"
+                  "description": "Minimum fee filter",
+                  "disabled": true
                 },
                 {
                   "key": "fee_lte",
                   "value": "",
-                  "description": "Maximum fee filter"
+                  "description": "Maximum fee filter",
+                  "disabled": true
                 },
                 {
                   "key": "sortBy",
                   "value": "createdAt",
-                  "description": "Sort field"
+                  "description": "Sort field",
+                  "disabled": true
                 },
                 {
                   "key": "sortOrder",
                   "value": "desc",
-                  "description": "Sort order: asc or desc"
+                  "description": "Sort order: asc or desc",
+                  "disabled": true
                 }
               ]
             },
             "description": "Protected: Authenticated users list batches with universal QueryBuilder filtering, search, and pagination."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Batch Details by ID",
+          "name": "✅ Get Batch Details by ID",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1233,7 +1191,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1241,24 +1199,24 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}"
+                ":batchId"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "2c7d356f-cc25-4bdf-8d23-ae971e361770"
+                }
               ]
             },
             "description": "Protected: Retrieves single batch details with routine schedule and enrolled student counters."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Batch (Admin Only)",
+          "name": "✅ Update Batch (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -1269,10 +1227,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"HSC-2026 Higher Mathematics — Advanced Morning\",\n  \"fee\": 3800,\n  \"status\": \"ONGOING\"\n}"
+              "raw": "{\n  \"fee\": 2000\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1280,29 +1238,29 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}"
+                ":batchId"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "2c7d356f-cc25-4bdf-8d23-ae971e361770"
+                }
               ]
             },
             "description": "Protected: Administrator updates batch name, fee, or operational status."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Delete Batch (Admin Only — Soft Delete)",
+          "name": "✅ Delete Batch (Admin Only — Soft Delete)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1310,29 +1268,29 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}"
+                ":batchId"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "2c7d356f-cc25-4bdf-8d23-ae971e361770"
+                }
               ]
             },
             "description": "Protected: Administrator soft-deletes batch (sets deletedAt timestamp and updates status to CANCELLED)."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Student Request Self-Enrollment (Student Only)",
+          "name": "✅ Student Request Self-Enrollment (Student Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}/enroll",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId/enroll",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1340,46 +1298,43 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}",
+                ":batchId",
                 "enroll"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "2863d8e6-5d8b-4f16-a149-5f773ae560a5"
+                }
               ]
             },
             "description": "Protected: Active student requests enrollment into a batch. Creates enrollment record in PENDING state awaiting admin approval."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Pending Enrollment Requests (Admin Only — QueryBuilder)",
+          "name": "✅ Get Pending Enrollment Requests (Admin Only — QueryBuilder)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.length > 0) {",
-                  "        pm.environment.set(\"batchEnrollmentId\", json.data[0].id);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/enrollments/pending?page=1&limit=10&search=&sortBy=createdAt&sortOrder=desc",
+              "raw": "{{baseUrl}}/api/v1/batches/enrollments/pending",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1394,35 +1349,41 @@
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (1-indexed)"
+                  "description": "Page number (1-indexed)",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
                   "value": "10",
-                  "description": "Items per page (max 100)"
+                  "description": "Items per page (max 100)",
+                  "disabled": true
                 },
                 {
                   "key": "search",
                   "value": "",
-                  "description": "Search student name, email, phone or batch name"
+                  "description": "Search student name, email, phone or batch name",
+                  "disabled": true
                 },
                 {
                   "key": "sortBy",
                   "value": "createdAt",
-                  "description": "Sort field"
+                  "description": "Sort field",
+                  "disabled": true
                 },
                 {
                   "key": "sortOrder",
                   "value": "desc",
-                  "description": "Sort order: asc or desc"
+                  "description": "Sort order: asc or desc",
+                  "disabled": true
                 }
               ]
             },
             "description": "Protected: Administrator retrieves all pending student enrollment applications across all batches using QueryBuilder."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Approve Enrollment Request (Admin Only)",
+          "name": "✅ Approve Enrollment Request (Admin Only)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1437,7 +1398,7 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/enrollments/{{batchEnrollmentId}}/approve",
+              "raw": "{{baseUrl}}/api/v1/batches/enrollments/:enrollmentId}}/approve",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1446,30 +1407,30 @@
                 "v1",
                 "batches",
                 "enrollments",
-                "{{batchEnrollmentId}}",
+                ":enrollmentId}}",
                 "approve"
+              ],
+              "variable": [
+                {
+                  "key": "enrollmentId}}",
+                  "value": "2e2cb377-6198-4c46-bcda-86ecf721d70f"
+                }
               ]
             },
             "description": "Protected: Administrator approves student enrollment, setting status to ENROLLED and approvedAt timestamp."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Reject Enrollment Request (Admin Only)",
+          "name": "✅ Reject Enrollment Request (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/enrollments/{{batchEnrollmentId}}/reject",
+              "raw": "{{baseUrl}}/api/v1/batches/enrollments/:enrollmentId/reject",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1478,25 +1439,25 @@
                 "v1",
                 "batches",
                 "enrollments",
-                "{{batchEnrollmentId}}",
+                ":enrollmentId",
                 "reject"
+              ],
+              "variable": [
+                {
+                  "key": "enrollmentId",
+                  "value": "45aea2be-7832-4372-a64b-31e599a9e154"
+                }
               ]
             },
             "description": "Protected: Administrator rejects student enrollment request, setting status to REJECTED."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Admin Direct Enroll Student (Admin Only)",
+          "name": "✅ Admin Direct Enroll Student (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -1507,10 +1468,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"studentId\": \"{{targetUserId}}\"\n}"
+              "raw": "{\n  \"studentId\": \"userId\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}/students",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId/students",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1518,15 +1479,22 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}",
+                ":batchId",
                 "students"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": ""
+                }
               ]
             },
             "description": "Protected: Administrator directly adds an active student into a batch (immediately ENROLLED with approvedAt timestamp)."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Batch Student Roster (Admin & Teacher)",
+          "name": "✅ Get Batch Student Roster (Admin & Teacher)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1541,7 +1509,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}/students?page=1&limit=10&search=&status=ENROLLED&sortBy=createdAt&sortOrder=desc",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId/students",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1549,47 +1517,60 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}",
+                ":batchId",
                 "students"
               ],
               "query": [
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (1-indexed)"
+                  "description": "Page number (1-indexed)",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
                   "value": "10",
-                  "description": "Items per page (max 100)"
+                  "description": "Items per page (max 100)",
+                  "disabled": true
                 },
                 {
                   "key": "search",
                   "value": "",
-                  "description": "Search student name, email, phone"
+                  "description": "Search student name, email, phone",
+                  "disabled": true
                 },
                 {
                   "key": "status",
                   "value": "ENROLLED",
-                  "description": "Filter by enrollment status: ENROLLED, PENDING, REJECTED"
+                  "description": "Filter by enrollment status: ENROLLED, PENDING, REJECTED",
+                  "disabled": true
                 },
                 {
                   "key": "sortBy",
                   "value": "createdAt",
-                  "description": "Sort field"
+                  "description": "Sort field",
+                  "disabled": true
                 },
                 {
                   "key": "sortOrder",
                   "value": "desc",
-                  "description": "Sort order: asc or desc"
+                  "description": "Sort order: asc or desc",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "2863d8e6-5d8b-4f16-a149-5f773ae560a5"
                 }
               ]
             },
             "description": "Protected: Administrator and Teacher view paginated roster of students in a specific batch with student & guardian details."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Remove Student from Batch (Admin Only)",
+          "name": "✅ Remove Student from Batch (Admin Only)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1604,7 +1585,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/batches/{{batchId}}/students/{{targetUserId}}",
+              "raw": "{{baseUrl}}/api/v1/batches/:batchId/students/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1612,26 +1593,30 @@
                 "api",
                 "v1",
                 "batches",
-                "{{batchId}}",
+                ":batchId",
                 "students",
-                "{{targetUserId}}"
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "2863d8e6-5d8b-4f16-a149-5f773ae560a5"
+                },
+                {
+                  "key": "userId",
+                  "value": "d68bd92d-305d-41b0-8256-d4227802f379"
+                }
               ]
             },
             "description": "Protected: Administrator drops / removes a student from a batch enrollment."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Enrolled Batches (Student Only)",
+          "name": "✅ Get My Enrolled Batches (Student Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -1649,41 +1634,32 @@
               ]
             },
             "description": "Protected: Authenticated student views their enrolled batches, fee amounts, and class timetable routines."
-          }
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "Class Routines & Timetable Scheduling",
+      "name": "✅ Class Routines & Timetable Scheduling",
       "item": [
         {
-          "name": "Create Routine Slot (Admin or Authorized Teacher)",
+          "name": "✅ Create Routine Slot (Admin or Authorized Teacher)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 201) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.id) {",
-                  "        pm.environment.set(\"routineId\", json.data.id);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -1694,7 +1670,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"batchId\": \"{{batchId}}\",\n  \"dayOfWeek\": \"SATURDAY\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:30\",\n  \"subject\": \"Higher Mathematics\",\n  \"room\": \"Room 101\",\n  \"teacherId\": \"{{teacherUserId}}\"\n}"
+              "raw": "{\n    \"batchId\": \"0032256e-3b0a-4945-b833-42406687ca36\",\n    \"dayOfWeek\": \"SATURDAY\",\n    \"startTime\": \"09:00\",\n    \"endTime\": \"10:30\",\n    \"subject\": \"Higher Mathematics\",\n    \"room\": \"Room 101\",\n    \"teacherId\": \"2989aa42-3da2-4d82-8559-a83d06694d8b\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/routines",
@@ -1708,41 +1684,32 @@
               ]
             },
             "description": "Protected: Admin or Teacher with MANAGE_ROUTINES creates a class routine slot with room, teacher, and batch conflict validation."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get All Routines (QueryBuilder)",
+          "name": "✅ Get All Routines (QueryBuilder)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.length > 0) {",
-                  "        pm.environment.set(\"routineId\", json.data[0].id);",
-                  "    }",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines?page=1&limit=10&search=&batchId={{batchId}}&dayOfWeek=SATURDAY&room=&subject=&sortBy=startTime&sortOrder=asc",
+              "raw": "{{baseUrl}}/api/v1/routines",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1755,70 +1722,73 @@
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (1-indexed)"
+                  "description": "Page number (1-indexed)",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
                   "value": "10",
-                  "description": "Items per page (max 100)"
+                  "description": "Items per page (max 100)",
+                  "disabled": true
                 },
                 {
                   "key": "search",
                   "value": "",
-                  "description": "Search subject, room, teacher name, or batch name"
+                  "description": "Search subject, room, teacher name, or batch name",
+                  "disabled": true
                 },
                 {
                   "key": "batchId",
-                  "value": "{{batchId}}",
-                  "description": "Filter by batch ID"
+                  "value": "2989aa42-3da2-4d82-8559-a83d06694d8b",
+                  "description": "Filter by batch ID",
+                  "disabled": true
                 },
                 {
                   "key": "dayOfWeek",
                   "value": "SATURDAY",
-                  "description": "Filter by day of week"
+                  "description": "Filter by day of week",
+                  "disabled": true
                 },
                 {
                   "key": "room",
                   "value": "",
-                  "description": "Filter by room"
+                  "description": "Filter by room",
+                  "disabled": true
                 },
                 {
                   "key": "subject",
                   "value": "",
-                  "description": "Filter by subject"
+                  "description": "Filter by subject",
+                  "disabled": true
                 },
                 {
                   "key": "sortBy",
                   "value": "startTime",
-                  "description": "Sort field"
+                  "description": "Sort field",
+                  "disabled": true
                 },
                 {
                   "key": "sortOrder",
                   "value": "asc",
-                  "description": "Sort order: asc or desc"
+                  "description": "Sort order: asc or desc",
+                  "disabled": true
                 }
               ]
             },
             "description": "Protected: Authenticated user lists routine slots with universal QueryBuilder search, filters, and pagination."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Routine Slot by ID",
+          "name": "✅ Get Routine Slot by ID",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines/{{routineId}}",
+              "raw": "{{baseUrl}}/api/v1/routines/:routineId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1826,29 +1796,29 @@
                 "api",
                 "v1",
                 "routines",
-                "{{routineId}}"
+                ":routineId"
+              ],
+              "variable": [
+                {
+                  "key": "routineId",
+                  "value": "addfad60-0c18-4e98-a05b-c4ecd328952c"
+                }
               ]
             },
             "description": "Protected: Retrieves single routine slot details with assigned faculty and batch metadata."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Batch Timetable (Day-Wise Grouped)",
+          "name": "✅ Get Batch Timetable (Day-Wise Grouped)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines/batch/{{batchId}}",
+              "raw": "{{baseUrl}}/api/v1/routines/batch/:batchId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1857,29 +1827,29 @@
                 "v1",
                 "routines",
                 "batch",
-                "{{batchId}}"
+                ":batchId"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "0032256e-3b0a-4945-b833-42406687ca36"
+                }
               ]
             },
             "description": "Protected: Retrieves complete day-grouped weekly schedule (SATURDAY through FRIDAY) for a specific batch."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Teacher Teaching Schedule",
+          "name": "✅ Get Teacher Teaching Schedule",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines/teacher/{{teacherUserId}}",
+              "raw": "{{baseUrl}}/api/v1/routines/teacher/:teacherUserId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1888,24 +1858,24 @@
                 "v1",
                 "routines",
                 "teacher",
-                "{{teacherUserId}}"
+                ":teacherUserId"
+              ],
+              "variable": [
+                {
+                  "key": "teacherUserId",
+                  "value": "11e00bcf-3f1a-4176-8b31-41be843c8f2f"
+                }
               ]
             },
             "description": "Protected: Administrator or Teacher retrieves full teaching schedule for a specific teacher."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Teaching Schedule (Teacher Only)",
+          "name": "✅ Get My Teaching Schedule (Teacher Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -1923,20 +1893,14 @@
               ]
             },
             "description": "Protected: Authenticated teacher retrieves their personal weekly teaching schedule grouped by day."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Class Timetable (Student Only)",
+          "name": "✅ Get My Class Timetable (Student Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -1954,20 +1918,14 @@
               ]
             },
             "description": "Protected: Authenticated student retrieves aggregated weekly class timetable across all their active batch enrollments."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Routine Slot (Admin or Authorized Teacher)",
+          "name": "✅ Update Routine Slot (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -1981,7 +1939,7 @@
               "raw": "{\n  \"startTime\": \"09:30\",\n  \"endTime\": \"11:00\",\n  \"room\": \"Room 102\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines/{{routineId}}",
+              "raw": "{{baseUrl}}/api/v1/routines/:routineId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1989,14 +1947,21 @@
                 "api",
                 "v1",
                 "routines",
-                "{{routineId}}"
+                ":routineId"
+              ],
+              "variable": [
+                {
+                  "key": "routineId",
+                  "value": "156e7dd2-34e3-49e2-b530-4ada03165bd7"
+                }
               ]
             },
             "description": "Protected: Updates routine slot parameters with conflict validation excluding current slot."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Delete Routine Slot (Admin or Authorized Teacher)",
+          "name": "✅ Delete Routine Slot (Admin or Authorized Teacher)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -2011,7 +1976,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines/{{routineId}}",
+              "raw": "{{baseUrl}}/api/v1/routines/:routineId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2019,29 +1984,29 @@
                 "api",
                 "v1",
                 "routines",
-                "{{routineId}}"
+                ":routineId"
+              ],
+              "variable": [
+                {
+                  "key": "routineId",
+                  "value": ""
+                }
               ]
             },
             "description": "Protected: Deletes routine slot and releases room / teacher assignment."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Download/Preview Batch Routine Schedule PDF (All Roles)",
+          "name": "✅ Download/Preview Batch Routine Schedule PDF (All Roles)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routines/batches/{{batchId}}/pdf?download=false",
+              "raw": "{{baseUrl}}/api/v1/routines/batches/:batchId/pdf",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2050,13 +2015,20 @@
                 "v1",
                 "routines",
                 "batches",
-                "{{batchId}}",
+                ":batchId",
                 "pdf"
               ],
               "query": [
                 {
                   "key": "download",
-                  "value": "false"
+                  "value": "false",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "0032256e-3b0a-4945-b833-42406687ca36"
                 }
               ]
             },
@@ -2067,35 +2039,26 @@
       ]
     },
     {
-      "name": "Daily Attendance Tracking",
-      "description": "Endpoints for bulk daily attendance marking, single-record audit-logged corrections, batch attendance statistical sheets, and student attendance self-service summaries.",
+      "name": "✅ Daily Attendance Tracking",
       "item": [
         {
-          "name": "Mark Bulk Daily Attendance (Admin or Authorized Teacher)",
+          "name": "✅ Mark Bulk Daily Attendance (Admin or Authorized Teacher)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.data && jsonData.data.records && jsonData.data.records.length > 0) {",
-                  "    pm.environment.set('attendanceId', jsonData.data.records[0].id);",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -2106,10 +2069,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"studentId\": \"{{targetUserId}}\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On time\"\n    }\n  ]\n}"
+              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"studentId\": \"16ed5550-a279-4697-983d-30f5bd68b7e8\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On time\"\n    }\n  ]\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/batches/{{batchId}}",
+              "raw": "{{baseUrl}}/api/v1/attendance/batches/:batchId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2118,14 +2081,21 @@
                 "v1",
                 "attendance",
                 "batches",
-                "{{batchId}}"
+                ":batchId"
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "45aea2be-7832-4372-a64b-31e599a9e154"
+                }
               ]
             },
             "description": "Protected: Marks or updates daily attendance in bulk for enrolled students in a batch with transactional integrity and audit logging."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Batch Attendance Sheet (Admin or Authorized Teacher)",
+          "name": "✅ Get Batch Attendance Sheet (Admin or Authorized Teacher)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -2140,7 +2110,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/batches/{{batchId}}?date=2026-09-05&page=1&limit=50",
+              "raw": "{{baseUrl}}/api/v1/attendance/batches/:batchId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2149,38 +2119,41 @@
                 "v1",
                 "attendance",
                 "batches",
-                "{{batchId}}"
+                ":batchId"
               ],
               "query": [
                 {
                   "key": "date",
-                  "value": "2026-09-05"
+                  "value": "2026-09-05",
+                  "disabled": true
                 },
                 {
                   "key": "page",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
-                  "value": "50"
+                  "value": "50",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "batchId",
+                  "value": "0032256e-3b0a-4945-b833-42406687ca36"
                 }
               ]
             },
             "description": "Protected: Retrieves paginated attendance records and aggregated statistics (present/absent/late counts & attendance rate) for a batch on a specific date or date range."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Single Attendance Record (Admin or Authorized Teacher)",
+          "name": "✅ Update Single Attendance Record (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -2191,10 +2164,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"LATE\",\n  \"remarks\": \"Arrived 15 minutes late with prior notice\"\n}"
+              "raw": ""
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/{{attendanceId}}",
+              "raw": "{{baseUrl}}/api/v1/attendance/:attendanceId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2202,14 +2175,21 @@
                 "api",
                 "v1",
                 "attendance",
-                "{{attendanceId}}"
+                ":attendanceId"
+              ],
+              "variable": [
+                {
+                  "key": "attendanceId",
+                  "value": ""
+                }
               ]
             },
             "description": "Protected: Updates single attendance record with audit trail logging prior and new status."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Student Attendance History (Admin or Authorized Teacher)",
+          "name": "✅ Get Student Attendance History (Admin or Authorized Teacher)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -2224,7 +2204,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/students/{{targetUserId}}?page=1&limit=20",
+              "raw": "{{baseUrl}}/api/v1/attendance/students/:studentUserId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2233,34 +2213,36 @@
                 "v1",
                 "attendance",
                 "students",
-                "{{targetUserId}}"
+                ":studentUserId"
               ],
               "query": [
                 {
                   "key": "page",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
-                  "value": "20"
+                  "value": "20",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "studentUserId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
                 }
               ]
             },
             "description": "Protected: Retrieves full attendance history and overall attendance percentage for a specific student across all batches."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Attendance Summary (Authenticated Student)",
+          "name": "✅ Get My Attendance Summary (Authenticated Student)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -2288,34 +2270,27 @@
               ]
             },
             "description": "Protected: Student self-service endpoint to view their own attendance history and aggregate attendance rate."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Teacher Self Check-In (Teacher Only)",
+          "name": "✅ Teacher Self Check-In (Teacher Only)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.data && jsonData.data.id) {",
-                  "    pm.environment.set('teacherAttendanceId', jsonData.data.id);",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -2342,20 +2317,14 @@
               ]
             },
             "description": "Protected: Teacher records their own attendance check-in for the current calendar date."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Teacher Attendance Summary (Teacher Only)",
+          "name": "✅ Get My Teacher Attendance Summary (Teacher Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -2384,34 +2353,27 @@
               ]
             },
             "description": "Protected: Teacher retrieves their own attendance history and aggregate statistics."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Mark Bulk Teacher Attendance (Admin or Authorized Teacher)",
+          "name": "✅ Mark Bulk Teacher Attendance (Admin or Authorized Teacher)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.data && jsonData.data.records && jsonData.data.records.length > 0) {",
-                  "    pm.environment.set('teacherAttendanceId', jsonData.data.records[0].id);",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -2422,7 +2384,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"teacherId\": \"{{teacherUserId}}\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On campus full day\"\n    }\n  ]\n}"
+              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"teacherId\": \"e66a5fc4-938a-4acf-8833-f92305664c37\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On campus full day\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/attendance/teachers/bulk",
@@ -2438,25 +2400,19 @@
               ]
             },
             "description": "Protected: Admin or Authorized Teacher marks daily faculty attendance in bulk with transactional integrity and audit logging."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Teacher Attendance Sheet (Admin or Authorized Teacher)",
+          "name": "✅ Get Teacher Attendance Sheet (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/teachers?date=2026-09-05&page=1&limit=50",
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2469,23 +2425,27 @@
               "query": [
                 {
                   "key": "date",
-                  "value": "2026-09-05"
+                  "value": "2026-09-05",
+                  "disabled": true
                 },
                 {
                   "key": "page",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
-                  "value": "50"
+                  "value": "50",
+                  "disabled": true
                 }
               ]
             },
             "description": "Protected: Retrieves paginated teacher attendance records and aggregate statistics (present, absent, late, leave counts & attendance rate)."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Specific Teacher Attendance Summary (Admin or Authorized Teacher)",
+          "name": "✅ Get Specific Teacher Attendance Summary (Admin or Authorized Teacher)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -2500,7 +2460,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/teachers/{{teacherUserId}}/summary?page=1&limit=20",
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/:teacherUserId/summary?page=1&limit=20",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2509,7 +2469,7 @@
                 "v1",
                 "attendance",
                 "teachers",
-                "{{teacherUserId}}",
+                ":teacherUserId",
                 "summary"
               ],
               "query": [
@@ -2521,23 +2481,23 @@
                   "key": "limit",
                   "value": "20"
                 }
+              ],
+              "variable": [
+                {
+                  "key": "teacherUserId",
+                  "value": "e66a5fc4-938a-4acf-8833-f92305664c37"
+                }
               ]
             },
             "description": "Protected: Retrieves full attendance history and statistics for a specific teacher."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Single Teacher Attendance Record (Admin or Authorized Teacher)",
+          "name": "✅ Update Single Teacher Attendance Record (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -2551,7 +2511,7 @@
               "raw": "{\n  \"status\": \"LEAVE\",\n  \"remarks\": \"Approved personal leave with prior notice\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/teachers/{{teacherAttendanceId}}",
+              "raw": "{{baseUrl}}/api/v1/attendance/teachers/:teacherAttendanceId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2560,44 +2520,43 @@
                 "v1",
                 "attendance",
                 "teachers",
-                "{{teacherAttendanceId}}"
+                ":teacherAttendanceId"
+              ],
+              "variable": [
+                {
+                  "key": "teacherAttendanceId",
+                  "value": "7136a1dd-8774-4d06-8222-af50ee9bf5f9"
+                }
               ]
             },
             "description": "Protected: Updates single teacher attendance record with audit trail logging prior and new status."
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "description": "Endpoints for bulk daily attendance marking, single-record audit-logged corrections, batch attendance statistical sheets, and student attendance self-service summaries."
     },
     {
-      "name": "Exams, Marks & Results Pipeline",
-      "description": "Endpoints for exam scheduling, bulk marks submission with auto-grading, draft-to-published result lifecycle, batch merit rankings, and student self-service report cards.",
+      "name": "✅ Exams, Marks & Results Pipeline",
       "item": [
         {
-          "name": "Create Exam (Admin or Authorized Teacher)",
+          "name": "✅ Create Exam (Admin or Authorized Teacher)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.data && jsonData.data.id) {",
-                  "    pm.environment.set('examId', jsonData.data.id);",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -2608,7 +2567,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"batchId\": \"{{batchId}}\",\n  \"title\": \"Weekly Assessment: Algebra & Polynomials\",\n  \"description\": \"Chapters 3 & 4 covering polynomials and quadratic equations\",\n  \"totalMarks\": 100,\n  \"passMarks\": 40,\n  \"examDate\": \"2026-09-15\",\n  \"status\": \"UPCOMING\"\n}"
+              "raw": "{\n  \"batchId\": \"2863d8e6-5d8b-4f16-a149-5f773ae560a5\",\n  \"title\": \"Weekly Assessment: Algebra & Polynomials\",\n  \"description\": \"Chapters 3 & 4 covering polynomials and quadratic equations\",\n  \"totalMarks\": 100,\n  \"passMarks\": 40,\n  \"examDate\": \"2026-09-15\",\n  \"status\": \"UPCOMING\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/exams",
@@ -2622,25 +2581,19 @@
               ]
             },
             "description": "Protected: Creates a new exam for a specific batch with total/pass marks and scheduled calendar date."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Exams List (All Roles)",
+          "name": "✅ Get Exams List (All Roles)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams?page=1&limit=20",
+              "raw": "{{baseUrl}}/api/v1/exams?limit=20",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2652,7 +2605,8 @@
               "query": [
                 {
                   "key": "page",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 },
                 {
                   "key": "limit",
@@ -2661,10 +2615,11 @@
               ]
             },
             "description": "Protected: Retrieves paginated exams. Staff view all; students view exams for their active batch enrollments."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Single Exam Details (All Roles)",
+          "name": "✅ Get Single Exam Details (All Roles)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -2679,7 +2634,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2687,24 +2642,24 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}"
+                ":examId"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "3e09cc2d-642c-4af1-a62b-4d9bcbacd8a3"
+                }
               ]
             },
             "description": "Protected: Retrieves single exam details including statistics (highest/lowest/average mark) if published or requested by staff."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Exam Metadata (Admin or Authorized Teacher)",
+          "name": "✅ Update Exam Metadata (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -2718,7 +2673,7 @@
               "raw": "{\n  \"title\": \"Weekly Assessment: Advanced Algebra\",\n  \"status\": \"ONGOING\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2726,24 +2681,24 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}"
+                ":examId"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "3e09cc2d-642c-4af1-a62b-4d9bcbacd8a3"
+                }
               ]
             },
             "description": "Protected: Updates exam schedule, title, or status."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Bulk Marks Entry (Admin or Authorized Teacher)",
+          "name": "✅ Bulk Marks Entry (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -2754,10 +2709,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"records\": [\n    {\n      \"studentId\": \"{{targetUserId}}\",\n      \"marksObtained\": 88.5,\n      \"remarks\": \"Excellent problem solving\"\n    }\n  ]\n}"
+              "raw": "{\n  \"records\": [\n    {\n      \"studentId\": \"8fa1719a-fb0e-40c6-b461-704085bcb871\",\n      \"marksObtained\": 88.5,\n      \"remarks\": \"Excellent problem solving\"\n    }\n  ]\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/marks",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/marks",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2765,25 +2720,25 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "marks"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "3e09cc2d-642c-4af1-a62b-4d9bcbacd8a3"
+                }
               ]
             },
             "description": "Protected: Bulk submits marks for enrolled students with atomic transactional upsert and automatic grade calculation."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Update Single Student Mark (Admin or Authorized Teacher)",
+          "name": "✅ Update Single Student Mark (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -2797,7 +2752,7 @@
               "raw": "{\n  \"marksObtained\": 92.0,\n  \"remarks\": \"Re-evaluation added 3.5 marks\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/marks/{{targetUserId}}",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/marks/:targetUserId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2805,31 +2760,35 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "marks",
-                "{{targetUserId}}"
+                ":targetUserId"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                },
+                {
+                  "key": "targetUserId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                }
               ]
             },
             "description": "Protected: Corrects a single student's exam mark with structured audit logging."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Publish Exam Results (Admin or Authorized Teacher)",
+          "name": "✅ Publish Exam Results (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/publish",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/publish",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2837,30 +2796,30 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "publish"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                }
               ]
             },
             "description": "Protected: Publishes results (DRAFT -> PUBLISHED), transitions exam status to COMPLETED, and releases marks to students."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Batch Exam Results / Merit List (All Roles)",
+          "name": "✅ Get Batch Exam Results / Merit List (All Roles)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/results",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/results",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2868,30 +2827,30 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "results"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": ""
+                }
               ]
             },
             "description": "Protected: Retrieves sorted batch merit list with merit rankings and overall pass rate."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Unpublish Exam Results (Admin Only)",
+          "name": "✅ Unpublish Exam Results (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/unpublish",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/unpublish",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2899,25 +2858,25 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "unpublish"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": ""
+                }
               ]
             },
             "description": "Protected: Admin reverts published results back to DRAFT state."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Report Card (Student Only)",
+          "name": "✅ Get My Report Card (Student Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -2935,25 +2894,19 @@
               ]
             },
             "description": "Protected: Authenticated student views their complete academic performance across all published exams."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get My Single Exam Result (Student Only)",
+          "name": "✅ Get My Single Exam Result (Student Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/my/results/{{examId}}",
+              "raw": "{{baseUrl}}/api/v1/exams/my/results/:examId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2963,29 +2916,29 @@
                 "exams",
                 "my",
                 "results",
-                "{{examId}}"
+                ":examId"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "81ba1e32-18bd-4fda-b988-a3da973c293a"
+                }
               ]
             },
             "description": "Protected: Authenticated student views their detailed marks, letter grade, rank, and batch stats for a specific exam."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Delete Exam (Admin or Authorized Teacher)",
+          "name": "✅ Delete Exam (Admin or Authorized Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2993,29 +2946,29 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}"
+                ":examId"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871"
+                }
               ]
             },
             "description": "Protected: Deletes exam record and cascades to remove all associated marks."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Download/Preview Student Exam Report Card PDF (All Roles)",
+          "name": "✅ Download/Preview Student Exam Report Card PDF (All Roles)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/students/{{studentId}}/report-card/pdf?download=false",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/students/:studentId/report-card/pdf?download=false",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3023,9 +2976,9 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "students",
-                "{{studentId}}",
+                ":studentId",
                 "report-card",
                 "pdf"
               ],
@@ -3034,6 +2987,16 @@
                   "key": "download",
                   "value": "false"
                 }
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "81ba1e32-18bd-4fda-b988-a3da973c293a"
+                },
+                {
+                  "key": "studentId",
+                  "value": "16ed5550-a279-4697-983d-30f5bd68b7e8"
+                }
               ]
             },
             "description": "Dynamically streams an official student exam report card PDF in A4 format featuring letter grade badge, score summary, GPA point calculation, and remarks."
@@ -3041,22 +3004,15 @@
           "response": []
         },
         {
-          "name": "Dispatch Student Report Card PDF via Email (Admin & Teacher)",
+          "name": "✅ Dispatch Student Report Card PDF via Email (Admin & Teacher)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}/students/{{studentId}}/send-report-card",
+              "raw": "{{baseUrl}}/api/v1/exams/:examId/students/:studentId/send-report-card",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3064,34 +3020,37 @@
                 "api",
                 "v1",
                 "exams",
-                "{{examId}}",
+                ":examId",
                 "students",
-                "{{studentId}}",
+                ":studentId",
                 "send-report-card"
+              ],
+              "variable": [
+                {
+                  "key": "examId",
+                  "value": "81ba1e32-18bd-4fda-b988-a3da973c293a"
+                },
+                {
+                  "key": "studentId",
+                  "value": "16ed5550-a279-4697-983d-30f5bd68b7e8"
+                }
               ]
             },
             "description": "Renders student grade sheet report card PDF dynamically and sends it as an official attachment to the student registered email address."
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Endpoints for exam scheduling, bulk marks submission with auto-grading, draft-to-published result lifecycle, batch merit rankings, and student self-service report cards."
     },
     {
-      "name": "Profile Picture & Media Storage",
-      "description": "Endpoints for profile avatar upload and removal, administrative avatar assignment, and Cloudinary media asset storage.",
+      "name": "✅ Profile Picture & Media Storage",
       "item": [
         {
-          "name": "Upload My Avatar (All Roles)",
+          "name": "✅ Upload My Avatar (All Roles)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [],
@@ -3101,7 +3060,7 @@
                 {
                   "key": "avatar",
                   "type": "file",
-                  "src": []
+                  "value": null
                 }
               ]
             },
@@ -3119,20 +3078,14 @@
               ]
             },
             "description": "Protected: Uploads or replaces the authenticated user's profile avatar on Cloudinary."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Delete My Avatar (All Roles)",
+          "name": "✅ Delete My Avatar (All Roles)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "DELETE",
             "header": [],
@@ -3150,20 +3103,14 @@
               ]
             },
             "description": "Protected: Deletes the authenticated user's avatar from Cloudinary and clears avatarUrl."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Upload User Avatar by ID (Admin Only)",
+          "name": "✅ Upload User Avatar by ID (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [],
@@ -3173,12 +3120,12 @@
                 {
                   "key": "avatar",
                   "type": "file",
-                  "src": []
+                  "value": null
                 }
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/uploads/users/{{targetUserId}}/avatar",
+              "raw": "{{baseUrl}}/api/v1/uploads/users/:targetUserId/avatar",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3187,30 +3134,31 @@
                 "v1",
                 "uploads",
                 "users",
-                "{{targetUserId}}",
+                ":targetUserId",
                 "avatar"
+              ],
+              "variable": [
+                {
+                  "key": "targetUserId",
+                  "value": "16ed5550-a279-4697-983d-30f5bd68b7e8"
+                }
               ]
             },
             "description": "Protected: Admin assigns or updates the avatar of a specific student or teacher."
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "description": "Endpoints for profile avatar upload and removal, administrative avatar assignment, and Cloudinary media asset storage."
     },
     {
-      "name": "13. Monthly Fee Payments & Due Management",
+      "name": "✅ Payment & Monthly Fee Management",
       "item": [
         {
-          "name": "Student - Create Monthly Stripe Checkout Session",
+          "name": "✅ Create Monthly Stripe Checkout Session (Student Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{studentAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
             "header": [
@@ -3235,28 +3183,12 @@
                 "create-checkout-session"
               ]
             },
-            "description": "Student creates a Stripe Checkout Session for a specific billing month and year."
+            "description": "Protected (Student): Initializes a secure Stripe Checkout session for a specific monthly fee billing period. Automatically charges the effective monthly fee (Batch Fee - Flat Student Discount), validates active enrollment, prevents duplicate monthly fee payments, and returns the Stripe checkout URL."
           },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.data && jsonData.data.transactionId) {",
-                  "    pm.environment.set(\"transactionId\", jsonData.data.transactionId);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
+          "response": []
         },
         {
-          "name": "Stripe - Webhook Event Listener",
+          "name": "✅ Collect Manual Monthly Fee Payment (Admin Only)",
           "request": {
             "auth": {
               "type": "noauth"
@@ -3266,54 +3198,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "stripe-signature",
-                "value": "{{stripeWebhookSignature}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"evt_test_webhook\",\n  \"type\": \"checkout.session.completed\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/webhook",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "payments",
-                "webhook"
-              ]
-            },
-            "description": "Webhook listener invoked directly by Stripe with cryptographic signature validation."
-          }
-        },
-        {
-          "name": "Admin - Collect Offline Monthly Fee",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"batchId\": \"{{batchId}}\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026,\n  \"amount\": 3500,\n  \"paymentMethod\": \"BKASH\",\n  \"notes\": \"bKash merchant collection (Trx: BK88291)\"\n}"
+              "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"batchId\": \"{{batchId}}\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026,\n  \"amount\": 2800,\n  \"paymentMethod\": \"BKASH\",\n  \"notes\": \"Collected offline at academy counter\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/manual-collect",
@@ -3327,38 +3216,15 @@
                 "manual-collect"
               ]
             },
-            "description": "Admin records manual fee collection (Cash, bKash, Nagad, Bank Transfer)."
+            "description": "Protected (Admin): Records an offline/manual cash or mobile banking (bKash/Nagad/Rocket/Cash/Bank) monthly fee collection. Prevents duplicate payments for the same billing month, creates receipt, records immutable audit log, and asynchronously dispatches receipt email with attached PDF."
           },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.data && jsonData.data.transactionId) {",
-                  "    pm.environment.set(\"transactionId\", jsonData.data.transactionId);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
+          "response": []
         },
         {
-          "name": "Admin - Configure Historical Billing & Opening Dues",
+          "name": "✅ Configure Historical Billing Start & Opening Dues / Flat Discount (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "PATCH",
             "header": [
@@ -3369,10 +3235,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"startBillingMonth\": 8,\n  \"startBillingYear\": 2026,\n  \"openingDue\": 1200,\n  \"notes\": \"Migrated historical arrear balance from legacy paper register\"\n}"
+              "raw": "{\n  \"startBillingMonth\": 8,\n  \"startBillingYear\": 2026,\n  \"openingDue\": 500,\n  \"discountAmount\": 300,\n  \"notes\": \"Configured opening arrears and flat monthly waiver\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/enrollments/{{enrollmentId}}/previous-dues",
+              "raw": "{{baseUrl}}/api/v1/payments/enrollments/:enrollmentId/previous-dues",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3381,27 +3247,34 @@
                 "v1",
                 "payments",
                 "enrollments",
-                "{{enrollmentId}}",
+                ":enrollmentId",
                 "previous-dues"
-              ]
-            },
-            "description": "Admin configures custom historical start billing month/year and opening arrears for an enrollment."
-          }
-        },
-        {
-          "name": "Student - Get Personal Outstanding Monthly Dues",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{studentAccessToken}}",
-                  "type": "string"
+                  "key": "enrollmentId",
+                  "value": "{{enrollmentId}}",
+                  "description": "Target student batch enrollment UUID"
                 }
               ]
             },
+            "description": "Protected (Admin): Configures historical opening dues and custom flat monthly discount waivers for a student enrollment. Allows migrating students from prior terms with initial due balances and special monthly fee discounts."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Check My Outstanding Monthly Dues (Student Only)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/my/dues",
               "host": [
@@ -3415,23 +3288,23 @@
                 "dues"
               ]
             },
-            "description": "Student calculates unpaid historical and current monthly fees plus opening arrears across active batches."
-          }
+            "description": "Protected (Student): Retrieves comprehensive personal due summary across all enrolled batches. Returns batch monthly fee, flat discount waiver, effective monthly fee, itemized list of unpaid billing months, opening balance, and total outstanding due."
+          },
+          "response": []
         },
         {
-          "name": "Admin - Monitor All Outstanding Student Dues & Defaulters",
+          "name": "✅ Monitor All Student Dues & Defaulters (Admin Only — QueryBuilder)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/dues?batchId={{batchId}}",
               "host": [
@@ -3446,29 +3319,30 @@
               "query": [
                 {
                   "key": "batchId",
-                  "value": "{{batchId}}"
+                  "value": "{{batchId}}",
+                  "description": "Optional filter by specific batch"
                 }
               ]
             },
-            "description": "Admin views overall outstanding balance, total defaulters, and student-by-student due breakdowns."
-          }
+            "description": "Protected (Admin): Analyzes all active student enrollments, computes total outstanding dues across the academy, and generates an itemized list of fee defaulters with unpaid month counts and opening balances."
+          },
+          "response": []
         },
         {
-          "name": "Student - Get Personal Payment History",
+          "name": "✅ My Payment History (Student Only — QueryBuilder)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{studentAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/my?page=1&limit=10",
+              "raw": "{{baseUrl}}/api/v1/payments/my?page=1&limit=10&status=COMPLETED",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3486,28 +3360,32 @@
                 {
                   "key": "limit",
                   "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "COMPLETED"
                 }
               ]
             },
-            "description": "Student views own payment transaction ledger and receipt history."
-          }
+            "description": "Protected (Student): Retrieves paginated personal payment transaction history with billing period, payment method, amount, status, and receipt reference."
+          },
+          "response": []
         },
         {
-          "name": "Admin - Get All Payment Transactions",
+          "name": "✅ All System Payment Transactions (Admin Only — QueryBuilder)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments?page=1&limit=10&sortBy=createdAt&sortOrder=desc",
+              "raw": "{{baseUrl}}/api/v1/payments?page=1&limit=10&status=COMPLETED",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3526,32 +3404,28 @@
                   "value": "10"
                 },
                 {
-                  "key": "sortBy",
-                  "value": "createdAt"
-                },
-                {
-                  "key": "sortOrder",
-                  "value": "desc"
+                  "key": "status",
+                  "value": "COMPLETED"
                 }
               ]
             },
-            "description": "Admin browses all payment transactions with filters and pagination."
-          }
+            "description": "Protected (Admin): Universally searches, filters, and paginates all financial transactions across the institution using QueryBuilder."
+          },
+          "response": []
         },
         {
-          "name": "Admin - Get Payment & Revenue Statistics",
+          "name": "✅ Executive Financial Dashboard & Stats (Admin Only)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/stats",
               "host": [
@@ -3564,25 +3438,25 @@
                 "stats"
               ]
             },
-            "description": "Admin views total revenue, transaction counts, payment method breakdowns, and monthly trends."
-          }
+            "description": "Protected (Admin): Aggregates total institution revenue, total transactions count, status breakdowns (completed/pending/failed), payment method distributions, and monthly revenue trends."
+          },
+          "response": []
         },
         {
-          "name": "All Roles - Get Receipt by Transaction ID",
+          "name": "✅ Get Receipt Details by Transaction ID (Admin & Student)",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/transactions/{{transactionId}}/receipt",
+              "raw": "{{baseUrl}}/api/v1/payments/transactions/:transactionId/receipt",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3591,29 +3465,36 @@
                 "v1",
                 "payments",
                 "transactions",
-                "{{transactionId}}",
+                ":transactionId",
                 "receipt"
-              ]
-            },
-            "description": "Retrieve receipt JSON metadata using the unique transaction ID."
-          }
-        },
-        {
-          "name": "All Roles - Download Receipt PDF by Transaction ID",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{adminAccessToken}}",
-                  "type": "string"
+                  "key": "transactionId",
+                  "value": "{{transactionId}}",
+                  "description": "Payment transaction UUID"
                 }
               ]
             },
+            "description": "Protected (Admin & Student): Retrieves full receipt metadata by transaction ID, including receipt number, billing month/year, formatted billing period, payment method, student profile, and batch fee info."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Download/Preview PDF Receipt by Transaction ID (Admin & Student)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/transactions/{{transactionId}}/pdf?download=true",
+              "raw": "{{baseUrl}}/api/v1/payments/transactions/:transactionId/pdf?download=false",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3622,54 +3503,88 @@
                 "v1",
                 "payments",
                 "transactions",
-                "{{transactionId}}",
+                ":transactionId",
                 "pdf"
               ],
               "query": [
                 {
                   "key": "download",
-                  "value": "true"
+                  "value": "false",
+                  "description": "Set true to trigger attachment download or false for inline browser preview"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "transactionId",
+                  "value": "{{transactionId}}",
+                  "description": "Payment transaction UUID"
                 }
               ]
             },
-            "description": "Download or stream official payment receipt PDF with itemized billing period and notes."
-          }
+            "description": "Protected (Admin & Student): Dynamically generates and streams an official printable PDF receipt via PDFKit matching the transaction ID with institution branding, official billing badge, and transaction details."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Mock Stripe Webhook Event (System / Stripe)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "stripe-signature",
+                "value": "t=1614555000,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_test_webhook_001\",\n  \"type\": \"checkout.session.completed\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"cs_test_session_id\",\n      \"payment_status\": \"paid\",\n      \"metadata\": {\n        \"transactionId\": \"{{transactionId}}\",\n        \"studentId\": \"{{studentId}}\",\n        \"batchId\": \"{{batchId}}\",\n        \"billingMonth\": \"9\",\n        \"billingYear\": \"2026\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "webhook"
+              ]
+            },
+            "description": "System (Stripe Webhook): Endpoint receiving real-time checkout.session.completed and payment_intent.succeeded events with raw cryptographic signature verification."
+          },
+          "response": []
         }
-      ],
-      "description": "Monthly fee collection, Stripe Checkout, manual offline billing, previous/historical dues configuration, dues calculation, and transactionId-based PDF receipts."
+      ]
     },
     {
-      "name": "Audit Logging & Security",
+      "name": "✅ Audit Logging & Security",
       "item": [
         {
-          "name": "All Audit Logs Explorer (Admin Only)",
+          "name": "✅ All Audit Logs Explorer (Admin Only)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "const res = pm.response.json();",
-                  "if (res.data && res.data.length > 0) {",
-                  "    pm.environment.set(\"auditLogId\", res.data[0].id);",
-                  "}"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -3695,33 +3610,27 @@
               ]
             },
             "description": "Protected: Admin explores system-wide immutable audit trail entries powered by QueryBuilder."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Audit Activity Statistics & Dashboard (Admin Only)",
+          "name": "✅ Audit Activity Statistics & Dashboard (Admin Only)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -3738,38 +3647,32 @@
               ]
             },
             "description": "Protected: Admin retrieves aggregate operational and security metrics across all actions."
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Audit Log Details by ID (Admin Only)",
+          "name": "✅ Get Audit Log Details by ID (Admin Only)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
+                  ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/audit-logs/{{auditLogId}}",
+              "raw": "{{baseUrl}}/api/v1/audit-logs/:auditLogId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3777,13 +3680,50 @@
                 "api",
                 "v1",
                 "audit-logs",
-                "{{auditLogId}}"
+                ":auditLogId"
+              ],
+              "variable": [
+                {
+                  "key": "auditLogId",
+                  "value": "0b53c32f-30e0-4ecc-ae86-a945159008af"
+                }
               ]
             },
             "description": "Protected: Admin fetches complete details and parsed JSON payload for an audit record."
-          }
+          },
+          "response": []
         }
       ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://coaching-center-app-backend.vercel.app"
     }
   ]
 }
