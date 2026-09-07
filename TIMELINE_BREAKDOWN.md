@@ -2,7 +2,7 @@
 
 > **Version**: 2.5.0 (Production Verified)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 89 Verified Endpoints across 14 Modules  
+> **API Standard**: RESTful v1 with 90 Verified Endpoints across 14 Modules  
 > **Postman Suite**: Comprehensive Collection (v2.1) + Local Environment
 
 ---
@@ -15,7 +15,7 @@
 | **2** | **Authentication, RBAC, User Profiles & Media**       | **COMPLETED** | Credential auth (RFC 6819 rotating refresh tokens), Google ID token GIS login, student onboarding gate, Cloudinary AI face-gravity avatar cropping, and user CRUD.                      |
 | **3** | **Academic Operations, Routines & Attendance**        | **COMPLETED** | Academic batches, concurrency-safe enrollment transactions, multi-dimensional conflict-free routine engine, and daily student/teacher attendance tracking with audit trails.            |
 | **4** | **Exams, Stripe Payments & Financial Ledger**         | **COMPLETED** | Exam assessments, bulk marks entry, auto-grading & GPA calculation, result publication, real Stripe checkout & cryptographic webhooks, manual fee collection, and receipts.             |
-| **5** | **PDF Subsystem, Email Dispatch, Auditing & Polish**  | **COMPLETED** | Zero Cloud Storage in-memory PDF generators (Receipts, Routines, Report Cards), automated email dispatch with PDF attachments, centralized audit logging, and 90-request Postman suite. |
+| **5** | **PDF Subsystem, Email Dispatch, Auditing & Polish**  | **COMPLETED** | Zero Cloud Storage in-memory PDF generators (Receipts, Routines, Report Cards), automated email dispatch with PDF attachments, centralized audit logging, and 91-request Postman suite. |
 
 ---
 
@@ -113,7 +113,7 @@
   - Password Reset Email (`sendPasswordResetEmail`)
 - [x] Build Centralized Audit Logging Subsystem (`GET /api/v1/audit-logs`, `GET /audit-logs/stats`, `GET /audit-logs/:id`).
 - [x] Build Comprehensive Idempotent Database Seeder (`prisma/seed.ts` via `npm run prisma:seed`) bootstrapping Admin, Faculty, Batches, Routines, Students, Attendance, Exams, Payments, and Audit Logs.
-- [x] Complete Postman Collection (v2.1) covering **89 verified endpoints** (90 Postman requests with role personas) with automated token propagation and environment variables.
+- [x] Complete Postman Collection (v2.1) covering **90 verified endpoints** (91 Postman requests with role personas) with automated token propagation and environment variables.
 - [x] Full test pass:
   - `npm run check`: **0 errors, 0 warnings (182 files checked)**
   - `npm run typecheck`: **0 errors**
@@ -121,7 +121,7 @@
 
 ---
 
-## 📚 Master Catalog of All 89 API Endpoints
+## 📚 Master Catalog of All 90 API Endpoints
 
 ### 1. Health & Server Monitoring (2 Endpoints)
 
@@ -171,113 +171,114 @@
 | 17  | `GET`   | `/api/v1/institution` | Public     | Get institution profile, branding, and statistics  |
 | 18  | `PATCH` | `/api/v1/institution` | Admin Only | Update academy branding, contact, and address info |
 
-### 7. User & Profile Management (7 Endpoints)
+### 7. User & Profile Management (8 Endpoints)
 
-|  #  | Method   | Route                           | Access        | Description                                                   |
-| :-: | :------- | :------------------------------ | :------------ | :------------------------------------------------------------ |
-| 19  | `GET`    | `/api/v1/users/me`              | Authenticated | Get current authenticated user profile & role                 |
-| 20  | `PATCH`  | `/api/v1/users/me`              | Authenticated | Update personal profile information                           |
-| 21  | `PATCH`  | `/api/v1/users/change-password` | Authenticated | Change account password with old password verification        |
-| 22  | `GET`    | `/api/v1/users`                 | Admin Only    | List users with pagination, search & filters (`QueryBuilder`) |
-| 23  | `GET`    | `/api/v1/users/:id`             | Admin Only    | Get detailed user profile by ID                               |
-| 24  | `PATCH`  | `/api/v1/users/:id/status`      | Admin Only    | Update user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`)  |
-| 25  | `DELETE` | `/api/v1/users/:id`             | Admin Only    | Universal soft-delete user account (`deletedAt`)              |
+|  #  | Method   | Route                                   | Access        | Description                                                   |
+| :-: | :------- | :-------------------------------------- | :------------ | :------------------------------------------------------------ |
+| 19  | `GET`    | `/api/v1/users/me`                      | Authenticated | Get current authenticated user profile & role                 |
+| 20  | `PATCH`  | `/api/v1/users/me`                      | Authenticated | Update personal profile information                           |
+| 21  | `PATCH`  | `/api/v1/users/change-password`         | Authenticated | Change account password with old password verification        |
+| 22  | `GET`    | `/api/v1/users`                         | Admin Only    | List users with pagination, search & filters (`QueryBuilder`) |
+| 23  | `GET`    | `/api/v1/users/:id`                     | Admin Only    | Get detailed user profile by ID                               |
+| 24  | `PATCH`  | `/api/v1/users/teachers/:id/permissions`| Admin Only    | Update & delegate teacher operational permissions             |
+| 25  | `PATCH`  | `/api/v1/users/:id/status`              | Admin Only    | Update user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`)  |
+| 27  | `DELETE` | `/api/v1/users/:id`                     | Admin Only    | Universal soft-delete user account (`deletedAt`)              |
 
 ### 8. Academic Batches & Enrollments (13 Endpoints)
 
 |  #  | Method   | Route                                     | Access          | Description                                           |
 | :-: | :------- | :---------------------------------------- | :-------------- | :---------------------------------------------------- |
-| 26  | `POST`   | `/api/v1/batches`                         | Admin Only      | Create academic batch with name, fee, and status      |
-| 27  | `GET`    | `/api/v1/batches`                         | Authenticated   | List batches with pagination, search, and fee filters |
-| 28  | `GET`    | `/api/v1/batches/:id`                     | Authenticated   | Get single batch details and enrolled student count   |
-| 29  | `PATCH`  | `/api/v1/batches/:id`                     | Admin Only      | Update batch name, fee, or status                     |
-| 30  | `DELETE` | `/api/v1/batches/:id`                     | Admin Only      | Universal soft-delete batch (`deletedAt`)             |
-| 31  | `POST`   | `/api/v1/batches/:id/enroll`              | Student Only    | Student self-enrollment request (`PENDING`)           |
-| 32  | `GET`    | `/api/v1/batches/enrollments/pending`     | Admin Only      | List pending enrollment requests (`QueryBuilder`)     |
-| 33  | `PATCH`  | `/api/v1/batches/enrollments/:id/approve` | Admin Only      | Approve student batch enrollment (`ENROLLED`)         |
-| 34  | `PATCH`  | `/api/v1/batches/enrollments/:id/reject`  | Admin Only      | Reject student batch enrollment (`REJECTED`)          |
-| 35  | `POST`   | `/api/v1/batches/:id/students`            | Admin Only      | Direct admin student enrollment into batch            |
-| 36  | `GET`    | `/api/v1/batches/:id/students`            | Admin / Teacher | Get batch student roster (`QueryBuilder`)             |
-| 37  | `DELETE` | `/api/v1/batches/:id/students/:userId`    | Admin Only      | Remove student from batch enrollment                  |
-| 38  | `GET`    | `/api/v1/batches/my/enrolled`             | Student Only    | Get student personal enrolled batches list            |
+| 27  | `POST`   | `/api/v1/batches`                         | Admin Only      | Create academic batch with name, fee, and status      |
+| 28  | `GET`    | `/api/v1/batches`                         | Authenticated   | List batches with pagination, search, and fee filters |
+| 29  | `GET`    | `/api/v1/batches/:id`                     | Authenticated   | Get single batch details and enrolled student count   |
+| 30  | `PATCH`  | `/api/v1/batches/:id`                     | Admin Only      | Update batch name, fee, or status                     |
+| 31  | `DELETE` | `/api/v1/batches/:id`                     | Admin Only      | Universal soft-delete batch (`deletedAt`)             |
+| 32  | `POST`   | `/api/v1/batches/:id/enroll`              | Student Only    | Student self-enrollment request (`PENDING`)           |
+| 33  | `GET`    | `/api/v1/batches/enrollments/pending`     | Admin Only      | List pending enrollment requests (`QueryBuilder`)     |
+| 34  | `PATCH`  | `/api/v1/batches/enrollments/:id/approve` | Admin Only      | Approve student batch enrollment (`ENROLLED`)         |
+| 35  | `PATCH`  | `/api/v1/batches/enrollments/:id/reject`  | Admin Only      | Reject student batch enrollment (`REJECTED`)          |
+| 36  | `POST`   | `/api/v1/batches/:id/students`            | Admin Only      | Direct admin student enrollment into batch            |
+| 37  | `GET`    | `/api/v1/batches/:id/students`            | Admin / Teacher | Get batch student roster (`QueryBuilder`)             |
+| 38  | `DELETE` | `/api/v1/batches/:id/students/:userId`    | Admin Only      | Remove student from batch enrollment                  |
+| 39  | `GET`    | `/api/v1/batches/my/enrolled`             | Student Only    | Get student personal enrolled batches list            |
 
 ### 9. Class Routines, Timetables & Routine PDF (10 Endpoints)
 
 |  #  | Method   | Route                                   | Access          | Description                                     |
 | :-: | :------- | :-------------------------------------- | :-------------- | :---------------------------------------------- |
-| 39  | `POST`   | `/api/v1/routines`                      | Admin / Teacher | Create conflict-free routine slot               |
-| 40  | `GET`    | `/api/v1/routines`                      | Authenticated   | List routine slots (`QueryBuilder`)             |
-| 41  | `GET`    | `/api/v1/routines/:id`                  | Authenticated   | Get routine slot details by ID                  |
-| 42  | `GET`    | `/api/v1/routines/batch/:batchId`       | Authenticated   | Get weekly timetable grouped by day of week     |
-| 43  | `GET`    | `/api/v1/routines/teacher/:teacherId`   | Admin / Teacher | Get teaching schedule for specific teacher      |
-| 44  | `GET`    | `/api/v1/routines/my/teacher-schedule`  | Teacher Only    | Get authenticated teacher personal schedule     |
-| 45  | `GET`    | `/api/v1/routines/my/student-schedule`  | Student Only    | Get authenticated student personal timetable    |
-| 46  | `PATCH`  | `/api/v1/routines/:id`                  | Admin / Teacher | Update routine slot with conflict check         |
-| 47  | `DELETE` | `/api/v1/routines/:id`                  | Admin / Teacher | Delete routine slot                             |
-| 48  | `GET`    | `/api/v1/routines/batches/:batchId/pdf` | All Roles       | **Download/Preview Batch Weekly Timetable PDF** |
+| 40  | `POST`   | `/api/v1/routines`                      | Admin / Teacher | Create conflict-free routine slot               |
+| 41  | `GET`    | `/api/v1/routines`                      | Authenticated   | List routine slots (`QueryBuilder`)             |
+| 42  | `GET`    | `/api/v1/routines/:id`                  | Authenticated   | Get routine slot details by ID                  |
+| 43  | `GET`    | `/api/v1/routines/batch/:batchId`       | Authenticated   | Get weekly timetable grouped by day of week     |
+| 44  | `GET`    | `/api/v1/routines/teacher/:teacherId`   | Admin / Teacher | Get teaching schedule for specific teacher      |
+| 45  | `GET`    | `/api/v1/routines/my/teacher-schedule`  | Teacher Only    | Get authenticated teacher personal schedule     |
+| 46  | `GET`    | `/api/v1/routines/my/student-schedule`  | Student Only    | Get authenticated student personal timetable    |
+| 47  | `PATCH`  | `/api/v1/routines/:id`                  | Admin / Teacher | Update routine slot with conflict check         |
+| 48  | `DELETE` | `/api/v1/routines/:id`                  | Admin / Teacher | Delete routine slot                             |
+| 49  | `GET`    | `/api/v1/routines/batches/:batchId/pdf` | All Roles       | **Download/Preview Batch Weekly Timetable PDF** |
 
 ### 10. Daily Student & Teacher Attendance Tracking (11 Endpoints)
 
 |  #  | Method  | Route                                            | Access          | Description                                      |
 | :-: | :------ | :----------------------------------------------- | :-------------- | :----------------------------------------------- |
-| 49  | `POST`  | `/api/v1/attendance/batches/:batchId`            | Admin / Teacher | Record bulk student attendance for batch         |
-| 50  | `GET`   | `/api/v1/attendance/batches/:batchId`            | Admin / Teacher | Get batch attendance sheet by date               |
-| 51  | `PATCH` | `/api/v1/attendance/:id`                         | Admin / Teacher | Correct single attendance record with audit log  |
-| 52  | `GET`   | `/api/v1/attendance/students/:studentId`         | Admin / Teacher | Get attendance history for specific student      |
-| 53  | `GET`   | `/api/v1/attendance/my/summary`                  | Student Only    | Student personal attendance summary & percentage |
-| 54  | `POST`  | `/api/v1/attendance/teachers/check-in`           | Teacher Only    | Teacher daily self check-in                      |
-| 55  | `GET`   | `/api/v1/attendance/teachers/my/summary`         | Teacher Only    | Teacher personal attendance summary & percentage |
-| 56  | `POST`  | `/api/v1/attendance/teachers/bulk`               | Admin / Teacher | Record bulk teacher attendance                   |
-| 57  | `GET`   | `/api/v1/attendance/teachers`                    | Admin / Teacher | Get teacher attendance sheet by date             |
-| 58  | `GET`   | `/api/v1/attendance/teachers/:teacherId/summary` | Admin / Teacher | Get specific teacher attendance summary          |
-| 59  | `PATCH` | `/api/v1/attendance/teachers/:id`                | Admin / Teacher | Correct single teacher attendance record         |
+| 50  | `POST`  | `/api/v1/attendance/batches/:batchId`            | Admin / Teacher | Record bulk student attendance for batch         |
+| 51  | `GET`   | `/api/v1/attendance/batches/:batchId`            | Admin / Teacher | Get batch attendance sheet by date               |
+| 52  | `PATCH` | `/api/v1/attendance/:id`                         | Admin / Teacher | Correct single attendance record with audit log  |
+| 53  | `GET`   | `/api/v1/attendance/students/:studentId`         | Admin / Teacher | Get attendance history for specific student      |
+| 54  | `GET`   | `/api/v1/attendance/my/summary`                  | Student Only    | Student personal attendance summary & percentage |
+| 55  | `POST`  | `/api/v1/attendance/teachers/check-in`           | Teacher Only    | Teacher daily self check-in                      |
+| 56  | `GET`   | `/api/v1/attendance/teachers/my/summary`         | Teacher Only    | Teacher personal attendance summary & percentage |
+| 57  | `POST`  | `/api/v1/attendance/teachers/bulk`               | Admin / Teacher | Record bulk teacher attendance                   |
+| 58  | `GET`   | `/api/v1/attendance/teachers`                    | Admin / Teacher | Get teacher attendance sheet by date             |
+| 59  | `GET`   | `/api/v1/attendance/teachers/:teacherId/summary` | Admin / Teacher | Get specific teacher attendance summary          |
+| 60  | `PATCH` | `/api/v1/attendance/teachers/:id`                | Admin / Teacher | Correct single teacher attendance record         |
 
 ### 11. Exams, Marks, Results Pipeline & Report Card PDF (14 Endpoints)
 
 |  #  | Method   | Route                                                    | Access          | Description                                              |
 | :-: | :------- | :------------------------------------------------------- | :-------------- | :------------------------------------------------------- |
-| 60  | `POST`   | `/api/v1/exams`                                          | Admin / Teacher | Create exam assessment with marks structure              |
-| 61  | `GET`    | `/api/v1/exams`                                          | All Roles       | List exams (`QueryBuilder`)                              |
-| 62  | `GET`    | `/api/v1/exams/:id`                                      | All Roles       | Get exam assessment details by ID                        |
-| 63  | `PATCH`  | `/api/v1/exams/:id`                                      | Admin / Teacher | Update exam metadata                                     |
-| 64  | `DELETE` | `/api/v1/exams/:id`                                      | Admin Only      | Delete exam assessment and cascaded marks                |
-| 65  | `POST`   | `/api/v1/exams/:id/marks`                                | Admin / Teacher | Bulk enter student marks with auto-grading               |
-| 66  | `PATCH`  | `/api/v1/exams/:id/students/:studentId/mark`             | Admin / Teacher | Update mark for single student with audit log            |
-| 67  | `PATCH`  | `/api/v1/exams/:id/publish`                              | Admin / Teacher | Publish exam results (`PUBLISHED`)                       |
-| 68  | `PATCH`  | `/api/v1/exams/:id/unpublish`                            | Admin Only      | Unpublish exam results back to `DRAFT`                   |
-| 69  | `GET`    | `/api/v1/exams/:id/results`                              | All Roles       | Get batch merit list report with statistical aggregates  |
-| 70  | `GET`    | `/api/v1/exams/my/results`                               | Student Only    | Get student all personal report cards summary            |
-| 71  | `GET`    | `/api/v1/exams/my/results/:id`                           | Student Only    | Get student single exam result                           |
-| 72  | `GET`    | `/api/v1/exams/:id/students/:studentId/report-card/pdf`  | All Roles       | **Download/Preview Student Grade Sheet Report Card PDF** |
-| 73  | `POST`   | `/api/v1/exams/:id/students/:studentId/send-report-card` | Admin / Teacher | **Dispatch Report Card PDF via Email to Student**        |
+| 61  | `POST`   | `/api/v1/exams`                                          | Admin / Teacher | Create exam assessment with marks structure              |
+| 62  | `GET`    | `/api/v1/exams`                                          | All Roles       | List exams (`QueryBuilder`)                              |
+| 63  | `GET`    | `/api/v1/exams/:id`                                      | All Roles       | Get exam assessment details by ID                        |
+| 64  | `PATCH`  | `/api/v1/exams/:id`                                      | Admin / Teacher | Update exam metadata                                     |
+| 65  | `DELETE` | `/api/v1/exams/:id`                                      | Admin Only      | Delete exam assessment and cascaded marks                |
+| 66  | `POST`   | `/api/v1/exams/:id/marks`                                | Admin / Teacher | Bulk enter student marks with auto-grading               |
+| 67  | `PATCH`  | `/api/v1/exams/:id/students/:studentId/mark`             | Admin / Teacher | Update mark for single student with audit log            |
+| 68  | `PATCH`  | `/api/v1/exams/:id/publish`                              | Admin / Teacher | Publish exam results (`PUBLISHED`)                       |
+| 69  | `PATCH`  | `/api/v1/exams/:id/unpublish`                            | Admin Only      | Unpublish exam results back to `DRAFT`                   |
+| 70  | `GET`    | `/api/v1/exams/:id/results`                              | All Roles       | Get batch merit list report with statistical aggregates  |
+| 71  | `GET`    | `/api/v1/exams/my/results`                               | Student Only    | Get student all personal report cards summary            |
+| 72  | `GET`    | `/api/v1/exams/my/results/:id`                           | Student Only    | Get student single exam result                           |
+| 73  | `GET`    | `/api/v1/exams/:id/students/:studentId/report-card/pdf`  | All Roles       | **Download/Preview Student Grade Sheet Report Card PDF** |
+| 74  | `POST`   | `/api/v1/exams/:id/students/:studentId/send-report-card` | Admin / Teacher | **Dispatch Report Card PDF via Email to Student**        |
 
 ### 12. Profile Picture & Media Storage (3 Endpoints)
 
 |  #  | Method   | Route                              | Access        | Description                                                 |
 | :-: | :------- | :--------------------------------- | :------------ | :---------------------------------------------------------- |
-| 74  | `PATCH`  | `/api/v1/users/me/avatar`          | Authenticated | Upload personal avatar with AI face crop ($500 \times 500$) |
-| 75  | `DELETE` | `/api/v1/users/me/avatar`          | Authenticated | Delete personal avatar from Cloudinary                      |
-| 76  | `POST`   | `/api/v1/uploads/users/:id/avatar` | Admin Only    | Upload avatar for specific user by ID                       |
+| 75  | `PATCH`  | `/api/v1/users/me/avatar`          | Authenticated | Upload personal avatar with AI face crop ($500 \times 500$) |
+| 76  | `DELETE` | `/api/v1/users/me/avatar`          | Authenticated | Delete personal avatar from Cloudinary                      |
+| 77  | `POST`   | `/api/v1/uploads/users/:id/avatar` | Admin Only    | Upload avatar for specific user by ID                       |
 
 ### 13. Payments, Fee Collection, Webhooks & Receipt PDF (10 Endpoints)
 
 |  #  | Method | Route                                                         | Access          | Description                                                        |
 | :-: | :----- | :------------------------------------------------------------ | :-------------- | :----------------------------------------------------------------- |
-| 77  | `POST` | `/api/v1/payments/create-checkout-session`                    | Student Only    | Create Stripe Checkout session for batch fee                       |
-| 78  | `POST` | `/api/v1/payments/webhook`                                    | Stripe Webhook  | Cryptographically verified webhook listener                        |
-| 79  | `POST` | `/api/v1/payments/manual-collect`                             | Admin Only      | Collect offline payment (Cash, bKash, Nagad, Bank)                 |
-| 80  | `GET`  | `/api/v1/payments/my`                                         | Student Only    | Student personal payment history & receipts                        |
-| 81  | `GET`  | `/api/v1/payments`                                            | Admin Only      | System-wide payment transaction ledger (`QueryBuilder`)            |
-| 82  | `GET`  | `/api/v1/payments/stats`                                      | Admin Only      | Executive financial revenue dashboard & stats                      |
-| 83  | `GET`  | `/api/v1/payments/receipts/:receiptId`                        | Admin / Student | Get payment receipt metadata by receipt ID                         |
-| 84  | `GET`  | `/api/v1/payments/receipts/by-transaction/:transactionId`     | Admin / Student | Get payment receipt metadata by transaction ID                     |
-| 85  | `GET`  | `/api/v1/payments/receipts/:receiptId/pdf`                    | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Receipt ID**     |
-| 86  | `GET`  | `/api/v1/payments/receipts/by-transaction/:transactionId/pdf` | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Transaction ID** |
+| 78  | `POST` | `/api/v1/payments/create-checkout-session`                    | Student Only    | Create Stripe Checkout session for batch fee                       |
+| 79  | `POST` | `/api/v1/payments/webhook`                                    | Stripe Webhook  | Cryptographically verified webhook listener                        |
+| 80  | `POST` | `/api/v1/payments/manual-collect`                             | Admin Only      | Collect offline payment (Cash, bKash, Nagad, Bank)                 |
+| 81  | `GET`  | `/api/v1/payments/my`                                         | Student Only    | Student personal payment history & receipts                        |
+| 82  | `GET`  | `/api/v1/payments`                                            | Admin Only      | System-wide payment transaction ledger (`QueryBuilder`)            |
+| 83  | `GET`  | `/api/v1/payments/stats`                                      | Admin Only      | Executive financial revenue dashboard & stats                      |
+| 84  | `GET`  | `/api/v1/payments/receipts/:receiptId`                        | Admin / Student | Get payment receipt metadata by receipt ID                         |
+| 85  | `GET`  | `/api/v1/payments/receipts/by-transaction/:transactionId`     | Admin / Student | Get payment receipt metadata by transaction ID                     |
+| 86  | `GET`  | `/api/v1/payments/receipts/:receiptId/pdf`                    | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Receipt ID**     |
+| 87  | `GET`  | `/api/v1/payments/receipts/by-transaction/:transactionId/pdf` | Admin / Student | **Download/Preview Payment Invoice Receipt PDF by Transaction ID** |
 
 ### 14. Centralized Audit Logging & Security Explorer (3 Endpoints)
 
 |  #  | Method | Route                      | Access     | Description                                       |
 | :-: | :----- | :------------------------- | :--------- | :------------------------------------------------ |
-| 87  | `GET`  | `/api/v1/audit-logs`       | Admin Only | System-wide audit log explorer (`QueryBuilder`)   |
-| 88  | `GET`  | `/api/v1/audit-logs/stats` | Admin Only | Audit activity statistics & operational breakdown |
-| 89  | `GET`  | `/api/v1/audit-logs/:id`   | Admin Only | Get single audit log record details by ID         |
+| 88  | `GET`  | `/api/v1/audit-logs`       | Admin Only | System-wide audit log explorer (`QueryBuilder`)   |
+| 89  | `GET`  | `/api/v1/audit-logs/stats` | Admin Only | Audit activity statistics & operational breakdown |
+| 90  | `GET`  | `/api/v1/audit-logs/:id`   | Admin Only | Get single audit log record details by ID         |

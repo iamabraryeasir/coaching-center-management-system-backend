@@ -103,3 +103,24 @@ export const deleteUser = catchAsync(async (req: Request, res: Response): Promis
     data: null,
   });
 });
+
+export const updateTeacherPermissions = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    if (!req.user) {
+      throw ApiError.unauthorized('Authentication required');
+    }
+
+    const teacher = await userService.updateTeacherPermissions(
+      req.params.id as string,
+      req.user.userId,
+      req.body,
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Teacher operational permissions updated successfully',
+      data: teacher,
+    });
+  },
+);

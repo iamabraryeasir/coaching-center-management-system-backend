@@ -1027,6 +1027,49 @@
 						},
 						"description": "Protected: Administrator soft-deletes a user account (sets deletedAt timestamp, sets status to INACTIVE, revokes all sessions). Admin self-deletion is strictly prevented."
 					}
+				},
+				{
+					"name": "Update Teacher Operational Permissions (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"permissions\": [\n    \"MANAGE_ATTENDANCE\",\n    \"MANAGE_EXAMS\",\n    \"MANAGE_ROUTINES\",\n    \"VIEW_REPORTS\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/teachers/{{teacherUserId}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"teachers",
+								"{{teacherUserId}}",
+								"permissions"
+							]
+						},
+						"description": "Admin endpoint to update and delegate operational permissions to a teacher faculty member (MANAGE_STUDENTS, MANAGE_ATTENDANCE, MANAGE_EXAMS, MANAGE_ROUTINES, VIEW_REPORTS)."
+					},
+					"response": []
 				}
 			]
 		},

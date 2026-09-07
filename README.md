@@ -21,7 +21,7 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 4. [Role-Based Access Control & Permission Matrix](#-role-based-access-control--permission-matrix)
 5. [Authentication & Student Onboarding State Machine](#-authentication--student-onboarding-state-machine)
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
-7. [Master API Catalog (89 Verified Endpoints)](#-master-api-catalog-89-verified-endpoints)
+7. [Master API Catalog (90 Verified Endpoints)](#-master-api-catalog-90-verified-endpoints)
 8. [Directory Structure](#-directory-structure)
 9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
 10. [Environment Variables Reference](#-environment-variables-reference)
@@ -347,7 +347,7 @@ To protect cloud storage quotas and guarantee 100% real-time data accuracy, docu
 
 ---
 
-## 📚 Master API Catalog (89 Verified Endpoints)
+## 📚 Master API Catalog (90 Verified Endpoints)
 
 All endpoints are versioned under `/api/v1` and follow the standardized `sendResponse` JSON envelope.
 
@@ -387,13 +387,14 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `GET /api/v1/institution` — Retrieve public academy profile, branding, address, and live operational stats.
 - `PATCH /api/v1/institution` — Admin updates academy branding, contact, and address information.
 
-### 7. User & Profile Management (7 APIs)
+### 7. User & Profile Management (8 APIs)
 
 - `GET /api/v1/users/me` — Retrieve authenticated user profile, permissions, and session info.
 - `PATCH /api/v1/users/me` — Update personal profile details (phone, name).
 - `PATCH /api/v1/users/change-password` — Secure password change verifying old credentials.
 - `GET /api/v1/users` — Admin list users with pagination, search & filters (`QueryBuilder`).
 - `GET /api/v1/users/:id` — Admin retrieve detailed user profile by ID.
+- `PATCH /api/v1/users/teachers/:id/permissions` — Admin update and delegate teacher operational permissions.
 - `PATCH /api/v1/users/:id/status` — Admin toggle user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`).
 - `DELETE /api/v1/users/:id` — Admin universal soft-delete user account (`deletedAt`).
 
@@ -497,7 +498,7 @@ backend/
 ├── prisma.config.ts             # Prisma 7 multi-file schema folder configuration
 ├── tsconfig.json                # TypeScript compiler configuration (bundler resolution)
 ├── postman/
-│   ├── Coaching_Center_API.postman_collection.json # Production Postman collection (89 APIs / 90 Requests)
+│   ├── Coaching_Center_API.postman_collection.json # Production Postman collection (90 APIs / 91 Requests)
 │   └── Coaching_Center_Local.postman_environment.json # Local testing environment variables
 ├── prisma/
 │   ├── schema.prisma            # Minimal root schema (generator client & datasource only)
@@ -671,7 +672,7 @@ A production-ready Postman testing suite is located in the `postman/` directory:
 3. Select the **Coaching Center API (Local)** environment.
 4. Execute the **Login (Admin)** request in the `Authentication & Sessions` folder.
    - The test script automatically extracts the Bearer `accessToken` and sets it globally for all subsequent requests.
-5. All **89 endpoints across 14 modules** (90 total requests) are pre-configured with test assertions, sample payloads, and dynamic ID substitutions.
+5. All **90 endpoints across 14 modules** (91 total requests) are pre-configured with test assertions, sample payloads, and dynamic ID substitutions.
 
 ---
 

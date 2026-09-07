@@ -1,4 +1,4 @@
-import { Role, UserStatus } from '@prisma/client';
+import { Permission, Role, UserStatus } from '@prisma/client';
 import { z } from 'zod';
 
 export const updateMyProfileSchema = z.object({
@@ -87,6 +87,18 @@ export const updateUserStatusSchema = z.object({
   }),
 });
 
+export const updateTeacherPermissionsSchema = z.object({
+  params: z.object({
+    id: z.uuid('Valid teacher user ID is required'),
+  }),
+  body: z.object({
+    permissions: z.array(z.enum(Permission, { error: 'Invalid permission value' }), {
+      error: 'Permissions array is required',
+    }),
+  }),
+});
+
 export type UpdateMyProfileInput = z.infer<typeof updateMyProfileSchema>['body'];
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>['body'];
 export type UpdateUserStatusInput = z.infer<typeof updateUserStatusSchema>['body'];
+export type UpdateTeacherPermissionsInput = z.infer<typeof updateTeacherPermissionsSchema>['body'];

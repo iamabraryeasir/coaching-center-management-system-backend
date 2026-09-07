@@ -38,6 +38,10 @@ export interface IUpdateUserStatusInput {
   reason?: string;
 }
 
+export interface IUpdateTeacherPermissionsInput {
+  permissions: Permission[];
+}
+
 export interface IStudentProfileData {
   id: string;
   guardianName: string;

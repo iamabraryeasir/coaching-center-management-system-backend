@@ -2,7 +2,7 @@
 
 > **Version**: 2.5.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 89 Verified Endpoints across 14 Modules  
+> **API Standard**: RESTful v1 with 90 Verified Endpoints across 14 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 
 ---
@@ -60,7 +60,7 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
 | **Date & Time**        | date-fns (v4+)                      | Timezone-safe immutable date/time arithmetic and calendar formatting.                                                                                 |
 | **Linter & Formatter** | Biome (v2.5+)                       | Enterprise linter, formatter, and import organizer (`biome.json`).                                                                                    |
 | **Dev & Bundler**      | tsx + tsup                          | Hot reload dev server (`tsx watch`) and esbuild-based production bundler (`tsup`).                                                                    |
-| **Documentation**      | Postman Collection (v2.1)           | Production API testing suite covering 89 endpoints (90 runnable requests) with automated token management.                                            |
+| **Documentation**      | Postman Collection (v2.1)           | Production API testing suite covering 90 endpoints (91 runnable requests) with automated token management.                                            |
 
 ---
 
@@ -115,7 +115,7 @@ stateDiagram-v2
 
 ---
 
-## 6. Complete Master API Specification (89 Endpoints across 14 Modules)
+## 6. Complete Master API Specification (90 Endpoints across 14 Modules)
 
 ### 6.1 Health Checks & System Telemetry (2 Endpoints)
 
@@ -153,13 +153,14 @@ stateDiagram-v2
 - `GET /api/v1/institution` — Retrieve public academy profile, branding, address, and live operational stats.
 - `PATCH /api/v1/institution` — Admin updates academy branding, contact, and address information.
 
-### 6.7 User & Profile Management (7 Endpoints)
+### 6.7 User & Profile Management (8 Endpoints)
 
 - `GET /api/v1/users/me` — Retrieve authenticated user profile, permissions, and session info.
 - `PATCH /api/v1/users/me` — Update personal profile details (phone, name).
 - `PATCH /api/v1/users/change-password` — Secure password change verifying old password credentials.
 - `GET /api/v1/users` — Admin list users with pagination, search, and role filters (`QueryBuilder`).
 - `GET /api/v1/users/:id` — Admin retrieve detailed user profile by ID.
+- `PATCH /api/v1/users/teachers/:id/permissions` — Admin update and delegate teacher operational permissions.
 - `PATCH /api/v1/users/:id/status` — Admin toggle user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`).
 - `DELETE /api/v1/users/:id` — Admin universal soft-delete user record (`deletedAt`).
 
@@ -314,4 +315,4 @@ stateDiagram-v2
 | **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled, 292.21 KB)**    |
 | **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (10/10 stages completed)**                  |
 | **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Receipt, Routine & Report Card verified)** |
-| **Postman Test Suite**         | 89 endpoints (90 runnable requests)   | **PASSED (Coaching_Center_API v2.1 synced)**         |
+| **Postman Test Suite**         | 90 endpoints (91 runnable requests)   | **PASSED (Coaching_Center_API v2.1 synced)**         |
