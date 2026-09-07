@@ -506,9 +506,7 @@ backend/
 ├── prisma.config.ts             # Prisma 7 multi-file schema folder configuration
 ├── tsconfig.json                # TypeScript compiler configuration (bundler resolution)
 ├── postman/
-│   ├── Coaching_Center_API.postman_collection.json # Production Postman collection (91 APIs / 91 Requests)
-
-│   └── Coaching_Center_Local.postman_environment.json # Local testing environment variables
+│   └── Coaching Center Management System API.postman_collection.json # Self-contained Postman collection (95 requests with baseUrl variable)
 ├── prisma/
 │   ├── schema.prisma            # Minimal root schema (generator client & datasource only)
 │   ├── enums.prisma             # System-wide enums (Role, UserStatus, Permission, etc.)
@@ -674,14 +672,12 @@ npm start
 
 ## 📬 Postman Collection & Verification
 
-A production-ready Postman testing suite is located in the `postman/` directory:
+A complete, self-contained Postman testing suite (95 runnable requests across 14 modules) is located in the `postman/` directory:
 
-1. Import `postman/Coaching_Center_API.postman_collection.json`.
-2. Import `postman/Coaching_Center_Local.postman_environment.json`.
-3. Select the **Coaching Center API (Local)** environment.
-4. Execute the **Login (Admin)** request in the `Authentication & Sessions` folder.
-   - The test script automatically extracts the Bearer `accessToken` and sets it globally for all subsequent requests.
-5. All **90 endpoints across 14 modules** (91 total requests) are pre-configured with test assertions, sample payloads, and dynamic ID substitutions.
+1. Import `postman/Coaching Center Management System API.postman_collection.json` directly into Postman.
+2. **Base URL Configuration**: Only `baseUrl` is defined in the collection variables (`https://coaching-center-app-backend.vercel.app` by default, or switch to `http://localhost:5000` for local development).
+3. **Cookie-Based Authentication**: The API natively uses secure HttpOnly cookies for session management (`accessToken` and `refreshToken`). Simply run any login endpoint (`✅ Login — Administrator`, `✅ Login — Teacher`, or `✅ Login — Student`), and Postman's native cookie manager automatically authenticates all subsequent protected requests without requiring manual Bearer tokens or background sync scripts.
+4. **Self-Contained Payloads & Sample IDs**: All requests come pre-configured with realistic sample JSON bodies, parameters, and comprehensive descriptions for effortless testing.
 
 ---
 

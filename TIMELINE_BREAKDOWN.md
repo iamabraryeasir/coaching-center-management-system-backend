@@ -3,7 +3,7 @@
 > **Version**: 2.6.0 (Production Verified)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
 > **API Standard**: RESTful v1 with 93 Verified Endpoints across 14 Modules  
-> **Postman Suite**: Comprehensive Collection (v2.1) + Local Environment (95 Runnable Requests)
+> **Postman Suite**: Clean Postman Collection (v2.1) with baseUrl variable & cookie authentication (95 Runnable Requests)
 
 ---
 
@@ -113,15 +113,15 @@
   - Password Reset Email (`sendPasswordResetEmail`)
 - [x] Build Centralized Audit Logging Subsystem (`GET /api/v1/audit-logs`, `GET /audit-logs/stats`, `GET /audit-logs/:id`).
 - [x] Build Comprehensive Idempotent Database Seeder (`prisma/seed.ts` via `npm run prisma:seed`) bootstrapping Admin, Faculty, Batches, Routines, Students, Attendance, Exams, Payments, and Audit Logs.
-- [x] Complete Postman Collection (v2.1) covering **90 verified endpoints** (91 Postman requests with role personas) with automated token propagation and environment variables.
+- [x] Complete Postman Collection (v2.1) covering **93 verified endpoints** (95 runnable Postman requests across 14 modules) with cookie-based session authentication and clean sample dummy parameters.
 - [x] Full test pass:
-  - `npm run check`: **0 errors, 0 warnings (182 files checked)**
+  - `npm run check`: **0 errors, 0 warnings (186 files checked)**
   - `npm run typecheck`: **0 errors**
   - `npm run build`: **Production bundle generated (`dist/server.js`)**
 
 ---
 
-## 📚 Master Catalog of All 90 API Endpoints
+## 📚 Master Catalog of All 93 API Endpoints
 
 ### 1. Health & Server Monitoring (2 Endpoints)
 
@@ -182,7 +182,7 @@
 | 23  | `GET`    | `/api/v1/users/:id`                      | Admin Only    | Get detailed user profile by ID                               |
 | 24  | `PATCH`  | `/api/v1/users/teachers/:id/permissions` | Admin Only    | Update & delegate teacher operational permissions             |
 | 25  | `PATCH`  | `/api/v1/users/:id/status`               | Admin Only    | Update user account status (`ACTIVE`, `INACTIVE`, `BLOCKED`)  |
-| 27  | `DELETE` | `/api/v1/users/:id`                      | Admin Only    | Universal soft-delete user account (`deletedAt`)              |
+| 26  | `DELETE` | `/api/v1/users/:id`                      | Admin Only    | Universal soft-delete user account (`deletedAt`)              |
 
 ### 8. Academic Batches & Enrollments (13 Endpoints)
 

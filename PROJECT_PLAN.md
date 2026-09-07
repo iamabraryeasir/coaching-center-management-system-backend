@@ -60,7 +60,7 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
 | **Date & Time**        | date-fns (v4+)                      | Timezone-safe immutable date/time arithmetic and calendar formatting.                                                                                 |
 | **Linter & Formatter** | Biome (v2.5+)                       | Enterprise linter, formatter, and import organizer (`biome.json`).                                                                                    |
 | **Dev & Bundler**      | tsx + tsup                          | Hot reload dev server (`tsx watch`) and esbuild-based production bundler (`tsup`).                                                                    |
-| **Documentation**      | Postman Collection (v2.1)           | Production API testing suite covering 90 endpoints (91 runnable requests) with automated token management.                                            |
+| **Documentation**      | Postman Collection (v2.1)           | Clean, self-contained API testing suite covering 93 endpoints (95 runnable requests) with baseUrl variable and cookie-based authentication.           |
 
 ---
 
@@ -309,11 +309,11 @@ stateDiagram-v2
 
 ## 9. Final Verification & Quality Gates Status
 
-| Quality Gate                   | Requirement                           | Actual Status                                        |
-| :----------------------------- | :------------------------------------ | :--------------------------------------------------- |
-| **Biome Linter & Formatter**   | 0 errors, 0 warnings across all files | **PASSED (182 files checked, 0 errors)**             |
-| **TypeScript Strict Compiler** | 0 type errors (`tsc --noEmit`)        | **PASSED (0 errors)**                                |
-| **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled, 292.21 KB)**    |
-| **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (10/10 stages completed)**                  |
-| **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Receipt, Routine & Report Card verified)** |
-| **Postman Test Suite**         | 90 endpoints (91 runnable requests)   | **PASSED (Coaching_Center_API v2.1 synced)**         |
+| Quality Gate                   | Requirement                           | Actual Status                                              |
+| :----------------------------- | :------------------------------------ | :--------------------------------------------------------- |
+| **Biome Linter & Formatter**   | 0 errors, 0 warnings across all files | **PASSED (182 files checked, 0 errors)**                   |
+| **TypeScript Strict Compiler** | 0 type errors (`tsc --noEmit`)        | **PASSED (0 errors)**                                      |
+| **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled, 292.21 KB)**          |
+| **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (10/10 stages completed)**                        |
+| **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Receipt, Routine & Report Card verified)**       |
+| **Postman Test Suite**         | 93 endpoints (95 runnable requests)   | **PASSED (Clean Collection v2.1 synced with cookie auth)** |
