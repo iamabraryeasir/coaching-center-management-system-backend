@@ -54,19 +54,6 @@
       "item": [
         {
           "name": "✅ Login — Administrator",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -77,7 +64,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"<adminEmail>\",\n  \"password\": \"<adminPassword>\"\n}"
+              "raw": "{\n  \"email\": \"admin@apexacademy.edu\",\n  \"password\": \"Admin@123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
@@ -91,25 +78,12 @@
                 "login"
               ]
             },
-            "description": "Authenticates the System Administrator. Automatically stores accessToken and refreshToken in environment."
+            "description": "Authenticates the System Administrator."
           },
           "response": []
         },
         {
           "name": "✅ Login — Teacher",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -140,19 +114,6 @@
         },
         {
           "name": "✅ Login — Student",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -183,19 +144,6 @@
         },
         {
           "name": "✅ Refresh Access Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -313,9 +261,6 @@
         {
           "name": "✅ Logout from All Devices (Authenticated)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [],
             "url": {
@@ -337,16 +282,6 @@
         {
           "name": "✅ List Active Login Sessions (Authenticated)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -373,9 +308,6 @@
         {
           "name": "✅ Register Student",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -406,9 +338,6 @@
         {
           "name": "✅ Register Teacher",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -509,33 +438,7 @@
       "item": [
         {
           "name": "✅ Get Pending Students (QueryBuilder)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var json = pm.response.json();",
-                  "    if (json.data && json.data.length > 0) {",
-                  "        pm.environment.set(\"pendingStudentId\", json.data[0].id);",
-                  "    }",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -584,16 +487,6 @@
         {
           "name": "✅ Approve Student Application",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PATCH",
             "header": [],
             "url": {
@@ -623,16 +516,6 @@
         {
           "name": "✅ Reject Student Application",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PATCH",
             "header": [],
             "url": {
@@ -687,9 +570,6 @@
         {
           "name": "✅ Update Institution Profile (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -724,9 +604,6 @@
         {
           "name": "✅ Get Current User Profile (/me)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -748,9 +625,6 @@
         {
           "name": "✅ Update Current User Profile (/me)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -781,9 +655,6 @@
         {
           "name": "✅ Change Password",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -813,23 +684,7 @@
         },
         {
           "name": "✅ Get All Users (Admin Only — QueryBuilder)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -893,9 +748,6 @@
         {
           "name": "✅ Get User By ID (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -923,9 +775,6 @@
         {
           "name": "✅ Update User Status (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -963,16 +812,6 @@
         {
           "name": "✅ Delete User (Admin Only — Soft Delete)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -1000,9 +839,6 @@
         {
           "name": "✅ Update Teacher Delegated Permissions (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -1030,7 +866,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{teacherId}}",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871",
                   "description": "Target teacher user UUID"
                 }
               ]
@@ -1046,23 +882,7 @@
       "item": [
         {
           "name": "✅ Create Batch (Admin Only)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -1091,23 +911,7 @@
         },
         {
           "name": "✅ Get All Batches (QueryBuilder)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1178,16 +982,6 @@
         {
           "name": "✅ Get Batch Details by ID",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1215,9 +1009,6 @@
         {
           "name": "✅ Update Batch (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -1254,9 +1045,6 @@
         {
           "name": "✅ Delete Batch (Admin Only — Soft Delete)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -1284,9 +1072,6 @@
         {
           "name": "✅ Student Request Self-Enrollment (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [],
             "url": {
@@ -1314,23 +1099,7 @@
         },
         {
           "name": "✅ Get Pending Enrollment Requests (Admin Only — QueryBuilder)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1385,16 +1154,6 @@
         {
           "name": "✅ Approve Enrollment Request (Admin Only)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PATCH",
             "header": [],
             "url": {
@@ -1424,9 +1183,6 @@
         {
           "name": "✅ Reject Enrollment Request (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [],
             "url": {
@@ -1456,9 +1212,6 @@
         {
           "name": "✅ Admin Direct Enroll Student (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -1496,16 +1249,6 @@
         {
           "name": "✅ Get Batch Student Roster (Admin & Teacher)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1572,16 +1315,6 @@
         {
           "name": "✅ Remove Student from Batch (Admin Only)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -1615,9 +1348,6 @@
         {
           "name": "✅ Get My Enrolled Batches (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1644,23 +1374,7 @@
       "item": [
         {
           "name": "✅ Create Routine Slot (Admin or Authorized Teacher)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -1689,23 +1403,7 @@
         },
         {
           "name": "✅ Get All Routines (QueryBuilder)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1782,9 +1480,6 @@
         {
           "name": "✅ Get Routine Slot by ID",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1812,9 +1507,6 @@
         {
           "name": "✅ Get Batch Timetable (Day-Wise Grouped)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1843,9 +1535,6 @@
         {
           "name": "✅ Get Teacher Teaching Schedule",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1874,9 +1563,6 @@
         {
           "name": "✅ Get My Teaching Schedule (Teacher Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1899,9 +1585,6 @@
         {
           "name": "✅ Get My Class Timetable (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1924,9 +1607,6 @@
         {
           "name": "✅ Update Routine Slot (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -1963,16 +1643,6 @@
         {
           "name": "✅ Delete Routine Slot (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -2000,9 +1670,6 @@
         {
           "name": "✅ Download/Preview Batch Routine Schedule PDF (All Roles)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2043,23 +1710,7 @@
       "item": [
         {
           "name": "✅ Mark Bulk Daily Attendance (Admin or Authorized Teacher)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -2097,16 +1748,6 @@
         {
           "name": "✅ Get Batch Attendance Sheet (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2152,9 +1793,6 @@
         {
           "name": "✅ Update Single Attendance Record (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -2191,16 +1829,6 @@
         {
           "name": "✅ Get Student Attendance History (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2241,9 +1869,6 @@
         {
           "name": "✅ Get My Attendance Summary (Authenticated Student)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2275,23 +1900,7 @@
         },
         {
           "name": "✅ Teacher Self Check-In (Teacher Only)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -2323,9 +1932,6 @@
         {
           "name": "✅ Get My Teacher Attendance Summary (Teacher Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2358,23 +1964,7 @@
         },
         {
           "name": "✅ Mark Bulk Teacher Attendance (Admin or Authorized Teacher)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -2406,9 +1996,6 @@
         {
           "name": "✅ Get Teacher Attendance Sheet (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2447,16 +2034,6 @@
         {
           "name": "✅ Get Specific Teacher Attendance Summary (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2496,9 +2073,6 @@
         {
           "name": "✅ Update Single Teacher Attendance Record (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -2541,23 +2115,7 @@
       "item": [
         {
           "name": "✅ Create Exam (Admin or Authorized Teacher)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -2587,9 +2145,6 @@
         {
           "name": "✅ Get Exams List (All Roles)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2621,16 +2176,6 @@
         {
           "name": "✅ Get Single Exam Details (All Roles)",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2658,9 +2203,6 @@
         {
           "name": "✅ Update Exam Metadata (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -2697,9 +2239,6 @@
         {
           "name": "✅ Bulk Marks Entry (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -2737,9 +2276,6 @@
         {
           "name": "✅ Update Single Student Mark (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -2782,9 +2318,6 @@
         {
           "name": "✅ Publish Exam Results (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [],
             "url": {
@@ -2813,9 +2346,6 @@
         {
           "name": "✅ Get Batch Exam Results / Merit List (All Roles)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2844,9 +2374,6 @@
         {
           "name": "✅ Unpublish Exam Results (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [],
             "url": {
@@ -2875,9 +2402,6 @@
         {
           "name": "✅ Get My Report Card (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2900,9 +2424,6 @@
         {
           "name": "✅ Get My Single Exam Result (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2932,9 +2453,6 @@
         {
           "name": "✅ Delete Exam (Admin or Authorized Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -2962,9 +2480,6 @@
         {
           "name": "✅ Download/Preview Student Exam Report Card PDF (All Roles)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -3006,9 +2521,6 @@
         {
           "name": "✅ Dispatch Student Report Card PDF via Email (Admin & Teacher)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [],
             "url": {
@@ -3049,9 +2561,6 @@
         {
           "name": "✅ Upload My Avatar (All Roles)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [],
             "body": {
@@ -3084,9 +2593,6 @@
         {
           "name": "✅ Delete My Avatar (All Roles)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -3109,9 +2615,6 @@
         {
           "name": "✅ Upload User Avatar by ID (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [],
             "body": {
@@ -3157,9 +2660,6 @@
         {
           "name": "✅ Create Monthly Stripe Checkout Session (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -3169,7 +2669,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"batchId\": \"{{batchId}}\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026,\n  \"currency\": \"bdt\"\n}"
+              "raw": "{\n  \"batchId\": \"2c7d356f-cc25-4bdf-8d23-ae971e361770\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026,\n  \"currency\": \"bdt\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/create-checkout-session",
@@ -3190,9 +2690,6 @@
         {
           "name": "✅ Collect Manual Monthly Fee Payment (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -3202,7 +2699,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"batchId\": \"{{batchId}}\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026,\n  \"amount\": 2800,\n  \"paymentMethod\": \"BKASH\",\n  \"notes\": \"Collected offline at academy counter\"\n}"
+              "raw": "{\n  \"studentId\": \"14524034-c84e-4f64-b500-76dc2cc11a70\",\n  \"batchId\": \"2c7d356f-cc25-4bdf-8d23-ae971e361770\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026,\n  \"amount\": 2800,\n  \"paymentMethod\": \"BKASH\",\n  \"notes\": \"Collected offline at academy counter\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/manual-collect",
@@ -3223,9 +2720,6 @@
         {
           "name": "✅ Configure Historical Billing Start & Opening Dues / Flat Discount (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "PATCH",
             "header": [
               {
@@ -3253,7 +2747,7 @@
               "variable": [
                 {
                   "key": "enrollmentId",
-                  "value": "{{enrollmentId}}",
+                  "value": "3b890f55-d352-47e3-96cb-8d5f661001a1",
                   "description": "Target student batch enrollment UUID"
                 }
               ]
@@ -3265,9 +2759,6 @@
         {
           "name": "✅ Check My Outstanding Monthly Dues (Student Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3295,9 +2786,6 @@
         {
           "name": "✅ Monitor All Student Dues & Defaulters (Admin Only — QueryBuilder)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3306,7 +2794,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/dues?batchId={{batchId}}",
+              "raw": "{{baseUrl}}/api/v1/payments/dues?batchId=2c7d356f-cc25-4bdf-8d23-ae971e361770",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3319,7 +2807,7 @@
               "query": [
                 {
                   "key": "batchId",
-                  "value": "{{batchId}}",
+                  "value": "2c7d356f-cc25-4bdf-8d23-ae971e361770",
                   "description": "Optional filter by specific batch"
                 }
               ]
@@ -3331,9 +2819,6 @@
         {
           "name": "✅ My Payment History (Student Only — QueryBuilder)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3374,9 +2859,6 @@
         {
           "name": "✅ All System Payment Transactions (Admin Only — QueryBuilder)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3416,9 +2898,6 @@
         {
           "name": "✅ Executive Financial Dashboard & Stats (Admin Only)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3445,9 +2924,6 @@
         {
           "name": "✅ Get Receipt Details by Transaction ID (Admin & Student)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3471,7 +2947,7 @@
               "variable": [
                 {
                   "key": "transactionId",
-                  "value": "{{transactionId}}",
+                  "value": "f1e4693a-3bf3-4b68-8097-4b7b3d4f1311",
                   "description": "Payment transaction UUID"
                 }
               ]
@@ -3483,9 +2959,6 @@
         {
           "name": "✅ Download/Preview PDF Receipt by Transaction ID (Admin & Student)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [
               {
@@ -3516,7 +2989,7 @@
               "variable": [
                 {
                   "key": "transactionId",
-                  "value": "{{transactionId}}",
+                  "value": "f1e4693a-3bf3-4b68-8097-4b7b3d4f1311",
                   "description": "Payment transaction UUID"
                 }
               ]
@@ -3528,9 +3001,6 @@
         {
           "name": "✅ Mock Stripe Webhook Event (System / Stripe)",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
             "header": [
               {
@@ -3544,7 +3014,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"evt_test_webhook_001\",\n  \"type\": \"checkout.session.completed\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"cs_test_session_id\",\n      \"payment_status\": \"paid\",\n      \"metadata\": {\n        \"transactionId\": \"{{transactionId}}\",\n        \"studentId\": \"{{studentId}}\",\n        \"batchId\": \"{{batchId}}\",\n        \"billingMonth\": \"9\",\n        \"billingYear\": \"2026\"\n      }\n    }\n  }\n}"
+              "raw": "{\n  \"id\": \"evt_test_webhook_001\",\n  \"type\": \"checkout.session.completed\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"cs_test_session_id\",\n      \"payment_status\": \"paid\",\n      \"metadata\": {\n        \"transactionId\": \"f1e4693a-3bf3-4b68-8097-4b7b3d4f1311\",\n        \"studentId\": \"14524034-c84e-4f64-b500-76dc2cc11a70\",\n        \"batchId\": \"2c7d356f-cc25-4bdf-8d23-ae971e361770\",\n        \"billingMonth\": \"9\",\n        \"billingYear\": \"2026\"\n      }\n    }\n  }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/webhook",
@@ -3569,23 +3039,7 @@
       "item": [
         {
           "name": "✅ All Audit Logs Explorer (Admin Only)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -3615,23 +3069,7 @@
         },
         {
           "name": "✅ Audit Activity Statistics & Dashboard (Admin Only)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -3652,23 +3090,7 @@
         },
         {
           "name": "✅ Get Audit Log Details by ID (Admin Only)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -3696,34 +3118,12 @@
       ]
     }
   ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://coaching-center-app-backend.vercel.app"
+      "value": "https://coaching-center-app-backend.vercel.app",
+      "type": "string",
+      "description": "Base API URL (switch to http://localhost:5000 for local development)"
     }
   ]
 }
