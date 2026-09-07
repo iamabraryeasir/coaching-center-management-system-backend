@@ -22,7 +22,7 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 5. [Authentication & Student Onboarding State Machine](#-authentication--student-onboarding-state-machine)
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
 7. [Master API Catalog (93 Verified Endpoints)](#-master-api-catalog-93-verified-endpoints)
-8. [Directory Structure](#-directory-structure)
+8. [Directory Structure & File Architecture](#-directory-structure--file-architecture)
 9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
 10. [Environment Variables Reference](#-environment-variables-reference)
 11. [Installation & Getting Started](#-installation--getting-started)
@@ -493,53 +493,95 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 
 ---
 
-## 🗂️ Directory Structure
+## 🗂️ Directory Structure & File Architecture
 
 ```text
 backend/
-├── .env.example                 # Environment variable templates and descriptions
-├── AGENTS.md                    # Engineering guidelines & non-negotiable standards
-├── PROJECT_PLAN.md              # High-level architecture and milestone blueprint
-├── TIMELINE_BREAKDOWN.md        # Comprehensive API catalog and progress breakdown
-├── biome.json                   # Biome linter, formatter, and import organizer config
-├── package.json                 # Core dependencies and runtime scripts
+├── .env.example                 # Local environment template & documentation
+├── AGENTS.md                    # Engineering guidelines & non-negotiable coding standards
+├── PROJECT_PLAN.md              # High-level architecture, milestones, and system blueprint
+├── TIMELINE_BREAKDOWN.md        # Comprehensive 93-endpoint API catalog & milestone progress
+├── biome.json                   # Biome linter, code formatter, and import organizer config
+├── package.json                 # Core dependencies, development scripts, and package metadata
 ├── prisma.config.ts             # Prisma 7 multi-file schema folder configuration
-├── tsconfig.json                # TypeScript compiler configuration (bundler resolution)
+├── tsconfig.json                # Modern TypeScript compiler configuration (bundler resolution)
 ├── postman/
-│   └── Coaching Center Management System API.postman_collection.json # Self-contained Postman collection (95 requests with baseUrl variable)
+│   └── Coaching Center Management System API.postman_collection.json # Production Postman v2.1 collection (95 runnable requests)
 ├── prisma/
-│   ├── schema.prisma            # Minimal root schema (generator client & datasource only)
-│   ├── enums.prisma             # System-wide enums (Role, UserStatus, Permission, etc.)
+│   ├── schema.prisma            # Minimal root schema (generator client & datasource db blocks only)
+│   ├── enums.prisma             # Centralized system enums (Role, UserStatus, Gender, Permission, etc.)
 │   ├── user.prisma              # User, Session, Admin/Teacher/Student profiles & permissions
-│   ├── batch.prisma             # Academic batch entity
-│   ├── routine.prisma           # ClassRoutine weekly timetable entity
-│   ├── enrollment.prisma        # Student enrollment entity
-│   ├── attendance.prisma        # Student attendance record entity
-│   ├── teacher-attendance.prisma# Teacher daily attendance record entity
-│   ├── exam.prisma              # Exam assessments & student exam results
-│   ├── payment.prisma           # Stripe & manual transaction ledger and receipts
-│   ├── audit-log.prisma         # Immutable audit trail entity
-│   └── seed.ts                  # Idempotent development/testing ecosystem seeder
-├── src/
-│   ├── app.ts                   # Express application setup, security middleware pipeline
-│   ├── server.ts                # Server startup banner, lifecycle & graceful shutdown
-│   ├── config/
-│   │   ├── env.ts               # Immutable Zod-validated environment configuration
-│   │   ├── prisma.ts            # Prisma 7 client singleton with PostgreSQL connection pool
-│   │   └── index.ts             # Central configuration barrel re-export
-│   ├── middlewares/             # RBAC auth, global error handler, 404, request validator
-│   ├── routes/                  # Root aggregator mounting all feature routers at /api/v1
-│   ├── templates/emails/        # Dynamic EJS HTML templates for receipts and report cards
-│   ├── utils/
-│   │   ├── api-error.ts         # Custom ApiError with HTTP status factory helpers
-│   │   ├── logger.ts            # Structured logger (info, warn, error, audit)
-│   │   ├── mail.ts              # Nodemailer email dispatcher with PDF attachments
-│   │   ├── pdf.ts               # PDFKit in-memory PDF generators & stream handler
-│   │   ├── query-builder.ts     # Universal search, filter, sort, and pagination engine
-│   │   ├── seedData.ts          # Server startup root Admin bootstrapper
-│   │   └── send-response.ts     # Universal API JSON response envelope dispatcher
-│   └── modules/                 # Action-decomposed feature modules (auth, user, batch, etc.)
+│   ├── batch.prisma             # Academic batch entity (name, subject, classLevel, monthlyFee)
+│   ├── routine.prisma           # ClassRoutine weekly timetable entity (dayOfWeek, roomNumber, times)
+│   ├── enrollment.prisma        # Student enrollment entity (openingDue, discountAmount, billing period)
+│   ├── attendance.prisma        # Student daily attendance record entity
+│   ├── teacher-attendance.prisma# Teacher daily attendance & check-in record entity
+│   ├── exam.prisma              # Exam assessments & student graded exam results
+│   ├── payment.prisma           # Monthly fee payment ledger, Stripe transactions & receipts
+│   ├── audit-log.prisma         # Immutable audit trail entity (financial, status, permission logs)
+│   └── seed.ts                  # Idempotent development & testing database ecosystem seeder
+└── src/
+    ├── app.ts                   # Express application setup, security middleware pipeline & routes
+    ├── server.ts                # Server startup banner, lifecycle, database ping & graceful shutdown
+    ├── config/                  # Central configuration singletons & environment variables
+    │   ├── env.ts               # Immutable Zod-validated environment configuration
+    │   ├── prisma.ts            # Prisma 7 client singleton with managed pg.Pool connection pooling
+    │   ├── redis.ts             # Redis client singleton for token blacklisting & caching
+    │   └── index.ts             # Central configuration barrel re-export
+    ├── middlewares/             # Security, authentication & request processing middlewares
+    │   ├── auth-limiter.ts      # Express rate limiting for sensitive authentication endpoints
+    │   ├── check-auth.ts        # Cookie & Bearer JWT auth guard, RBAC & delegated permission check
+    │   ├── global-error-handler.ts # Centralized error processing (ApiError, Zod, JWT, syntax errors)
+    │   ├── not-found-handler.ts # 404 route catch-all handler for undefined endpoints
+    │   ├── upload.ts            # Multer in-memory file upload middleware for image/document ingestion
+    │   ├── validate-request.ts  # Universal Zod schema validator (body, query, params, cookies)
+    │   └── index.ts             # Central middlewares barrel re-export
+    ├── routes/                  # Modular routing pipeline
+    │   └── index.ts             # Root API router aggregating all domain feature routers under /api/v1
+    ├── templates/               # Dynamic HTML email rendering templates
+    │   └── emails/
+    │       ├── password-reset.ejs       # Password reset email with secure OTP / reset link
+    │       ├── payment-receipt.ejs      # Monthly fee collection receipt with attached PDF
+    │       └── student-report-card.ejs  # Exam result publication alert with attached grade sheet PDF
+    ├── types/                   # Ambient TypeScript definitions
+    │   └── express.d.ts         # Express Request extension for authenticated user context
+    ├── utils/                   # Shared system utilities & business helpers
+    │   ├── api-error.ts         # Custom ApiError class with HTTP status factory methods
+    │   ├── catch-async.ts       # Async controller wrapper eliminating manual try/catch blocks
+    │   ├── jwt.ts               # Short-lived Access & rotating Refresh JWT issuance and verification
+    │   ├── logger.ts            # Morgan HTTP logger & structured console stream logger with audit trails
+    │   ├── mail.ts              # Nodemailer SMTP email dispatcher with PDF attachment streaming
+    │   ├── pdf.ts               # PDFKit in-memory programmatic PDF generators (Receipts, Routines, Report Cards)
+    │   ├── query-builder.ts     # Universal search, dynamic filter, relational filter, sort & pagination builder
+    │   ├── seedData.ts          # Server startup root Admin account bootstrapper
+    │   ├── send-response.ts     # Universal standardized API JSON response envelope dispatcher
+    │   ├── storage.ts           # Cloudinary media storage service with AI face-gravity smart cropping
+    │   ├── stripe.ts            # Stripe payment gateway client singleton
+    │   └── index.ts             # Central utils barrel re-export
+    └── modules/                 # Action-decomposed domain feature modules
+        ├── attendance/          # Daily student & teacher attendance tracking, check-ins & summaries
+        ├── audit-log/           # Centralized administrative audit logging explorer & metrics
+        ├── auth/                # Dual-token auth, Google GIS onboarding, password reset & approvals
+        ├── batch/               # Academic batches, batch enrollments & student promotion
+        ├── exam/                # Assessments, bulk marks entry, auto-grading & PDF grade sheets
+        ├── institution/         # Single-institution academy governance & administrative profile
+        ├── payment/             # Monthly billing, Stripe checkout, manual collection, receipts & PDF
+        ├── routine/             # Conflict-free weekly class routine engine & schedule PDF
+        ├── upload/              # Media upload dispatcher (profile avatars & receipts)
+        ├── user/                # User CRUD, profile management, password updates & teacher permissions
+        └── index.ts             # Feature modules barrel re-export
 ```
+
+### 📦 Domain Feature Modules Breakdown
+
+Each domain feature module in `src/modules/` adheres to a strict, action-decomposed architecture:
+
+- `[feature].interface.ts` — TypeScript domain types, DTOs, and hydrated entity interfaces.
+- `[feature].validation.ts` — Comprehensive Zod validation schemas for request bodies, query strings, and path parameters.
+- `[feature].utils.ts` — Specialized business formatters, formula calculators, and data sanitizers.
+- `[feature].controller.ts` — Pure request extraction, service orchestration, and standardized `sendResponse` dispatching.
+- `[feature].routes.ts` — Express route definitions with layered middleware (Rate Limiting, Auth Guard, RBAC, Zod Validation).
+- `services/` — Granular, single-responsibility business service functions aggregated in `services/index.ts`.
 
 ---
 
