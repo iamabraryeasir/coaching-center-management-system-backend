@@ -18,6 +18,31 @@ export interface IUpdateMyProfileInput {
   specialization?: string;
 }
 
+export interface IUpdateStudentByAdminInput {
+  name?: string;
+  email?: string;
+  phone?: string;
+  gender?: Gender | null;
+  avatarUrl?: string | null;
+  guardianName?: string;
+  guardianPhone?: string;
+  institutionName?: string | null;
+  classLevel?: string;
+  rollNumber?: string | null;
+}
+
+export interface IUpdateTeacherByAdminInput {
+  name?: string;
+  email?: string;
+  phone?: string;
+  gender?: Gender | null;
+  avatarUrl?: string | null;
+  designation?: string;
+  qualification?: string;
+  specialization?: string;
+  joiningDate?: string | Date | null;
+}
+
 export interface IChangePasswordInput {
   currentPassword: string;
   newPassword: string;

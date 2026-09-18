@@ -773,6 +773,82 @@
           "response": []
         },
         {
+          "name": "✅ Update Student Profile (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tanvir Hasan Updated\",\n  \"email\": \"tanvir.updated@apexacademy.edu\",\n  \"phone\": \"+8801700112233\",\n  \"gender\": \"MALE\",\n  \"guardianName\": \"Mohammad Hasan\",\n  \"guardianPhone\": \"+8801811223344\",\n  \"institutionName\": \"Dhaka College\",\n  \"classLevel\": \"Class 10\",\n  \"rollNumber\": \"1024\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/students/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "students",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "14524034-c84e-4f64-b500-76dc2cc11a70",
+                  "description": "Target student user UUID"
+                }
+              ]
+            },
+            "description": "Protected (Admin): Update a student's basic user identity and academic/guardian profile information."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update Teacher Profile (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rafiqul Islam Updated\",\n  \"email\": \"rafiqul.updated@apexacademy.edu\",\n  \"phone\": \"+8801911998877\",\n  \"gender\": \"MALE\",\n  \"designation\": \"Senior Lecturer & Academic Coordinator\",\n  \"qualification\": \"M.Sc in Applied Mathematics, DU\",\n  \"specialization\": \"Advanced Calculus & Linear Algebra\",\n  \"joiningDate\": \"2024-01-15T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/teachers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "teachers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "8fa1719a-fb0e-40c6-b461-704085bcb871",
+                  "description": "Target teacher user UUID"
+                }
+              ]
+            },
+            "description": "Protected (Admin): Update a teacher's basic user identity and faculty/designation profile information."
+          },
+          "response": []
+        },
+        {
           "name": "✅ Update User Status (Admin Only)",
           "request": {
             "method": "PATCH",

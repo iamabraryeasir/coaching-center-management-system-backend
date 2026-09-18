@@ -9,7 +9,12 @@ import {
 } from '@prisma/client';
 import { prisma } from '../../config';
 import type { IInstitutionSummary } from '../institution';
-import type { IUpdateMyProfileInput, IUserProfileResponse } from './user.interface';
+import type {
+  IUpdateMyProfileInput,
+  IUpdateStudentByAdminInput,
+  IUpdateTeacherByAdminInput,
+  IUserProfileResponse,
+} from './user.interface';
 
 export const formatUserProfile = (
   user: User & {
@@ -90,15 +95,21 @@ export const fetchInstitutionSummary = async (): Promise<IInstitutionSummary | n
   };
 };
 
-export const extractBaseUserUpdates = (payload: IUpdateMyProfileInput) => {
+export const extractBaseUserUpdates = (
+  payload: Partial<IUpdateMyProfileInput & IUpdateStudentByAdminInput & IUpdateTeacherByAdminInput>,
+) => {
   const baseData: {
     name?: string;
+    email?: string;
     phone?: string;
     gender?: Gender | null;
     avatarUrl?: string | null;
   } = {};
   if (payload.name !== undefined) {
     baseData.name = payload.name;
+  }
+  if (payload.email !== undefined) {
+    baseData.email = payload.email;
   }
   if (payload.phone !== undefined) {
     baseData.phone = payload.phone;
@@ -112,7 +123,9 @@ export const extractBaseUserUpdates = (payload: IUpdateMyProfileInput) => {
   return baseData;
 };
 
-export const extractStudentProfileUpdates = (payload: IUpdateMyProfileInput) => {
+export const extractStudentProfileUpdates = (
+  payload: Partial<IUpdateMyProfileInput & IUpdateStudentByAdminInput>,
+) => {
   const studentData: {
     guardianName?: string;
     guardianPhone?: string;
@@ -138,11 +151,14 @@ export const extractStudentProfileUpdates = (payload: IUpdateMyProfileInput) => 
   return studentData;
 };
 
-export const extractTeacherProfileUpdates = (payload: IUpdateMyProfileInput) => {
+export const extractTeacherProfileUpdates = (
+  payload: Partial<IUpdateMyProfileInput & IUpdateTeacherByAdminInput>,
+) => {
   const teacherData: {
     designation?: string;
     qualification?: string;
     specialization?: string;
+    joiningDate?: Date | null;
   } = {};
   if (payload.designation !== undefined) {
     teacherData.designation = payload.designation;
@@ -152,6 +168,9 @@ export const extractTeacherProfileUpdates = (payload: IUpdateMyProfileInput) => 
   }
   if (payload.specialization !== undefined) {
     teacherData.specialization = payload.specialization;
+  }
+  if (payload.joiningDate !== undefined) {
+    teacherData.joiningDate = payload.joiningDate ? new Date(payload.joiningDate) : null;
   }
   return teacherData;
 };

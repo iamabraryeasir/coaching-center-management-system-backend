@@ -124,3 +124,45 @@ export const updateTeacherPermissions = catchAsync(
     });
   },
 );
+
+export const updateStudentByAdmin = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    if (!req.user) {
+      throw ApiError.unauthorized('Authentication required');
+    }
+
+    const student = await userService.updateStudentByAdmin(
+      req.params.id as string,
+      req.user.userId,
+      req.body,
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Student profile updated successfully',
+      data: student,
+    });
+  },
+);
+
+export const updateTeacherByAdmin = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    if (!req.user) {
+      throw ApiError.unauthorized('Authentication required');
+    }
+
+    const teacher = await userService.updateTeacherByAdmin(
+      req.params.id as string,
+      req.user.userId,
+      req.body,
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Teacher profile updated successfully',
+      data: teacher,
+    });
+  },
+);

@@ -7,6 +7,8 @@ import {
   changePasswordSchema,
   getUsersQuerySchema,
   updateMyProfileSchema,
+  updateStudentByAdminSchema,
+  updateTeacherByAdminSchema,
   updateTeacherPermissionsSchema,
   updateUserStatusSchema,
   userIdParamSchema,
@@ -46,6 +48,21 @@ router.get(
   checkAuth(Role.ADMIN),
   validateRequest(getUsersQuerySchema),
   userController.getAllUsers,
+);
+
+// Administrative Student and Teacher Profile Updates (Admin only)
+router.patch(
+  '/students/:id',
+  checkAuth(Role.ADMIN),
+  validateRequest(updateStudentByAdminSchema),
+  userController.updateStudentByAdmin,
+);
+
+router.patch(
+  '/teachers/:id',
+  checkAuth(Role.ADMIN),
+  validateRequest(updateTeacherByAdminSchema),
+  userController.updateTeacherByAdmin,
 );
 
 // Teacher Operational Permission Delegation (Admin only)
