@@ -1,3 +1,6 @@
+// Enforce Bangladesh Standard Time (BST, UTC+6) globally across all hosting environments
+process.env.TZ = 'Asia/Dhaka';
+
 import type { Server } from 'node:http';
 import { app } from './app';
 import { config, connectRedis, disconnectRedis, pool, prisma } from './config';

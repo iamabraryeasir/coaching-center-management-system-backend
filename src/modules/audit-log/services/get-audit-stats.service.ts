@@ -1,5 +1,5 @@
-import { startOfDay } from 'date-fns';
 import { prisma } from '../../../config';
+import { getBangladeshMidnightUtc } from '../../../utils';
 import type {
   IAuditActionBreakdown,
   IAuditEntityBreakdown,
@@ -7,7 +7,7 @@ import type {
 } from '../audit-log.interface';
 
 export const getAuditStatsService = async (): Promise<IAuditStatsResponse> => {
-  const todayStart = startOfDay(new Date());
+  const todayStart = getBangladeshMidnightUtc();
 
   const [totalLogs, todayLogs, actionGroups, entityGroups] = await Promise.all([
     prisma.auditLog.count(),

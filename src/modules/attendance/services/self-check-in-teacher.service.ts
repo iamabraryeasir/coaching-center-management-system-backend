@@ -6,8 +6,8 @@ import type {
   ITeacherAttendanceRecordResponse,
 } from '../attendance.interface';
 import {
-  formatDateToCalendarString,
   formatTeacherAttendanceRecordResponse,
+  getBangladeshTodayString,
   normalizeDateToUtc,
 } from '../attendance.utils';
 
@@ -32,9 +32,9 @@ export const selfCheckInTeacherService = async (
     throw ApiError.notFound('Teacher profile not found or inactive');
   }
 
-  // 2. Determine today's date in UTC
+  // 2. Determine today's date in Bangladesh Standard Time
   const now = new Date();
-  const dateStr = formatDateToCalendarString(now);
+  const dateStr = getBangladeshTodayString(now);
   const normalizedDate = normalizeDateToUtc(dateStr);
 
   // 3. Upsert teacher attendance record for today

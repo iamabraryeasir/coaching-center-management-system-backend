@@ -1796,7 +1796,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"studentId\": \"16ed5550-a279-4697-983d-30f5bd68b7e8\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On time\"\n    }\n  ]\n}"
+              "raw": "{\n  \"records\": [\n    {\n      \"studentId\": \"16ed5550-a279-4697-983d-30f5bd68b7e8\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On time\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/attendance/batches/:batchId",
@@ -1817,7 +1817,7 @@
                 }
               ]
             },
-            "description": "Protected: Marks or updates daily attendance in bulk for enrolled students in a batch with transactional integrity and audit logging."
+            "description": "Protected (Admin / Authorized Teacher): Marks attendance for today in Bangladesh Standard Time (BST). Note: date field is optional and automatically defaults to today in BST. Past/future dates are rejected."
           },
           "response": []
         },
@@ -1878,7 +1878,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": ""
+              "raw": "{\n  \"status\": \"LATE\",\n  \"remarks\": \"Arrived 15 minutes late\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/attendance/:attendanceId",
@@ -1898,7 +1898,7 @@
                 }
               ]
             },
-            "description": "Protected: Updates single attendance record with audit trail logging prior and new status."
+            "description": "Protected (Admin / Authorized Teacher): Corrects an attendance record for today in Bangladesh Standard Time (BST). Previous days' records cannot be modified (view-only)."
           },
           "response": []
         },
@@ -2050,7 +2050,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2026-09-05\",\n  \"records\": [\n    {\n      \"teacherId\": \"e66a5fc4-938a-4acf-8833-f92305664c37\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On campus full day\"\n    }\n  ]\n}"
+              "raw": "{\n  \"records\": [\n    {\n      \"teacherId\": \"8fa1719a-fb0e-40c6-b461-704085bcb871\",\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On campus full day\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/attendance/teachers/bulk",
@@ -2065,7 +2065,7 @@
                 "bulk"
               ]
             },
-            "description": "Protected: Admin or Authorized Teacher marks daily faculty attendance in bulk with transactional integrity and audit logging."
+            "description": "Protected (Admin / Authorized Teacher): Marks faculty attendance for today in Bangladesh Standard Time (BST). Note: date field is optional and defaults to today in BST. Past/future dates are rejected."
           },
           "response": []
         },
@@ -2179,7 +2179,7 @@
                 }
               ]
             },
-            "description": "Protected: Updates single teacher attendance record with audit trail logging prior and new status."
+            "description": "Protected (Admin / Authorized Teacher): Corrects a faculty attendance record for today in Bangladesh Standard Time (BST). Previous days' records cannot be modified (view-only)."
           },
           "response": []
         }

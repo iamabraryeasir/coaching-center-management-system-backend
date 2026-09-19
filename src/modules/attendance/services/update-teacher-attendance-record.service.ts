@@ -5,7 +5,10 @@ import type {
   ITeacherAttendanceRecordResponse,
   IUpdateTeacherAttendanceInput,
 } from '../attendance.interface';
-import { formatTeacherAttendanceRecordResponse } from '../attendance.utils';
+import {
+  assertAttendanceRecordIsToday,
+  formatTeacherAttendanceRecordResponse,
+} from '../attendance.utils';
 
 export const updateTeacherAttendanceRecordService = async (
   id: string,
@@ -52,9 +55,12 @@ export const updateTeacherAttendanceRecordService = async (
     throw ApiError.notFound('Teacher attendance record not found');
   }
 
+  // 3. Enforce view-only rule for past teacher attendance records
+  assertAttendanceRecordIsToday(existingRecord.date);
+
   const previousStatus = existingRecord.status;
 
-  // 3. Update teacher attendance record
+  // 4. Update teacher attendance record
   const updatedRecord = await prisma.teacherAttendanceRecord.update({
     where: { id },
     data: {

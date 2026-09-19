@@ -1,5 +1,6 @@
 export * from './api-error';
 export * from './catch-async';
+export * from './date';
 export * from './jwt';
 export * from './logger';
 export * from './mail';

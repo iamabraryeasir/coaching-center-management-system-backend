@@ -2,7 +2,11 @@ import { EnrollmentStatus, Permission, Role } from '@prisma/client';
 import { prisma } from '../../../config';
 import { ApiError, logger } from '../../../utils';
 import type { IAttendanceRecordResponse, IBulkAttendanceInput } from '../attendance.interface';
-import { formatAttendanceRecordResponse, normalizeDateToUtc } from '../attendance.utils';
+import {
+  assertAttendanceDateIsToday,
+  formatAttendanceRecordResponse,
+  normalizeDateToUtc,
+} from '../attendance.utils';
 
 export const markBulkAttendanceService = async (
   batchId: string,
@@ -10,7 +14,10 @@ export const markBulkAttendanceService = async (
   actorUserId: string,
   actorRole: Role,
 ): Promise<IAttendanceRecordResponse[]> => {
-  // 1. Permission check for Teacher
+  // 1. Enforce today-only attendance marking (Bangladesh Standard Time)
+  assertAttendanceDateIsToday(input.date);
+
+  // 2. Permission check for Teacher
   if (actorRole === Role.TEACHER) {
     const hasPerm = await prisma.teacherPermission.findUnique({
       where: {

@@ -5,12 +5,62 @@ import {
   type TeacherProfile,
   type User,
 } from '@prisma/client';
-import { format, parseISO, startOfDay } from 'date-fns';
+import {
+  ApiError,
+  BANGLADESH_TIMEZONE,
+  formatDateToCalendarString,
+  getBangladeshTodayString,
+  normalizeDateToUtc,
+} from '../../utils';
 import type {
   IAttendanceRecordResponse,
   IAttendanceStats,
   ITeacherAttendanceRecordResponse,
 } from './attendance.interface';
+
+export {
+  BANGLADESH_TIMEZONE,
+  formatDateToCalendarString,
+  getBangladeshTodayString,
+  normalizeDateToUtc,
+};
+
+/**
+ * Asserts that an input date string (YYYY-MM-DD) matches today's calendar date in Bangladesh Standard Time.
+ * Throws ApiError if it is in the future or in the past.
+ */
+export const assertAttendanceDateIsToday = (dateStr: string): void => {
+  const bstTodayStr = getBangladeshTodayString();
+
+  if (dateStr > bstTodayStr) {
+    throw ApiError.badRequest('Attendance cannot be marked for future dates.');
+  }
+
+  if (dateStr < bstTodayStr) {
+    throw ApiError.badRequest(
+      "Attendance can only be marked for today. Previous days' attendance can only be viewed.",
+    );
+  }
+};
+
+/**
+ * Asserts that an existing attendance record's date is today in BST before allowing modification.
+ * Throws ApiError if the record is from a previous day or a future day.
+ */
+export const assertAttendanceRecordIsToday = (recordDate: Date): void => {
+  const recordDateStr = formatDateToCalendarString(recordDate);
+  const bstTodayStr = getBangladeshTodayString();
+
+  if (recordDateStr < bstTodayStr) {
+    throw ApiError.badRequest(
+      "Previous days' attendance records cannot be modified. They can only be viewed.",
+    );
+  }
+
+  if (recordDateStr > bstTodayStr) {
+    throw ApiError.badRequest('Future attendance records cannot be modified.');
+  }
+};
 
 type RawAttendanceWithRelations = {
   id: string;
@@ -39,20 +89,6 @@ type RawTeacherAttendanceWithRelations = {
   updatedAt: Date;
   teacher?: (User & { teacherProfile?: TeacherProfile | null }) | null;
   markedBy?: User | null;
-};
-
-/**
- * Normalizes a YYYY-MM-DD date string into a Date object representing UTC calendar day start
- */
-export const normalizeDateToUtc = (dateStr: string): Date => {
-  return startOfDay(parseISO(`${dateStr}T00:00:00.000Z`));
-};
-
-/**
- * Formats a Date object to YYYY-MM-DD string using date-fns
- */
-export const formatDateToCalendarString = (date: Date): string => {
-  return format(date, 'yyyy-MM-dd');
 };
 
 /**

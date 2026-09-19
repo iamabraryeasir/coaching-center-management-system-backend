@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getYear } from 'date-fns';
+import { getBangladeshCurrentMonth, getBangladeshCurrentYear } from '../../utils';
 
 export const MONTH_NAMES = [
   'January',
@@ -31,7 +31,7 @@ export const formatBillingPeriod = (month: number, year: number): string => {
  * Generates a unique human-readable receipt number (e.g. "REC-2026-A8B9C1")
  */
 export const generateReceiptNumber = (): string => {
-  const currentYear = getYear(new Date());
+  const currentYear = getBangladeshCurrentYear();
   const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
   const timestampSuffix = Date.now().toString().slice(-4);
   return `REC-${currentYear}-${randomHex}${timestampSuffix}`;
@@ -63,8 +63,8 @@ export const calculateUnpaidPeriods = (
   paidKeySet: Set<string>,
   targetDate = new Date(),
 ): IUnpaidMonthCalculation => {
-  const currentYear = targetDate.getFullYear();
-  const currentMonth = targetDate.getMonth() + 1;
+  const currentYear = getBangladeshCurrentYear(targetDate);
+  const currentMonth = getBangladeshCurrentMonth(targetDate);
 
   const unpaidMonths: Array<{
     month: number;

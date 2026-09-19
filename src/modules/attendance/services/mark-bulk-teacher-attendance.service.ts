@@ -5,7 +5,11 @@ import type {
   IBulkTeacherAttendanceInput,
   ITeacherAttendanceRecordResponse,
 } from '../attendance.interface';
-import { formatTeacherAttendanceRecordResponse, normalizeDateToUtc } from '../attendance.utils';
+import {
+  assertAttendanceDateIsToday,
+  formatTeacherAttendanceRecordResponse,
+  normalizeDateToUtc,
+} from '../attendance.utils';
 
 export const markBulkTeacherAttendanceService = async (
   input: IBulkTeacherAttendanceInput,
@@ -15,6 +19,9 @@ export const markBulkTeacherAttendanceService = async (
   date: string;
   records: ITeacherAttendanceRecordResponse[];
 }> => {
+  // 1. Enforce today-only attendance marking (Bangladesh Standard Time)
+  assertAttendanceDateIsToday(input.date);
+
   const normalizedDate = normalizeDateToUtc(input.date);
 
   // 1. Collect and deduplicate teacher IDs

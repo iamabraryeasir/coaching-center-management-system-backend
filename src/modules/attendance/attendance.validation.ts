@@ -1,5 +1,6 @@
 import { AttendanceStatus } from '@prisma/client';
 import { z } from 'zod';
+import { getBangladeshTodayString } from './attendance.utils';
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -9,10 +10,10 @@ export const markBulkAttendanceSchema = z.object({
   }),
   body: z.object({
     date: z
-      .string({
-        error: 'Attendance date is required',
-      })
-      .regex(dateRegex, 'Date must be in YYYY-MM-DD format'),
+      .string()
+      .regex(dateRegex, 'Date must be in YYYY-MM-DD format')
+      .optional()
+      .default(() => getBangladeshTodayString()),
     records: z
       .array(
         z.object({
@@ -103,10 +104,10 @@ export const getStudentAttendanceQuerySchema = z.object({
 export const markBulkTeacherAttendanceSchema = z.object({
   body: z.object({
     date: z
-      .string({
-        error: 'Attendance date is required',
-      })
-      .regex(dateRegex, 'Date must be in YYYY-MM-DD format'),
+      .string()
+      .regex(dateRegex, 'Date must be in YYYY-MM-DD format')
+      .optional()
+      .default(() => getBangladeshTodayString()),
     records: z
       .array(
         z.object({
