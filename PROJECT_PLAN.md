@@ -1,15 +1,19 @@
 # Coaching Center Management System — Backend Production Blueprint & Plan
 
 > **Version**: 2.6.0 (Enterprise Production Specification)  
+> **Version**: 2.7.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
 > **API Standard**: RESTful v1 with 93 Verified Endpoints across 14 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
+> **API Standard**: RESTful v1 across Core Operational Modules  
+> **Status**: Verified & Quality Gate Passed
 
 ---
 
 ## 1. Project Mission & Domain Context
 
 Build a secure, enterprise-grade backend for a **Coaching Center Management System (Academy)** governed by the system `ADMIN`. The platform centralizes and automates daily operational, academic, and financial workflows:
+Build a secure, enterprise-grade backend for a **Coaching Center Management System (Academy)** governed by the system `ADMIN`. The platform centralizes and automates daily operational, academic, and administrative workflows:
 
 - **Academy Governance**: Centralized single-institution profile, branding, and operational telemetry.
 - **Identity & RBAC**: Strict role-based access control (`ADMIN`, `TEACHER`, `STUDENT`) with granular delegated operational permissions (`MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES`).
@@ -19,6 +23,8 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
 - **Financial Ledger & Stripe Payments**: Real card payments via **Stripe Checkout Sessions & Webhooks**, front-desk multi-channel manual collection (Cash, bKash, Nagad, Bank Transfer), and immutable receipts (`REC-YYYY-XXXX`).
 - **Document Generation & Dispatch**: Zero Cloud Storage in-memory PDF generation (`PDFKit`) for Invoices, Routines, and Report Cards streamed over HTTP or dispatched via email with attachments (`Nodemailer` + `EJS`).
 - **Audit Logging**: Immutable tracking of financial transactions, permission grants, attendance corrections, and account status changes.
+- **Document Generation & Dispatch**: Zero Cloud Storage in-memory PDF generation (`PDFKit`) for Routines and Report Cards streamed over HTTP or dispatched via email with attachments (`Nodemailer` + `EJS`).
+- **Audit Logging**: Immutable tracking of administrative actions, permission grants, attendance corrections, and account status changes.
 
 ---
 
@@ -26,6 +32,7 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
 
 1. **Strict Single-Institution Scoping**:
    - The entire system operates as a unified institution governed directly by the system `ADMIN`. All entities (students, teachers, batches, routines, attendance, exams, payments) belong directly to the academy without redundant multi-tenant foreign keys (`adminId`).
+   - The entire system operates as a unified institution governed directly by the system `ADMIN`. All entities (students, teachers, batches, routines, attendance, exams) belong directly to the academy without redundant multi-tenant foreign keys (`adminId`).
 2. **Unified Authentication vs. Role-Separated Registration**:
    - **Unified Login**: All users (`ADMIN`, `TEACHER`, `STUDENT`) authenticate via `POST /api/v1/auth/login`.
    - **Admin-Exclusive Provisioning**: Only the `ADMIN` has authority to directly register students (`POST /api/v1/auth/register-student`), register teachers (`POST /api/v1/auth/register-teacher`), and review/approve onboarding applicants (`GET /api/v1/auth/pending-students`, `PATCH /approve`, `PATCH /reject`).
@@ -36,10 +43,15 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
    - Immutable financial transaction ledger and generated receipts (`REC-YYYY-XXXX`).
 4. **Zero Cloud Storage In-Memory PDF Subsystem**:
    - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Payment Invoices, Weekly Timetables, and Student Report Cards.
+5. **Zero Cloud Storage In-Memory PDF Subsystem**:
+   - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Weekly Timetables and Student Report Cards.
    - Streamed directly over HTTP (`inline` preview vs `attachment` download) or attached directly to Nodemailer emails, keeping Cloudinary storage exclusively for profile avatars.
-5. **Universal QueryBuilder Standard**:
+6. **Universal QueryBuilder Standard**:
    - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all 14 modules.
-6. **Universal Soft Deletes & Audit Trails**:
+7. **Universal Soft Deletes & Audit Trails**:
+8. **Universal QueryBuilder Standard**:
+   - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all domain modules.
+9. **Universal Soft Deletes & Audit Trails**:
    - Deletions preserve data integrity via `deletedAt = new Date()`. All find queries filter out soft-deleted records. High-value mutations emit structured `AuditLog` records.
 
 ---
@@ -232,6 +244,8 @@ stateDiagram-v2
 
 ### 6.13 Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 Endpoints)
 
+### 6.13 Centralized Audit Logging & Security Explorer (3 Endpoints)
+
 - `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
 - `POST /api/v1/payments/manual-collect` — Admin collects offline monthly fee (Cash, bKash, Nagad, Bank) with billing period and notes.
@@ -304,6 +318,7 @@ stateDiagram-v2
 2. **Comprehensive Ecosystem Seeder (`prisma/seed.ts` via `npm run prisma:seed`)**:
    - Manually triggered developer/test seeder.
    - Bootstraps 3 Teachers with granular permissions, 3 Batches, weekly class routines, enrolled students, daily attendance records, published exams with grades, Stripe & manual payment receipts (`REC-2026-XXXX`), and immutable audit logs.
+   - Bootstraps 3 Teachers with granular permissions, 3 Batches, weekly class routines, enrolled students, daily attendance records, published exams with grades, and immutable audit logs.
 
 ---
 
@@ -317,3 +332,6 @@ stateDiagram-v2
 | **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (10/10 stages completed)**                        |
 | **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Receipt, Routine & Report Card verified)**       |
 | **Postman Test Suite**         | 93 endpoints (95 runnable requests)   | **PASSED (Clean Collection v2.1 synced with cookie auth)** |
+| **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (9/9 stages completed)**                          |
+| **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Routine & Report Card verified)**                |
+| **Postman Test Suite**         | 82 endpoints (84 runnable requests)   | **PASSED (Clean Collection v2.1 synced with cookie auth)** |

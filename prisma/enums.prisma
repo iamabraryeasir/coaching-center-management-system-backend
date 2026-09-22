@@ -39,21 +39,6 @@ enum EnrollmentStatus {
   REJECTED
 }
 
-enum PaymentMethod {
-  STRIPE
-  CASH
-  BKASH
-  BANK_TRANSFER
-  NAGAD
-}
-
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  REFUNDED
-}
-
 enum ExamStatus {
   UPCOMING
   ONGOING

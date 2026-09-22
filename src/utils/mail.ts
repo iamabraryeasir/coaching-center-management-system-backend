@@ -95,39 +95,6 @@ export const sendPasswordResetEmail = async (
   });
 };
 
-export const sendPaymentReceiptEmail = async (
-  email: string,
-  name: string,
-  receiptNumber: string,
-  amount: number,
-  currency: string,
-  batchName: string,
-  pdfBuffer: Buffer,
-  billingPeriod?: string,
-): Promise<void> => {
-  const periodText = billingPeriod ? ` (${billingPeriod})` : '';
-  await sendEmail({
-    to: email,
-    subject: `Payment Confirmation & Receipt [${receiptNumber}]${periodText} — ${config.ADMIN_INSTITUTION_NAME}`,
-    templateName: 'payment-receipt',
-    data: {
-      name,
-      receiptNumber,
-      amount,
-      currency: currency.toUpperCase(),
-      batchName,
-      billingPeriod,
-    },
-    text: `Hello ${name},\n\nThank you for your payment of ${currency.toUpperCase()} ${amount.toFixed(2)} for ${batchName}${periodText}. Your official receipt (${receiptNumber}) is attached to this email.`,
-    attachments: [
-      {
-        filename: `Receipt-${receiptNumber}.pdf`,
-        content: pdfBuffer,
-        contentType: 'application/pdf',
-      },
-    ],
-  });
-};
 
 export const sendReportCardEmail = async (
   email: string,

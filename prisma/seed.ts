@@ -847,6 +847,8 @@ async function main(): Promise<void> {
 
   // 10. Seed Initial Audit Logs
   logger.info('10. Bootstrapping Immutable Administrative Audit Trail...');
+  // 9. Seed Initial Audit Logs
+  logger.info('9. Bootstrapping Immutable Administrative Audit Trail...');
   const auditLogsData = [
     {
       userId: adminUser.id,

@@ -4,7 +4,6 @@ export * from './auth';
 export * from './batch';
 export * from './exam';
 export * from './institution';
-export * from './payment';
 export * from './routine';
 export * from './upload';
 export * from './user';

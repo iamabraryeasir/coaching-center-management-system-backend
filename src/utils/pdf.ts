@@ -2,6 +2,7 @@ import type { Response } from 'express';
 import PDFDocument from 'pdfkit';
 import { config } from '../config';
 import { formatInBangladeshTime, getBangladeshCurrentYear } from './date';
+import { formatInBangladeshTime } from './date';
 
 const PRIMARY_COLOR = '#1e3a8a';
 const SECONDARY_COLOR = '#475569';
@@ -44,6 +45,9 @@ export interface IReceiptPdfData {
   billingMonth?: number;
   billingYear?: number;
   notes?: string | null;
+  totalPaidForMonth?: number;
+  remainingMonthDue?: number;
+  effectiveMonthlyFee?: number;
   student: {
     id: string;
     name: string;
@@ -211,6 +215,9 @@ export const generateReceiptPdfBuffer = async (data: IReceiptPdfData): Promise<B
     });
 
   // Total Summary
+  const isPartialInfo =
+    data.totalPaidForMonth !== undefined && data.remainingMonthDue !== undefined;
+  const boxHeight = isPartialInfo ? 60 : 30;
   const totalTop = tableTop + 68;
   doc.rect(340, totalTop, 215, 30).fill(BG_LIGHT).strokeColor(BORDER_COLOR).stroke();
   doc
@@ -224,13 +231,74 @@ export const generateReceiptPdfBuffer = async (data: IReceiptPdfData): Promise<B
       width: 85,
       align: 'right',
     });
+  doc.rect(320, totalTop, 235, boxHeight).fill(BG_LIGHT).strokeColor(BORDER_COLOR).stroke();
+
+  if (isPartialInfo) {
+    doc
+      .fillColor(SECONDARY_COLOR)
+      .fontSize(9)
+      .font('Helvetica-Bold')
+      .text('THIS PAYMENT:', 330, totalTop + 8);
+    doc
+      .fillColor(PRIMARY_COLOR)
+      .text(`${data.currency.toUpperCase()} ${data.amount.toFixed(2)}`, 450, totalTop + 8, {
+        width: 95,
+        align: 'right',
+      });
+
+    doc
+      .fillColor(SECONDARY_COLOR)
+      .fontSize(9)
+      .font('Helvetica-Bold')
+      .text('TOTAL PAID (MONTH):', 330, totalTop + 24);
+    doc
+      .fillColor(ACCENT_COLOR)
+      .text(
+        `${data.currency.toUpperCase()} ${(data.totalPaidForMonth || 0).toFixed(2)}`,
+        450,
+        totalTop + 24,
+        {
+          width: 95,
+          align: 'right',
+        },
+      );
+
+    doc
+      .fillColor(SECONDARY_COLOR)
+      .fontSize(9)
+      .font('Helvetica-Bold')
+      .text('REMAINING DUE:', 330, totalTop + 40);
+    doc
+      .fillColor(data.remainingMonthDue && data.remainingMonthDue > 0 ? '#dc2626' : ACCENT_COLOR)
+      .text(
+        `${data.currency.toUpperCase()} ${(data.remainingMonthDue || 0).toFixed(2)}`,
+        450,
+        totalTop + 40,
+        {
+          width: 95,
+          align: 'right',
+        },
+      );
+  } else {
+    doc
+      .fillColor(PRIMARY_COLOR)
+      .fontSize(11)
+      .font('Helvetica-Bold')
+      .text('TOTAL PAID:', 330, totalTop + 10);
+    doc
+      .fillColor(ACCENT_COLOR)
+      .text(`${data.currency.toUpperCase()} ${data.amount.toFixed(2)}`, 450, totalTop + 10, {
+        width: 95,
+        align: 'right',
+      });
+  }
 
   if (data.notes) {
     doc
       .fillColor(SECONDARY_COLOR)
       .fontSize(9)
       .font('Helvetica-Oblique')
-      .text(`Notes: ${data.notes}`, 40, totalTop + 45);
+      .text(`Notes: ${data.notes}`, 40, totalTop + boxHeight + 15);
   }
 
   // Signatures and Footer

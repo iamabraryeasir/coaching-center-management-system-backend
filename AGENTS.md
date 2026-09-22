@@ -184,11 +184,15 @@ export const getInstitution = async (
 ### 5.5 Security & Single-Institution Scoping
 
 1. **Single-Institution Architecture**: The coaching center operates as a single institution governed by the system `ADMIN`. All system entities (students, teachers, batches, routines, attendance, exams, fees) belong directly to the institution without multi-tenant foreign keys (`adminId`).
-2. **Input Validation Before Execution**: Every route accepting `body`, `query`, or `params` must pass through a Zod validation middleware before reaching the controller.
-3. **Transactional Integrity**: Multi-step state transitions, financial records, and balance calculations must execute inside Prisma interactive transactions (`prisma.$transaction`).
-4. **Immutable Financial History**: Never delete or overwrite historical financial transactions or receipts. Corrections must be recorded as explicit adjustments or reversals with audit logs.
+1. **Single-Institution Architecture**: The coaching center operates as a single institution governed by the system `ADMIN`. All system entities (students, teachers, batches, routines, attendance, exams) belong directly to the institution without multi-tenant foreign keys (`adminId`).
+1. **Input Validation Before Execution**: Every route accepting `body`, `query`, or `params` must pass through a Zod validation middleware before reaching the controller.
+1. **Transactional Integrity**: Multi-step state transitions, financial records, and balance calculations must execute inside Prisma interactive transactions (`prisma.$transaction`).
+1. **Immutable Financial History**: Never delete or overwrite historical financial transactions or receipts. Corrections must be recorded as explicit adjustments or reversals with audit logs.
+1. **Transactional Integrity**: Multi-step state transitions and administrative operations must execute inside Prisma interactive transactions (`prisma.$transaction`).
 
 ### 5.6 Stripe Payment Integration & Webhook Security
+
+### 5.6 Soft Deletes & Audit Logging Standards
 
 1. **Raw Body Parsing for Webhooks**: Stripe webhooks (`/api/v1/payments/webhook`) require raw unparsed request bodies to verify cryptographic signatures (`stripe.webhooks.constructEvent`). Never use `express.json()` on the webhook endpoint.
 2. **Idempotent Webhook Processing**: Always check if a payment transaction has already been processed before activating enrollments or issuing receipts.
@@ -199,8 +203,11 @@ export const getInstitution = async (
 1. **Universal Soft Deletes**: Core resource deletion (e.g. `batches`, `users`) must never execute `prisma.[model].delete()`. Always set `deletedAt = new Date()`.
 2. **Read Queries Exclude Soft-Deleted Records**: All find queries must filter out records where `deletedAt: null`.
 3. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, fee adjustment, student approval) must record an `AuditLog` entry.
+4. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, student approval) must record an `AuditLog` entry.
 
 ### 5.8 Google Authentication & Student Onboarding Gate
+
+### 5.7 Google Authentication & Student Onboarding Gate
 
 1. **Google ID Token Verification**: Social sign-in uses Google Identity Services client tokens verified server-side with `google-auth-library`. No server-redirect OAuth loops.
 2. **Onboarding Gate for New Users**: Unregistered Google users must complete the onboarding flow (`POST /api/v1/auth/google/onboard`) providing contact and academic information.
@@ -209,10 +216,14 @@ export const getInstitution = async (
 
 ### 5.9 Student & Teacher Registration Authority (Admin-Only Exclusivity)
 
+### 5.8 Student & Teacher Registration Authority (Admin-Only Exclusivity)
+
 1. **Strict Admin Exclusivity**: Only the `ADMIN` has authority to register students (`POST /api/v1/auth/register-student`), register teachers (`POST /api/v1/auth/register-teacher`), and review/approve pending students (`GET /api/v1/auth/pending-students`, `PATCH /api/v1/auth/pending-students/:id/approve`, `PATCH /api/v1/auth/pending-students/:id/reject`).
 2. **Direct Institution Attachment**: Newly registered students and teachers belong directly to the institution.
 
 ### 5.10 Mandatory Bulk Querying & Pagination Standard (`QueryBuilder`)
+
+### 5.9 Mandatory Bulk Querying & Pagination Standard (`QueryBuilder`)
 
 1. **Universal QueryBuilder Adoption**: Whenever implementing or maintaining any list, collection, search, filter, or pagination service across ANY domain module (e.g. `students`, `teachers`, `institution`, `batches`, `attendance`, `fees`, `exams`, `audit-logs`), you **MUST** use the centralized `QueryBuilder` class from `src/utils` (`QueryBuilder`).
 2. **Standardized Method Chaining Pipeline**:

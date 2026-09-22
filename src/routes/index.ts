@@ -7,7 +7,6 @@ import {
   batchRouter,
   examRouter,
   institutionRouter,
-  paymentRouter,
   routineRouter,
   uploadRouter,
   userRouter,
@@ -34,7 +33,6 @@ rootRouter.use('/auth', authRouter);
 rootRouter.use('/batches', batchRouter);
 rootRouter.use('/exams', examRouter);
 rootRouter.use('/institution', institutionRouter);
-rootRouter.use('/payments', paymentRouter);
 rootRouter.use('/routines', routineRouter);
 rootRouter.use('/uploads', uploadRouter);
 rootRouter.use('/users', userRouter);
