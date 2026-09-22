@@ -12,6 +12,8 @@ model Batch {
   enrollments       Enrollment[]
   attendanceRecords AttendanceRecord[]
   exams             Exam[]
+  bills             MonthlyFeeBill[]
+  payments          PaymentTransaction[]
 
   @@index([status])
   @@index([deletedAt])

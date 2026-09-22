@@ -189,10 +189,20 @@ export const getInstitution = async (
 1. **Transactional Integrity**: Multi-step state transitions, financial records, and balance calculations must execute inside Prisma interactive transactions (`prisma.$transaction`).
 1. **Immutable Financial History**: Never delete or overwrite historical financial transactions or receipts. Corrections must be recorded as explicit adjustments or reversals with audit logs.
 1. **Transactional Integrity**: Multi-step state transitions and administrative operations must execute inside Prisma interactive transactions (`prisma.$transaction`).
+1. **Single-Institution Architecture**: The coaching center operates as a single institution governed by the system `ADMIN`. All system entities (students, teachers, batches, routines, attendance, exams, payments) belong directly to the institution without multi-tenant foreign keys (`adminId`).
+2. **Input Validation Before Execution**: Every route accepting `body`, `query`, or `params` must pass through a Zod validation middleware before reaching the controller.
+3. **Transactional Integrity**: Multi-step state transitions, financial collections, and ledger updates must execute inside Prisma interactive transactions (`prisma.$transaction`).
+4. **Immutable Financial History**: Never delete historical financial transactions or receipts. Corrections must be recorded as explicit adjustments with audit logs.
 
 ### 5.6 Stripe Payment Integration & Webhook Security
+### 5.6 Monthly Billing, Partial Payments & Stripe Webhook Security
 
 ### 5.6 Soft Deletes & Audit Logging Standards
+1. **BST Calendar Billing**: Billing periods are strictly locked to Bangladesh Standard Time (`Asia/Dhaka`, UTC+6). Future billing periods cannot be queried, billed, or settled.
+2. **Ledger-Backed Billing**: Monthly tuition bills (`MonthlyFeeBill`) track batch fee, carried-over previous dues, total payable, paid amounts, remaining due, and status (`PAID`, `PARTIAL`, `UNPAID`).
+3. **Partial vs Full Payments**: Admin offline manual collections support flexible partial payments. Student online Stripe payments require full settlement.
+4. **Raw Body Parsing for Webhooks**: Stripe webhooks (`/api/v1/payments/webhook`) require raw unparsed request bodies to verify cryptographic signatures (`stripe.webhooks.constructEvent`).
+5. **Idempotent Webhook Processing**: Always check if a payment transaction has already been processed by `stripeSessionId` before settling bills or issuing receipts.
 
 1. **Raw Body Parsing for Webhooks**: Stripe webhooks (`/api/v1/payments/webhook`) require raw unparsed request bodies to verify cryptographic signatures (`stripe.webhooks.constructEvent`). Never use `express.json()` on the webhook endpoint.
 2. **Idempotent Webhook Processing**: Always check if a payment transaction has already been processed before activating enrollments or issuing receipts.
@@ -204,6 +214,7 @@ export const getInstitution = async (
 2. **Read Queries Exclude Soft-Deleted Records**: All find queries must filter out records where `deletedAt: null`.
 3. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, fee adjustment, student approval) must record an `AuditLog` entry.
 4. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, student approval) must record an `AuditLog` entry.
+3. **Audit Logging**: Any state-changing administrative action (e.g. user status change, role promotion, fee collection, student approval) must record an `AuditLog` entry.
 
 ### 5.8 Google Authentication & Student Onboarding Gate
 
@@ -226,6 +237,7 @@ export const getInstitution = async (
 ### 5.9 Mandatory Bulk Querying & Pagination Standard (`QueryBuilder`)
 
 1. **Universal QueryBuilder Adoption**: Whenever implementing or maintaining any list, collection, search, filter, or pagination service across ANY domain module (e.g. `students`, `teachers`, `institution`, `batches`, `attendance`, `fees`, `exams`, `audit-logs`), you **MUST** use the centralized `QueryBuilder` class from `src/utils` (`QueryBuilder`).
+1. **Universal QueryBuilder Adoption**: Whenever implementing or maintaining any list, collection, search, filter, or pagination service across ANY domain module (e.g. `students`, `teachers`, `institution`, `batches`, `attendance`, `payments`, `exams`, `audit-logs`), you **MUST** use the centralized `QueryBuilder` class from `src/utils` (`QueryBuilder`).
 2. **Standardized Method Chaining Pipeline**:
    - `.search(['field1', 'field2', 'relation.field'])`: Multi-field case-insensitive partial match using `searchTerm` or `search`.
    - `.filter({ exclude: [...] })`: Dynamic filtering for query params with auto-casting (booleans, numbers, `in` arrays, `_gte`/`_lte` ranges).

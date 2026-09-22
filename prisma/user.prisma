@@ -28,6 +28,9 @@ model User {
   teacherAttendanceRecords TeacherAttendanceRecord[] @relation("TeacherAttendance")
   markedTeacherAttendance  TeacherAttendanceRecord[] @relation("MarkedTeacherAttendance")
   examResults              ExamResult[]              @relation("StudentExamResults")
+  bills                    MonthlyFeeBill[]          @relation("StudentBills")
+  payments                 PaymentTransaction[]      @relation("StudentPayments")
+  collectedPayments        PaymentTransaction[]      @relation("CollectedPayments")
 
   @@index([role])
   @@index([status])

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Confirmation & Receipt</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .header {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      padding: 30px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .header p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 35px 40px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+    .lead {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #475569;
+      margin-bottom: 25px;
+    }
+    .receipt-card {
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      border: 1px solid #cbd5e1;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+    .receipt-row:last-child {
+      border-bottom: none;
+      padding-top: 12px;
+      font-weight: bold;
+      font-size: 15px;
+      color: #059669;
+    }
+    .receipt-label {
+      color: #64748b;
+    }
+    .receipt-value {
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .footer {
+      background-color: #f8fafc;
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><%= institutionName %></h1>
+      <p>Official Payment Confirmation & Receipt</p>
+    </div>
+    <div class="content">
+      <div class="greeting">Hello <%= name %>,</div>
+      <div class="lead">
+        We have successfully received and processed your fee payment. Please find the details and attached PDF invoice below for your records.
+      </div>
+      <div class="receipt-card">
+        <div class="receipt-row">
+          <span class="receipt-label">Receipt Number</span>
+          <span class="receipt-value"><%= receiptNumber %></span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Batch / Course</span>
+          <span class="receipt-value"><%= batchName %></span>
+        </div>
+        <% if (locals.billingPeriod) { %>
+        <div class="receipt-row">
+          <span class="receipt-label">Billing Period</span>
+          <span class="receipt-value"><%= billingPeriod %></span>
+        </div>
+        <% } %>
+        <div class="receipt-row">
+          <span class="receipt-label">Total Amount Paid</span>
+          <span class="receipt-value"><%= currency %> <%= Number(amount).toFixed(2) %></span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: #64748b; line-height: 1.5;">
+        Your official printable PDF receipt has been generated and attached to this email. If you have any questions or require adjustments, please contact our administrative desk.
+      </div>
+    </div>
+    <div class="footer">
+      &copy; <%= year %> <%= institutionName %>. All rights reserved.<br />
+      This is a computer-generated confirmation.
+    </div>
+  </div>
+</body>
+</html>
+

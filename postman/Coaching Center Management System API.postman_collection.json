@@ -2731,6 +2731,353 @@
       "description": "Endpoints for profile avatar upload and removal, administrative avatar assignment, and Cloudinary media asset storage."
     },
     {
+      "name": "✅ Payment & Monthly Fee Management",
+      "item": [
+        {
+          "name": "✅ Get Monthly Payment Sheet (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/monthly-sheet?month=9&year=2026&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "monthly-sheet"
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "9",
+                  "description": "Calendar billing month (1-12 BST)"
+                },
+                {
+                  "key": "year",
+                  "value": "2026",
+                  "description": "Calendar billing year (BST)"
+                },
+                {
+                  "key": "batchId",
+                  "value": "",
+                  "description": "Optional filter by Batch UUID",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "UNPAID",
+                  "description": "Optional filter: PAID, PARTIAL, UNPAID",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Rahim",
+                  "description": "Search student name, email, phone, or roll",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Admin views the monthly roster of all enrolled students with batch fees, carry-over previous dues, paid amounts, remaining dues, and status."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Get Monthly Revenue Statistics (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/monthly-stats?month=9&year=2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "monthly-stats"
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "9"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                },
+                {
+                  "key": "batchId",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Admin retrieves top dashboard metrics: Expected Revenue, Collected Amount, Total Due, Collection Rate percentage, and student payment counts."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Collect Manual Payment (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enrollmentId\": \"00000000-0000-0000-0000-000000000000\",\n  \"amount\": 1500,\n  \"paymentMethod\": \"BKASH\",\n  \"notes\": \"bKash Transaction ID: BK992817 — Partial payment\",\n  \"billingMonth\": 9,\n  \"billingYear\": 2026\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/manual-collect",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "manual-collect"
+              ]
+            },
+            "description": "Admin records an offline fee collection (Cash, bKash, Nagad, Bank Transfer) with partial or full payment support. Updates student bill balance immediately and issues a receipt."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Get Student Billing Summary & Dues (Student Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/my-bill?month=9&year=2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "my-bill"
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "9",
+                  "disabled": true
+                },
+                {
+                  "key": "year",
+                  "value": "2026",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Student views their monthly billing summary across all active batches, itemizing current monthly fees, historical previous dues, and net total balance."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Create Stripe Checkout Session (Student Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"billingMonth\": 9,\n  \"billingYear\": 2026\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/create-checkout-session",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "create-checkout-session"
+              ]
+            },
+            "description": "Student initiates a hosted Stripe Checkout Session for full remaining balance settlement."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Stripe Payment Webhook (Public / Stripe CLI)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Stripe-Signature",
+                "value": "t=12345,v1=signature_hash",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_test_webhook\",\n  \"type\": \"checkout.session.completed\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"cs_test_sample\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "webhook"
+              ]
+            },
+            "description": "Cryptographically verified Stripe webhook listener that fulfills transactions and marks bills as PAID."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Get Payment Transactions Ledger",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/transactions?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "paymentMethod",
+                  "value": "STRIPE",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "COMPLETED",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "REC-2026",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Admin and Student view the payment transaction history with pagination and search."
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Download / Preview Payment Receipt PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/pdf",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/transactions/00000000-0000-0000-0000-000000000000/pdf?download=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "transactions",
+                "00000000-0000-0000-0000-000000000000",
+                "pdf"
+              ],
+              "query": [
+                {
+                  "key": "download",
+                  "value": "false",
+                  "description": "Set true to trigger file attachment download, false for inline browser preview"
+                }
+              ]
+            },
+            "description": "Streams the dynamically rendered in-memory PDF payment receipt."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "✅ Audit Logging & Security",
       "item": [
         {

@@ -39,6 +39,26 @@ enum EnrollmentStatus {
   REJECTED
 }
 
+enum PaymentMethod {
+  STRIPE
+  CASH
+  BKASH
+  NAGAD
+  BANK_TRANSFER
+}
+
+enum PaymentBillStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum PaymentStatus {
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
 enum ExamStatus {
   UPCOMING
   ONGOING

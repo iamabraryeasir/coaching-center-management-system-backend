@@ -4,6 +4,7 @@
 > **Version**: 2.7.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
 > **API Standard**: RESTful v1 with 93 Verified Endpoints across 14 Modules  
+> **API Standard**: RESTful v1 with 88 Verified Endpoints across 14 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 > **API Standard**: RESTful v1 across Core Operational Modules  
 > **Status**: Verified & Quality Gate Passed
@@ -22,6 +23,8 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
 - **Examinations & Grading**: Exam scheduling, bulk marks entry with automated grading (`A+` to `F`), GPA calculation, and merit rankings.
 - **Financial Ledger & Stripe Payments**: Real card payments via **Stripe Checkout Sessions & Webhooks**, front-desk multi-channel manual collection (Cash, bKash, Nagad, Bank Transfer), and immutable receipts (`REC-YYYY-XXXX`).
 - **Document Generation & Dispatch**: Zero Cloud Storage in-memory PDF generation (`PDFKit`) for Invoices, Routines, and Report Cards streamed over HTTP or dispatched via email with attachments (`Nodemailer` + `EJS`).
+- **Ledger-Backed Monthly Billing & Payments**: Real card payments via **Stripe Checkout Sessions & Webhooks**, front-desk multi-channel manual collection (Cash, bKash, Nagad, Bank Transfer) with partial payment support, auto-accumulated previous dues, and immutable receipts (`REC-YYYY-XXXX`).
+- **Document Generation & Dispatch**: Zero Cloud Storage in-memory PDF generation (`PDFKit`) for Payment Receipts, Routines, and Report Cards streamed over HTTP or dispatched via email with attachments (`Nodemailer` + `EJS`).
 - **Audit Logging**: Immutable tracking of financial transactions, permission grants, attendance corrections, and account status changes.
 - **Document Generation & Dispatch**: Zero Cloud Storage in-memory PDF generation (`PDFKit`) for Routines and Report Cards streamed over HTTP or dispatched via email with attachments (`Nodemailer` + `EJS`).
 - **Audit Logging**: Immutable tracking of administrative actions, permission grants, attendance corrections, and account status changes.
@@ -39,19 +42,26 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
    - **Student-Only Social Login**: Google Identity Services (GIS) login is strictly restricted to `Role.STUDENT`. Unregistered Google users pass through an onboarding gate (`POST /api/v1/auth/google/onboard`) into `PENDING_ACTIVATION` awaiting `ADMIN` approval.
 3. **Mandatory Real Payment Integration (Stripe)**:
    - Real Stripe Checkout Sessions (`POST /api/v1/payments/create-checkout-session`) with server-side price calculation.
+3. **Mandatory Real Payment Integration (Stripe & Multi-Channel Manual)**:
+   - Real Stripe Checkout Sessions (`POST /api/v1/payments/create-checkout-session`) with server-side price calculation and zero-partial online payment constraint.
+   - Front-desk manual collection with partial amount flexibility and multi-channel support (`CASH`, `BKASH`, `NAGAD`, `BANK_TRANSFER`).
    - Cryptographically verified raw-body Stripe webhook handler (`POST /api/v1/payments/webhook`) executing inside interactive Prisma transactions (`prisma.$transaction`).
    - Immutable financial transaction ledger and generated receipts (`REC-YYYY-XXXX`).
+   - Ledger-backed monthly billing model (`MonthlyFeeBill`) with carried-over previous unpaid dues and immutable generated receipts (`REC-YYYY-XXXX`).
 4. **Zero Cloud Storage In-Memory PDF Subsystem**:
    - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Payment Invoices, Weekly Timetables, and Student Report Cards.
 5. **Zero Cloud Storage In-Memory PDF Subsystem**:
    - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Weekly Timetables and Student Report Cards.
+   - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Payment Invoices/Receipts, Weekly Timetables, and Student Report Cards.
    - Streamed directly over HTTP (`inline` preview vs `attachment` download) or attached directly to Nodemailer emails, keeping Cloudinary storage exclusively for profile avatars.
 6. **Universal QueryBuilder Standard**:
+5. **Universal QueryBuilder Standard**:
    - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all 14 modules.
 7. **Universal Soft Deletes & Audit Trails**:
 8. **Universal QueryBuilder Standard**:
    - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all domain modules.
 9. **Universal Soft Deletes & Audit Trails**:
+6. **Universal Soft Deletes & Audit Trails**:
    - Deletions preserve data integrity via `deletedAt = new Date()`. All find queries filter out soft-deleted records. High-value mutations emit structured `AuditLog` records.
 
 ---
@@ -243,8 +253,17 @@ stateDiagram-v2
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
 ### 6.13 Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 Endpoints)
+### 6.13 Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (8 Endpoints)
 
 ### 6.13 Centralized Audit Logging & Security Explorer (3 Endpoints)
+- `GET /api/v1/payments/monthly-sheet` — Admin monthly billing sheet roster with student dues, carried-over debt, payments & statuses (`QueryBuilder`).
+- `GET /api/v1/payments/stats` — Admin monthly payment dashboard metrics & statistics cards.
+- `POST /api/v1/payments/manual-collect` — Admin collects offline fee (Cash, bKash, Nagad, Bank Transfer) with partial or full amount.
+- `GET /api/v1/payments/my/bill` — Student views current month's fee bill + accumulated previous dues breakdown.
+- `POST /api/v1/payments/create-checkout-session` — Student initiates Stripe Checkout Session for full monthly fee settlement.
+- `POST /api/v1/payments/webhook` — Stripe raw body webhook listener fulfilling payments idempotently.
+- `GET /api/v1/payments/transactions` — Admin system-wide payment transactions ledger (`QueryBuilder`).
+- `GET /api/v1/payments/receipts/:billId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Bill ID via PDFKit**.
 
 - `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
@@ -275,6 +294,7 @@ stateDiagram-v2
   "success": true,
   "statusCode": 200,
   "message": "Batches retrieved successfully",
+  "message": "Monthly fee sheet retrieved successfully",
   "meta": {
     "page": 1,
     "limit": 10,
@@ -287,6 +307,14 @@ stateDiagram-v2
       "name": "HSC 2026 - Higher Mathematics",
       "fee": 3500.0,
       "status": "ONGOING"
+      "studentName": "Tanvir Hasan",
+      "batchName": "HSC 2026 - Higher Mathematics",
+      "monthlyFee": 3500.0,
+      "previousDue": 1500.0,
+      "totalPayable": 5000.0,
+      "paidAmount": 2000.0,
+      "dueAmount": 3000.0,
+      "status": "PARTIAL"
     }
   ]
 }
@@ -319,6 +347,7 @@ stateDiagram-v2
    - Manually triggered developer/test seeder.
    - Bootstraps 3 Teachers with granular permissions, 3 Batches, weekly class routines, enrolled students, daily attendance records, published exams with grades, Stripe & manual payment receipts (`REC-2026-XXXX`), and immutable audit logs.
    - Bootstraps 3 Teachers with granular permissions, 3 Batches, weekly class routines, enrolled students, daily attendance records, published exams with grades, and immutable audit logs.
+   - Bootstraps 3 Teachers with granular permissions, 3 Batches, weekly class routines, enrolled students, daily attendance records, published exams with grades, Monthly Fee Bills with partial & full Stripe and offline payment transactions (`REC-2026-XXXX`), and immutable audit logs.
 
 ---
 
@@ -329,9 +358,11 @@ stateDiagram-v2
 | **Biome Linter & Formatter**   | 0 errors, 0 warnings across all files | **PASSED (182 files checked, 0 errors)**                   |
 | **TypeScript Strict Compiler** | 0 type errors (`tsc --noEmit`)        | **PASSED (0 errors)**                                      |
 | **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled, 292.21 KB)**          |
+| **Production Bundler**         | Successful compilation via `tsup`     | **PASSED (`dist/server.js` compiled)**                     |
 | **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (10/10 stages completed)**                        |
 | **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Receipt, Routine & Report Card verified)**       |
 | **Postman Test Suite**         | 93 endpoints (95 runnable requests)   | **PASSED (Clean Collection v2.1 synced with cookie auth)** |
 | **Prisma 7 Ecosystem Seeder**  | Idempotent complete seed              | **PASSED (9/9 stages completed)**                          |
 | **PDF Generators**             | Dynamic in-memory PDF buffers         | **PASSED (Routine & Report Card verified)**                |
 | **Postman Test Suite**         | 82 endpoints (84 runnable requests)   | **PASSED (Clean Collection v2.1 synced with cookie auth)** |
+| **Postman Test Suite**         | 88 endpoints (90 runnable requests)   | **PASSED (Clean Collection v2.1 synced with cookie auth)** |

@@ -6,6 +6,7 @@ import {
   DayOfWeek,
   EnrollmentStatus,
   ExamStatus,
+  PaymentBillStatus,
   PaymentMethod,
   PaymentStatus,
   Permission,
@@ -431,45 +432,30 @@ async function main(): Promise<void> {
       batchId: batch1Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
-      startBillingMonth: currentMonth,
-      startBillingYear: currentYear,
-      openingDue: 0,
     },
     {
       studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
       batchId: batch1Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
-      startBillingMonth: currentMonth,
-      startBillingYear: currentYear,
-      openingDue: 0,
     },
     {
       studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
       batchId: batch2Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
-      startBillingMonth: currentMonth,
-      startBillingYear: currentYear,
-      openingDue: 500.0,
     },
     {
       studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
       batchId: batch3Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
-      startBillingMonth: currentMonth,
-      startBillingYear: currentYear,
-      openingDue: 0,
     },
     {
       studentId: seededStudents['sadia.afrin@student.apex.edu'].id,
       batchId: batch2Id,
       status: EnrollmentStatus.PENDING,
       approvedAt: null,
-      startBillingMonth: currentMonth,
-      startBillingYear: currentYear,
-      openingDue: 0,
     },
   ];
 
@@ -486,9 +472,6 @@ async function main(): Promise<void> {
       update: {
         status: enr.status,
         approvedAt: enr.approvedAt,
-        startBillingMonth: enr.startBillingMonth,
-        startBillingYear: enr.startBillingYear,
-        openingDue: enr.openingDue,
       },
       create: enr,
     });
@@ -733,122 +716,141 @@ async function main(): Promise<void> {
     });
   }
 
-  // 9. Seed Financial Transactions & Receipts
-  logger.info('9. Bootstrapping Stripe & Manual Financial Transactions & Receipts...');
-  const paymentsData = [
-    {
-      studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
-      batchId: batch1Id,
-      enrollmentId:
-        seededEnrollments[
-          `${batch1Id}_${seededStudents['rahim.ahmed@student.apex.edu'].id}`
-        ]?.id,
-      amount: 3500.0,
-      currency: 'bdt',
-      paymentMethod: PaymentMethod.STRIPE,
-      status: PaymentStatus.COMPLETED,
-      billingMonth: currentMonth,
-      billingYear: currentYear,
-      notes: 'Online Stripe card payment',
-      stripeSessionId: 'cs_test_seed_rahim_001',
-      stripePaymentIntentId: 'pi_test_seed_rahim_001',
-      paidAt: subDays(today, 10),
-      receiptNumber: 'REC-2026-0001',
-    },
-    {
-      studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
-      batchId: batch1Id,
-      enrollmentId:
-        seededEnrollments[
-          `${batch1Id}_${seededStudents['nusrat.jahan@student.apex.edu'].id}`
-        ]?.id,
-      amount: 3500.0,
-      currency: 'bdt',
-      paymentMethod: PaymentMethod.BKASH,
-      status: PaymentStatus.COMPLETED,
-      billingMonth: currentMonth,
-      billingYear: currentYear,
-      notes: 'bKash Merchant Payment (Trx: BK88291)',
-      stripeSessionId: null,
-      stripePaymentIntentId: null,
-      paidAt: subDays(today, 8),
-      receiptNumber: 'REC-2026-0002',
-    },
-    {
-      studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
-      batchId: batch2Id,
-      enrollmentId:
-        seededEnrollments[
-          `${batch2Id}_${seededStudents['tanvir.hasan@student.apex.edu'].id}`
-        ]?.id,
-      amount: 2800.0,
-      currency: 'bdt',
-      paymentMethod: PaymentMethod.CASH,
-      status: PaymentStatus.COMPLETED,
-      billingMonth: currentMonth,
-      billingYear: currentYear,
-      notes: 'Cash received at reception',
-      stripeSessionId: null,
-      stripePaymentIntentId: null,
-      paidAt: subDays(today, 5),
-      receiptNumber: 'REC-2026-0003',
-    },
-  ];
+  // 9. Seed Monthly Fee Bills & Payment Transactions
+  logger.info('9. Bootstrapping Monthly Fee Bills & Payment Transactions...');
+  const student1Id = seededStudents['rahim.ahmed@student.apex.edu'].id;
+  const student2Id = seededStudents['nusrat.jahan@student.apex.edu'].id;
+  const student3Id = seededStudents['tanvir.hasan@student.apex.edu'].id;
 
-  for (const pay of paymentsData) {
-    let tx = await prisma.paymentTransaction.findFirst({
+  const enr1Id = seededEnrollments[`${batch1Id}_${student1Id}`]?.id;
+  const enr2Id = seededEnrollments[`${batch1Id}_${student2Id}`]?.id;
+  const enr3Id = seededEnrollments[`${batch2Id}_${student3Id}`]?.id;
+
+  if (enr1Id) {
+    const bill1 = await prisma.monthlyFeeBill.upsert({
       where: {
-        OR: [
-          ...(pay.stripeSessionId ? [{ stripeSessionId: pay.stripeSessionId }] : []),
-          {
-            studentId: pay.studentId,
-            batchId: pay.batchId,
-            billingMonth: pay.billingMonth,
-            billingYear: pay.billingYear,
-            status: PaymentStatus.COMPLETED,
-          },
-          {
-            receipt: {
-              receiptNumber: pay.receiptNumber,
-            },
-          },
-        ],
+        enrollmentId_billingYear_billingMonth: {
+          enrollmentId: enr1Id,
+          billingYear: currentYear,
+          billingMonth: currentMonth,
+        },
       },
-      include: { receipt: true },
+      update: {
+        status: PaymentBillStatus.PAID,
+        paidAmount: 3500.0,
+        dueAmount: 0.0,
+      },
+      create: {
+        studentId: student1Id,
+        batchId: batch1Id,
+        enrollmentId: enr1Id,
+        billingMonth: currentMonth,
+        billingYear: currentYear,
+        monthlyFee: 3500.0,
+        previousDue: 0.0,
+        totalPayable: 3500.0,
+        paidAmount: 3500.0,
+        dueAmount: 0.0,
+        status: PaymentBillStatus.PAID,
+      },
     });
 
-    if (!tx) {
-      tx = await prisma.paymentTransaction.create({
-        data: {
-          studentId: pay.studentId,
-          batchId: pay.batchId,
-          enrollmentId: pay.enrollmentId,
-          amount: pay.amount,
-          currency: pay.currency,
-          paymentMethod: pay.paymentMethod,
-          status: pay.status,
-          billingMonth: pay.billingMonth,
-          billingYear: pay.billingYear,
-          notes: pay.notes,
-          stripeSessionId: pay.stripeSessionId,
-          stripePaymentIntentId: pay.stripePaymentIntentId,
-          paidAt: pay.paidAt,
-          receipt: {
-            create: {
-              receiptNumber: pay.receiptNumber,
-            },
-          },
-        },
-        include: { receipt: true },
-      });
-    }
+    await prisma.paymentTransaction.upsert({
+      where: { receiptNumber: 'REC-202609-0001' },
+      update: {},
+      create: {
+        studentId: student1Id,
+        batchId: batch1Id,
+        monthlyFeeBillId: bill1.id,
+        amount: 3500.0,
+        currency: 'bdt',
+        paymentMethod: PaymentMethod.STRIPE,
+        status: PaymentStatus.COMPLETED,
+        stripeSessionId: 'cs_test_seed_rahim_001',
+        stripePaymentIntentId: 'pi_test_seed_rahim_001',
+        receiptNumber: 'REC-202609-0001',
+        notes: 'Online Stripe card payment - Full settlement',
+        paidAt: subDays(today, 10),
+      },
+    });
   }
 
+  if (enr2Id) {
+    const bill2 = await prisma.monthlyFeeBill.upsert({
+      where: {
+        enrollmentId_billingYear_billingMonth: {
+          enrollmentId: enr2Id,
+          billingYear: currentYear,
+          billingMonth: currentMonth,
+        },
+      },
+      update: {
+        status: PaymentBillStatus.PARTIAL,
+        paidAmount: 2000.0,
+        dueAmount: 1500.0,
+      },
+      create: {
+        studentId: student2Id,
+        batchId: batch1Id,
+        enrollmentId: enr2Id,
+        billingMonth: currentMonth,
+        billingYear: currentYear,
+        monthlyFee: 3500.0,
+        previousDue: 0.0,
+        totalPayable: 3500.0,
+        paidAmount: 2000.0,
+        dueAmount: 1500.0,
+        status: PaymentBillStatus.PARTIAL,
+      },
+    });
+
+    await prisma.paymentTransaction.upsert({
+      where: { receiptNumber: 'REC-202609-0002' },
+      update: {},
+      create: {
+        studentId: student2Id,
+        batchId: batch1Id,
+        monthlyFeeBillId: bill2.id,
+        amount: 2000.0,
+        currency: 'bdt',
+        paymentMethod: PaymentMethod.BKASH,
+        status: PaymentStatus.COMPLETED,
+        receiptNumber: 'REC-202609-0002',
+        notes: 'bKash Merchant Payment (Trx: BK88291) - Partial 2000 BDT',
+        collectedById: adminUser.id,
+        paidAt: subDays(today, 8),
+      },
+    });
+  }
+
+  if (enr3Id) {
+    await prisma.monthlyFeeBill.upsert({
+      where: {
+        enrollmentId_billingYear_billingMonth: {
+          enrollmentId: enr3Id,
+          billingYear: currentYear,
+          billingMonth: currentMonth,
+        },
+      },
+      update: {},
+      create: {
+        studentId: student3Id,
+        batchId: batch2Id,
+        enrollmentId: enr3Id,
+        billingMonth: currentMonth,
+        billingYear: currentYear,
+        monthlyFee: 2800.0,
+        previousDue: 1000.0,
+        totalPayable: 3800.0,
+        paidAmount: 0.0,
+        dueAmount: 3800.0,
+        status: PaymentBillStatus.UNPAID,
+      },
+    });
+  }
 
   // 10. Seed Initial Audit Logs
   logger.info('10. Bootstrapping Immutable Administrative Audit Trail...');
-  // 9. Seed Initial Audit Logs
-  logger.info('9. Bootstrapping Immutable Administrative Audit Trail...');
   const auditLogsData = [
     {
       userId: adminUser.id,
@@ -904,7 +906,7 @@ async function main(): Promise<void> {
   logger.info('🎉 Database Seeding Complete & Verified Successfully!');
   logger.info('================================================================');
   logger.info('Seeded Credentials Overview:');
-  logger.info(`  • Admin  : ${adminEmail} / Admin@123456`);
+  logger.info(`  • Admin  : ${adminEmail} / Abrar650@#`);
   logger.info('  • Teacher: sarah.jenkins@apexacademy.edu / Teacher@123456');
   logger.info('  • Teacher: alan.walker@apexacademy.edu / Teacher@123456');
   logger.info('  • Teacher: emily.watson@apexacademy.edu / Teacher@123456');

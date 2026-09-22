@@ -9,8 +9,9 @@ model Enrollment {
   updatedAt  DateTime         @updatedAt
 
   // Relations
-  student User  @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
-  batch   Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  student User             @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  batch   Batch            @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  bills   MonthlyFeeBill[]
 
   // Constraints & Indexes
   @@unique([batchId, studentId])

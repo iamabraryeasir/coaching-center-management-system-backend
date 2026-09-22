@@ -1,0 +1,62 @@
+model MonthlyFeeBill {
+  id           String            @id @default(uuid())
+  studentId    String // The Student (User with role STUDENT)
+  batchId      String // The Batch
+  enrollmentId String // The Enrollment
+  billingMonth Int // 1 to 12 (Bangladesh Standard Time calendar month)
+  billingYear  Int // e.g. 2026
+  monthlyFee   Decimal           @db.Decimal(10, 2) // Current monthly tuition fee of the batch
+  previousDue  Decimal           @default(0.00) @db.Decimal(10, 2) // Arrear balance carried forward from previous months
+  totalPayable Decimal           @db.Decimal(10, 2) // monthlyFee + previousDue
+  paidAmount   Decimal           @default(0.00) @db.Decimal(10, 2) // Amount paid so far for this bill
+  dueAmount    Decimal           @db.Decimal(10, 2) // totalPayable - paidAmount
+  status       PaymentBillStatus @default(UNPAID) // UNPAID, PARTIAL, PAID
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  // Relations
+  student      User                 @relation("StudentBills", fields: [studentId], references: [id], onDelete: Cascade)
+  batch        Batch                @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  enrollment   Enrollment           @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  transactions PaymentTransaction[]
+
+  @@unique([enrollmentId, billingYear, billingMonth])
+  @@index([studentId])
+  @@index([batchId])
+  @@index([billingYear, billingMonth])
+  @@index([status])
+  @@map("monthly_fee_bills")
+}
+
+model PaymentTransaction {
+  id                    String         @id @default(uuid())
+  studentId             String // The Student making the payment
+  batchId               String // The Batch for which payment is made
+  monthlyFeeBillId      String? // Link to the specific MonthlyFeeBill being paid (if applicable)
+  amount                Decimal        @db.Decimal(10, 2) // Amount paid in this transaction
+  currency              String         @default("bdt")
+  paymentMethod         PaymentMethod // STRIPE, CASH, BKASH, NAGAD, BANK_TRANSFER
+  status                PaymentStatus  @default(COMPLETED) // COMPLETED, FAILED, REFUNDED
+  stripeSessionId       String?        @unique // Stripe Checkout Session ID
+  stripePaymentIntentId String? // Stripe Payment Intent ID
+  receiptNumber         String         @unique // e.g. "REC-202609-0001"
+  notes                 String? // Remarks / payment notes / reference ID
+  paidAt                DateTime       @default(now()) // Timestamp when transaction was fulfilled
+  collectedById         String? // The Admin User who manually recorded the offline payment
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  // Relations
+  student        User            @relation("StudentPayments", fields: [studentId], references: [id], onDelete: Cascade)
+  batch          Batch           @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  monthlyFeeBill MonthlyFeeBill? @relation(fields: [monthlyFeeBillId], references: [id], onDelete: SetNull)
+  collectedBy    User?           @relation("CollectedPayments", fields: [collectedById], references: [id], onDelete: SetNull)
+
+  @@index([studentId])
+  @@index([batchId])
+  @@index([monthlyFeeBillId])
+  @@index([receiptNumber])
+  @@index([status])
+  @@map("payment_transactions")
+}
+

@@ -70,6 +70,8 @@ erDiagram
     Batch ||--o{ Enrollment : "contains"
     Batch ||--o{ AttendanceRecord : "tracks"
     Batch ||--o{ Exam : "schedules"
+    %% Payments & Invoicing
+    Batch ||--o{ MonthlyFeeBill : "bills"
     Batch ||--o{ PaymentTransaction : "receives"
 
     %% Faculty & Routines
@@ -82,7 +84,11 @@ erDiagram
     User ||--o{ TeacherAttendanceRecord : "faculty attendance"
     User ||--o{ TeacherAttendanceRecord : "marked by"
     User ||--o{ ExamResult : "receives marks"
+    Enrollment ||--o{ MonthlyFeeBill : "generates"
+    User ||--o{ MonthlyFeeBill : "billed (studentId)"
     User ||--o{ PaymentTransaction : "pays (studentId)"
+    User ||--o{ PaymentTransaction : "collects (adminId)"
+    MonthlyFeeBill ||--o{ PaymentTransaction : "settles"
 
     %% Examinations & Grading
     Exam ||--o{ ExamResult : "evaluates"
@@ -182,6 +188,7 @@ erDiagram
     }
 
     AttendanceRecord {
+    MonthlyFeeBill {
         string id PK "UUID"
         string batchId FK
         string studentId FK
@@ -210,6 +217,17 @@ erDiagram
         date examDate "Native PostgreSQL DATE"
         ExamStatus status "UPCOMING | ONGOING | COMPLETED | CANCELLED"
         ResultStatus resultStatus "DRAFT | PUBLISHED"
+        string enrollmentId FK
+        int billingMonth "1-12 (BST)"
+        int billingYear "e.g. 2026"
+        decimal monthlyFee "10,2"
+        decimal previousDue "10,2"
+        decimal totalPayable "10,2"
+        decimal paidAmount "10,2"
+        decimal dueAmount "10,2"
+        PaymentBillStatus status "UNPAID | PARTIAL | PAID"
+        datetime createdAt
+        datetime updatedAt
     }
 
     ExamResult {
@@ -228,14 +246,19 @@ erDiagram
         string enrollmentId FK "Nullable"
         int billingMonth "1-12"
         int billingYear "e.g. 2026"
+        string monthlyFeeBillId FK "Nullable"
         decimal amount "10,2"
         string currency "bdt"
         PaymentMethod paymentMethod "STRIPE | CASH | BKASH | NAGAD | BANK_TRANSFER"
         PaymentStatus status "PENDING | COMPLETED | FAILED | REFUNDED"
+        PaymentStatus status "COMPLETED | FAILED | REFUNDED"
+        string receiptNumber UK "REC-YYYYMM-XXXX"
         string notes "Nullable"
         string stripeSessionId UK "Nullable"
         string stripePaymentIntentId "Nullable"
         datetime paidAt "Nullable"
+        string collectedById FK "Nullable"
+        datetime paidAt
     }
 
 
@@ -472,6 +495,7 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
 ### 13. Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 APIs)
+### 13. Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (8 APIs)
 
 - `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
@@ -484,6 +508,14 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `GET /api/v1/payments/stats` — Admin executive financial revenue dashboard & analytics.
 - `GET /api/v1/payments/transactions/:transactionId/receipt` — Retrieve payment receipt metadata by Transaction ID.
 - `GET /api/v1/payments/transactions/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
+- `GET /api/v1/payments/monthly-sheet` — Admin views roster of enrolled students with batch fees, past dues, paid amounts, remaining dues, and status (`PAID`/`PARTIAL`/`UNPAID`) with search, batch filter, and pagination (`QueryBuilder`).
+- `GET /api/v1/payments/monthly-stats` — Admin retrieves monthly revenue dashboard telemetry (Expected Revenue, Collected Amount, Total Due, Collection Rate %).
+- `POST /api/v1/payments/manual-collect` — Admin records offline monthly fee collection (Cash, bKash, Nagad, Bank) supporting partial or full payments with instant receipt generation.
+- `GET /api/v1/payments/my-bill` — Student views current month billing breakdown, previous dues, and net total balance across active batches.
+- `POST /api/v1/payments/create-checkout-session` — Student creates hosted Stripe Checkout Session for full remaining balance settlement.
+- `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener that settles transactions and updates bills to `PAID`.
+- `GET /api/v1/payments/transactions` — Admin & Student view paginated payment transaction ledger (`QueryBuilder`).
+- `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
 
 ### 14. Centralized Audit Logging & Security Explorer (3 APIs)
 
