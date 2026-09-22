@@ -95,7 +95,6 @@ export const sendPasswordResetEmail = async (
   });
 };
 
-
 export const sendReportCardEmail = async (
   email: string,
   name: string,

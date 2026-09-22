@@ -2,7 +2,6 @@ import type { Response } from 'express';
 import PDFDocument from 'pdfkit';
 import { config } from '../config';
 import { formatInBangladeshTime, getBangladeshCurrentYear } from './date';
-import { formatInBangladeshTime } from './date';
 
 const PRIMARY_COLOR = '#1e3a8a';
 const SECONDARY_COLOR = '#475569';
