@@ -494,30 +494,24 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 13. Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 APIs)
-### 13. Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (8 APIs)
+### 13. Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (9 APIs)
 
-- `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
-- `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
-- `POST /api/v1/payments/manual-collect` — Admin collects offline monthly fee (Cash, bKash, Nagad, Bank) with billing period and notes.
-- `PATCH /api/v1/payments/enrollments/:enrollmentId/previous-dues` — Admin adjusts historical start billing period, opening dues, and flat monthly discount on student enrollment.
-- `GET /api/v1/payments/my/dues` — Student calculates unpaid monthly fees and total outstanding dues across active batches.
-- `GET /api/v1/payments/dues` — Admin monitors all students with outstanding dues & defaulters list.
-- `GET /api/v1/payments/my` — Student views personal payment transactions and receipts.
-- `GET /api/v1/payments` — Admin system-wide payment transaction ledger (`QueryBuilder`).
-- `GET /api/v1/payments/stats` — Admin executive financial revenue dashboard & analytics.
-- `GET /api/v1/payments/transactions/:transactionId/receipt` — Retrieve payment receipt metadata by Transaction ID.
-- `GET /api/v1/payments/transactions/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
 - `GET /api/v1/payments/monthly-sheet` — Admin views roster of enrolled students with batch fees, past dues, paid amounts, remaining dues, and status (`PAID`/`PARTIAL`/`UNPAID`) with search, batch filter, and pagination (`QueryBuilder`).
-- `GET /api/v1/payments/monthly-stats` — Admin retrieves monthly revenue dashboard telemetry (Expected Revenue, Collected Amount, Total Due, Collection Rate %).
+- `GET /api/v1/payments/stats` — Admin retrieves monthly revenue dashboard telemetry (Expected Revenue, Collected Amount, Total Due, Collection Rate %).
+- `GET /api/v1/payments/revenue-trend` — Admin retrieves month-by-month payment collection trend for charting (past N months).
 - `POST /api/v1/payments/manual-collect` — Admin records offline monthly fee collection (Cash, bKash, Nagad, Bank) supporting partial or full payments with instant receipt generation.
-- `GET /api/v1/payments/my-bill` — Student views current month billing breakdown, previous dues, and net total balance across active batches.
+- `GET /api/v1/payments/my/bill` — Student views current month billing breakdown, previous dues, and net total balance across active batches.
 - `POST /api/v1/payments/create-checkout-session` — Student creates hosted Stripe Checkout Session for full remaining balance settlement.
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener that settles transactions and updates bills to `PAID`.
 - `GET /api/v1/payments/transactions` — Admin & Student view paginated payment transaction ledger (`QueryBuilder`).
 - `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
 
-### 14. Centralized Audit Logging & Security Explorer (3 APIs)
+### 14. Admin Dashboard & Operational Analytics (2 APIs)
+
+- `GET /api/v1/dashboard/today` — Admin real-time daily operational snapshot (today's payment collection, student and teacher attendance rates, pending actions, recent 5 transactions).
+- `GET /api/v1/dashboard/monthly-summary` — Admin complete financial, academic, and batch enrollment snapshot for a calendar month.
+
+### 15. Centralized Audit Logging & Security Explorer (3 APIs)
 
 - `GET /api/v1/audit-logs` — Admin system-wide audit log explorer (`QueryBuilder`).
 - `GET /api/v1/audit-logs/stats` — Admin audit activity telemetry & operational action breakdown.
@@ -532,20 +526,19 @@ backend/
 ├── .env.example                 # Local environment template & documentation
 ├── AGENTS.md                    # Engineering guidelines & non-negotiable coding standards
 ├── PROJECT_PLAN.md              # High-level architecture, milestones, and system blueprint
-├── TIMELINE_BREAKDOWN.md        # Comprehensive 93-endpoint API catalog & milestone progress
 ├── biome.json                   # Biome linter, code formatter, and import organizer config
 ├── package.json                 # Core dependencies, development scripts, and package metadata
 ├── prisma.config.ts             # Prisma 7 multi-file schema folder configuration
 ├── tsconfig.json                # Modern TypeScript compiler configuration (bundler resolution)
 ├── postman/
-│   └── Coaching Center Management System API.postman_collection.json # Production Postman v2.1 collection (95 runnable requests)
+│   └── Coaching Center Management System API.postman_collection.json # Production Postman v2.1 collection
 ├── prisma/
 │   ├── schema.prisma            # Minimal root schema (generator client & datasource db blocks only)
 │   ├── enums.prisma             # Centralized system enums (Role, UserStatus, Gender, Permission, etc.)
 │   ├── user.prisma              # User, Session, Admin/Teacher/Student profiles & permissions
 │   ├── batch.prisma             # Academic batch entity (name, subject, classLevel, monthlyFee)
 │   ├── routine.prisma           # ClassRoutine weekly timetable entity (dayOfWeek, roomNumber, times)
-│   ├── enrollment.prisma        # Student enrollment entity (openingDue, discountAmount, billing period)
+│   ├── enrollment.prisma        # Student enrollment entity (billing period, approval timestamp)
 │   ├── attendance.prisma        # Student daily attendance record entity
 │   ├── teacher-attendance.prisma# Teacher daily attendance & check-in record entity
 │   ├── exam.prisma              # Exam assessments & student graded exam results
@@ -595,6 +588,7 @@ backend/
         ├── audit-log/           # Centralized administrative audit logging explorer & metrics
         ├── auth/                # Dual-token auth, Google GIS onboarding, password reset & approvals
         ├── batch/               # Academic batches, batch enrollments & student promotion
+        ├── dashboard/           # Admin real-time daily snapshot & monthly health summary
         ├── exam/                # Assessments, bulk marks entry, auto-grading & PDF grade sheets
         ├── institution/         # Single-institution academy governance & administrative profile
         ├── payment/             # Monthly billing, Stripe checkout, manual collection, receipts & PDF

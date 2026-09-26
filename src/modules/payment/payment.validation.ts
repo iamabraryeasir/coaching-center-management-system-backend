@@ -59,3 +59,9 @@ export const getTransactionsQuerySchema = z.object({
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
   }),
 });
+
+export const getRevenueTrendQuerySchema = z.object({
+  query: z.object({
+    months: z.coerce.number().int().min(1).max(12).default(6),
+  }),
+});

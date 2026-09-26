@@ -126,3 +126,16 @@ export const getReceiptPdfController = catchAsync(
     streamPdf(res, buffer, filename, isDownload);
   },
 );
+
+export const getRevenueTrendController = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const data = await paymentServices.getRevenueTrend(req.query);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Revenue trend fetched successfully',
+      data,
+    });
+  },
+);

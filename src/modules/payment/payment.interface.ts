@@ -121,3 +121,24 @@ export interface IGetTransactionsQuery {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
+
+export interface IRevenueTrendQuery {
+  months?: number;
+}
+
+export interface IRevenueTrendMonthItem {
+  month: number;
+  year: number;
+  monthLabel: string;
+  monthYear: string;
+  expectedRevenue: number;
+  collectedAmount: number;
+  totalDue: number;
+  collectionRate: number;
+  transactionCount: number;
+}
+
+export interface IRevenueTrendResponse {
+  months: number;
+  trend: IRevenueTrendMonthItem[];
+}

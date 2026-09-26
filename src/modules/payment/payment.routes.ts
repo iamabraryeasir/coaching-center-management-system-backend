@@ -7,6 +7,7 @@ import {
   getMonthlySheetController,
   getMonthlyStatsController,
   getReceiptPdfController,
+  getRevenueTrendController,
   getStudentBillController,
   getTransactionsController,
   handleStripeWebhookController,
@@ -16,6 +17,7 @@ import {
   createCheckoutSessionSchema,
   getMonthlySheetQuerySchema,
   getMonthlyStatsQuerySchema,
+  getRevenueTrendQuerySchema,
   getTransactionsQuerySchema,
 } from './payment.validation';
 
@@ -43,6 +45,13 @@ paymentRouter.get(
   checkAuth(Role.ADMIN),
   validateRequest(getMonthlyStatsQuerySchema),
   getMonthlyStatsController,
+);
+
+paymentRouter.get(
+  '/revenue-trend',
+  checkAuth(Role.ADMIN),
+  validateRequest(getRevenueTrendQuerySchema),
+  getRevenueTrendController,
 );
 
 paymentRouter.post(

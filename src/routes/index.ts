@@ -5,6 +5,7 @@ import {
   auditLogRouter,
   authRouter,
   batchRouter,
+  dashboardRouter,
   examRouter,
   institutionRouter,
   paymentRouter,
@@ -32,6 +33,7 @@ rootRouter.use('/attendance', attendanceRouter);
 rootRouter.use('/audit-logs', auditLogRouter);
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/batches', batchRouter);
+rootRouter.use('/dashboard', dashboardRouter);
 rootRouter.use('/exams', examRouter);
 rootRouter.use('/institution', institutionRouter);
 rootRouter.use('/payments', paymentRouter);

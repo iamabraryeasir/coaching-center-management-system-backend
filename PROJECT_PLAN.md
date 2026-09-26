@@ -1,20 +1,15 @@
 # Coaching Center Management System — Backend Production Blueprint & Plan
 
-> **Version**: 2.6.0 (Enterprise Production Specification)  
-> **Version**: 2.7.0 (Enterprise Production Specification)  
+> **Version**: 2.8.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 93 Verified Endpoints across 14 Modules  
-> **API Standard**: RESTful v1 with 88 Verified Endpoints across 14 Modules  
+> **API Standard**: RESTful v1 with 91 Verified Endpoints across 15 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
-> **API Standard**: RESTful v1 across Core Operational Modules  
-> **Status**: Verified & Quality Gate Passed
 
 ---
 
 ## 1. Project Mission & Domain Context
 
 Build a secure, enterprise-grade backend for a **Coaching Center Management System (Academy)** governed by the system `ADMIN`. The platform centralizes and automates daily operational, academic, and financial workflows:
-Build a secure, enterprise-grade backend for a **Coaching Center Management System (Academy)** governed by the system `ADMIN`. The platform centralizes and automates daily operational, academic, and administrative workflows:
 
 - **Academy Governance**: Centralized single-institution profile, branding, and operational telemetry.
 - **Identity & RBAC**: Strict role-based access control (`ADMIN`, `TEACHER`, `STUDENT`) with granular delegated operational permissions (`MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES`).
@@ -42,27 +37,27 @@ Build a secure, enterprise-grade backend for a **Coaching Center Management Syst
    - **Student-Only Social Login**: Google Identity Services (GIS) login is strictly restricted to `Role.STUDENT`. Unregistered Google users pass through an onboarding gate (`POST /api/v1/auth/google/onboard`) into `PENDING_ACTIVATION` awaiting `ADMIN` approval.
 3. **Mandatory Real Payment Integration (Stripe)**:
    - Real Stripe Checkout Sessions (`POST /api/v1/payments/create-checkout-session`) with server-side price calculation.
-3. **Mandatory Real Payment Integration (Stripe & Multi-Channel Manual)**:
+4. **Mandatory Real Payment Integration (Stripe & Multi-Channel Manual)**:
    - Real Stripe Checkout Sessions (`POST /api/v1/payments/create-checkout-session`) with server-side price calculation and zero-partial online payment constraint.
    - Front-desk manual collection with partial amount flexibility and multi-channel support (`CASH`, `BKASH`, `NAGAD`, `BANK_TRANSFER`).
    - Cryptographically verified raw-body Stripe webhook handler (`POST /api/v1/payments/webhook`) executing inside interactive Prisma transactions (`prisma.$transaction`).
    - Immutable financial transaction ledger and generated receipts (`REC-YYYY-XXXX`).
    - Ledger-backed monthly billing model (`MonthlyFeeBill`) with carried-over previous unpaid dues and immutable generated receipts (`REC-YYYY-XXXX`).
-4. **Zero Cloud Storage In-Memory PDF Subsystem**:
-   - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Payment Invoices, Weekly Timetables, and Student Report Cards.
 5. **Zero Cloud Storage In-Memory PDF Subsystem**:
+   - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Payment Invoices, Weekly Timetables, and Student Report Cards.
+6. **Zero Cloud Storage In-Memory PDF Subsystem**:
    - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Weekly Timetables and Student Report Cards.
    - Dynamic in-memory PDF generation via `PDFKit` (~15ms per document) for Payment Invoices/Receipts, Weekly Timetables, and Student Report Cards.
    - Streamed directly over HTTP (`inline` preview vs `attachment` download) or attached directly to Nodemailer emails, keeping Cloudinary storage exclusively for profile avatars.
-6. **Universal QueryBuilder Standard**:
-5. **Universal QueryBuilder Standard**:
-   - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all 14 modules.
-7. **Universal Soft Deletes & Audit Trails**:
+7. **Universal QueryBuilder Standard**:
 8. **Universal QueryBuilder Standard**:
-   - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all domain modules.
+   - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all 14 modules.
 9. **Universal Soft Deletes & Audit Trails**:
-6. **Universal Soft Deletes & Audit Trails**:
-   - Deletions preserve data integrity via `deletedAt = new Date()`. All find queries filter out soft-deleted records. High-value mutations emit structured `AuditLog` records.
+10. **Universal QueryBuilder Standard**:
+    - Centralized `QueryBuilder` utility handling multi-field search (`?search=`), dynamic filtering (`?status=`, `?fee_gte=`, `?fee_lte=`), sorting (`?sortBy=`, `?sortOrder=`), and pagination (`?page=`, `?limit=`) across all domain modules.
+11. **Universal Soft Deletes & Audit Trails**:
+12. **Universal Soft Deletes & Audit Trails**:
+    - Deletions preserve data integrity via `deletedAt = new Date()`. All find queries filter out soft-deleted records. High-value mutations emit structured `AuditLog` records.
 
 ---
 
@@ -252,32 +247,24 @@ stateDiagram-v2
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 6.13 Monthly Fee Payments, Due Management, Webhooks & Receipt PDF (11 Endpoints)
-### 6.13 Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (8 Endpoints)
+### 6.13 Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (9 Endpoints)
 
-### 6.13 Centralized Audit Logging & Security Explorer (3 Endpoints)
 - `GET /api/v1/payments/monthly-sheet` — Admin monthly billing sheet roster with student dues, carried-over debt, payments & statuses (`QueryBuilder`).
 - `GET /api/v1/payments/stats` — Admin monthly payment dashboard metrics & statistics cards.
+- `GET /api/v1/payments/revenue-trend` — Admin month-by-month payment collection trend for charting (past N months).
 - `POST /api/v1/payments/manual-collect` — Admin collects offline fee (Cash, bKash, Nagad, Bank Transfer) with partial or full amount.
 - `GET /api/v1/payments/my/bill` — Student views current month's fee bill + accumulated previous dues breakdown.
 - `POST /api/v1/payments/create-checkout-session` — Student initiates Stripe Checkout Session for full monthly fee settlement.
 - `POST /api/v1/payments/webhook` — Stripe raw body webhook listener fulfilling payments idempotently.
 - `GET /api/v1/payments/transactions` — Admin system-wide payment transactions ledger (`QueryBuilder`).
-- `GET /api/v1/payments/receipts/:billId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Bill ID via PDFKit**.
+- `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID via PDFKit**.
 
-- `POST /api/v1/payments/create-checkout-session` — Student creates Stripe Checkout Session for monthly tuition fee (`billingMonth`, `billingYear`).
-- `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener.
-- `POST /api/v1/payments/manual-collect` — Admin collects offline monthly fee (Cash, bKash, Nagad, Bank) with billing period and notes.
-- `PATCH /api/v1/payments/enrollments/:enrollmentId/previous-dues` — Admin adjusts historical start billing period & opening dues on student enrollment.
-- `GET /api/v1/payments/my/dues` — Student calculates unpaid monthly fees and total outstanding dues across active batches.
-- `GET /api/v1/payments/dues` — Admin monitors all students with outstanding dues & defaulters list.
-- `GET /api/v1/payments/my` — Student views personal payment transactions and receipts.
-- `GET /api/v1/payments` — Admin system-wide payment transaction ledger (`QueryBuilder`).
-- `GET /api/v1/payments/stats` — Admin executive financial revenue dashboard & analytics.
-- `GET /api/v1/payments/transactions/:transactionId/receipt` — Retrieve payment receipt metadata by Transaction ID.
-- `GET /api/v1/payments/transactions/:transactionId/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
+### 6.14 Admin Dashboard & Operational Analytics (2 Endpoints)
 
-### 6.14 Centralized Audit Logging & Security Explorer (3 Endpoints)
+- `GET /api/v1/dashboard/today` — Admin real-time daily operational numbers snapshot (today collection, student & teacher attendance rates, pending actions, recent transactions).
+- `GET /api/v1/dashboard/monthly-summary` — Admin complete financial, academic, and batch enrollment snapshot for a calendar month.
+
+### 6.15 Centralized Audit Logging & Security Explorer (3 Endpoints)
 
 - `GET /api/v1/audit-logs` — Admin system-wide audit log explorer (`QueryBuilder`).
 - `GET /api/v1/audit-logs/stats` — Admin audit activity telemetry & operational action breakdown.
@@ -293,30 +280,22 @@ stateDiagram-v2
 {
   "success": true,
   "statusCode": 200,
-  "message": "Batches retrieved successfully",
-  "message": "Monthly fee sheet retrieved successfully",
-  "meta": {
-    "page": 1,
-    "limit": 10,
-    "total": 24,
-    "totalPage": 3
-  },
-  "data": [
-    {
-      "id": "c1a2b3c4-...",
-      "name": "HSC 2026 - Higher Mathematics",
-      "fee": 3500.0,
-      "status": "ONGOING"
-      "studentName": "Tanvir Hasan",
-      "batchName": "HSC 2026 - Higher Mathematics",
-      "monthlyFee": 3500.0,
-      "previousDue": 1500.0,
-      "totalPayable": 5000.0,
-      "paidAmount": 2000.0,
-      "dueAmount": 3000.0,
-      "status": "PARTIAL"
+  "message": "Monthly summary fetched successfully",
+  "data": {
+    "month": 9,
+    "year": 2026,
+    "billingPeriodText": "September 2026",
+    "financial": {
+      "expectedRevenue": 250000,
+      "collectedAmount": 183500,
+      "totalDue": 66500,
+      "collectionRate": 73.4,
+      "paidCount": 38,
+      "partialCount": 9,
+      "unpaidCount": 16,
+      "currency": "BDT"
     }
-  ]
+  }
 }
 ```
 
