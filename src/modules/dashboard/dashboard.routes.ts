@@ -3,9 +3,13 @@ import { Router } from 'express';
 import { checkAuth, validateRequest } from '../../middlewares';
 import {
   getMonthlySummaryController,
+  getStudentDashboardController,
   getTodayDashboardController,
 } from './dashboard.controller';
-import { getMonthlySummaryQuerySchema } from './dashboard.validation';
+import {
+  getMonthlySummaryQuerySchema,
+  getStudentDashboardQuerySchema,
+} from './dashboard.validation';
 
 const dashboardRouter: Router = Router();
 
@@ -20,5 +24,12 @@ dashboardRouter.get(
   getMonthlySummaryController,
 );
 
-export { dashboardRouter };
+// Student Personalized Dashboard Snapshot
+dashboardRouter.get(
+  '/student',
+  checkAuth(Role.STUDENT, Role.ADMIN),
+  validateRequest(getStudentDashboardQuerySchema),
+  getStudentDashboardController,
+);
 
+export { dashboardRouter };

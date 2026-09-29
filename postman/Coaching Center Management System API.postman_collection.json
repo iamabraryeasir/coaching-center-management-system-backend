@@ -3179,6 +3179,41 @@
             "description": "Protected: Admin retrieves complete monthly financial, academic, and batch enrollment snapshot."
           },
           "response": []
+        },
+        {
+          "name": "✅ Get Student Dashboard Summary (Student / Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/student",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "student"
+              ],
+              "query": [
+                {
+                  "key": "studentId",
+                  "value": "9fca99f4-8cff-4e3f-966c-887a2e9f8ef5",
+                  "disabled": true,
+                  "description": "Optional: Admin only to query specific student dashboard"
+                }
+              ]
+            },
+            "description": "Protected: Student (or Admin with ?studentId=) retrieves personalized dashboard snapshot including KPIs, today's schedule, billing alert, recent exams, and enrolled batches."
+          },
+          "response": []
         }
       ]
     },

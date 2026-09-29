@@ -1,6 +1,7 @@
+import { Role } from '@prisma/client';
 import type { Request, Response } from 'express';
-import { catchAsync, sendResponse } from '../../utils';
-import type { IMonthlySummaryQuery } from './dashboard.interface';
+import { ApiError, catchAsync, sendResponse } from '../../utils';
+import type { IMonthlySummaryQuery, IStudentDashboardQuery } from './dashboard.interface';
 import { dashboardServices } from './services';
 
 export const getTodayDashboardController = catchAsync(
@@ -26,6 +27,32 @@ export const getMonthlySummaryController = catchAsync(
       statusCode: 200,
       success: true,
       message: 'Monthly summary fetched successfully',
+      data,
+    });
+  },
+);
+
+export const getStudentDashboardController = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    let studentId = req.user?.userId;
+
+    if (req.user?.role === Role.ADMIN) {
+      const query = req.query as unknown as IStudentDashboardQuery;
+      if (query.studentId) {
+        studentId = query.studentId;
+      }
+    }
+
+    if (!studentId) {
+      throw ApiError.badRequest('Student ID is required.');
+    }
+
+    const data = await dashboardServices.getStudentDashboard(studentId);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Student dashboard summary retrieved successfully',
       data,
     });
   },

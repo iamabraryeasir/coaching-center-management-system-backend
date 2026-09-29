@@ -6,3 +6,9 @@ export const getMonthlySummaryQuerySchema = z.object({
     year: z.coerce.number().int().min(2020).max(2100).optional(),
   }),
 });
+
+export const getStudentDashboardQuerySchema = z.object({
+  query: z.object({
+    studentId: z.string().uuid('Invalid student ID format').optional(),
+  }),
+});
