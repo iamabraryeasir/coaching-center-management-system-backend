@@ -65,3 +65,13 @@ export const getRevenueTrendQuerySchema = z.object({
     months: z.coerce.number().int().min(1).max(12).default(6),
   }),
 });
+
+export const adjustPreviousDueSchema = z.object({
+  params: z.object({
+    billId: z.string().uuid('Invalid bill ID format'),
+  }),
+  body: z.object({
+    previousDue: z.coerce.number().min(0, 'Previous due must be greater than or equal to 0'),
+    reason: z.string().trim().max(500, 'Reason cannot exceed 500 characters').optional(),
+  }),
+});

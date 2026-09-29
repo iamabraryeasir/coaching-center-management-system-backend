@@ -1,3 +1,4 @@
+import { adjustPreviousDue } from './adjust-previous-due.service';
 import { collectManualPayment } from './collect-manual-payment.service';
 import { createCheckoutSession } from './create-checkout-session.service';
 import { getMonthlySheet } from './get-monthly-sheet.service';
@@ -8,6 +9,7 @@ import { getStudentBill } from './get-student-bill.service';
 import { getTransactions } from './get-transactions.service';
 import { handleStripeWebhook } from './handle-stripe-webhook.service';
 
+export * from './adjust-previous-due.service';
 export * from './collect-manual-payment.service';
 export * from './create-checkout-session.service';
 export * from './get-monthly-sheet.service';
@@ -21,6 +23,7 @@ export * from './handle-stripe-webhook.service';
 export const paymentServices = Object.freeze({
   getMonthlySheet,
   getMonthlyStats,
+  adjustPreviousDue,
   collectManualPayment,
   getStudentBill,
   createCheckoutSession,

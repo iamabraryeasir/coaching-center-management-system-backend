@@ -2,7 +2,7 @@
 
 > **Version**: 2.8.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 92 Verified Endpoints across 15 Modules  
+> **API Standard**: RESTful v1 with 93 Verified Endpoints across 15 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 
 ---
@@ -132,9 +132,10 @@ stateDiagram-v2
 
 ---
 
-## 6. Complete Master API Specification (92 Endpoints across 15 Modules)
+## 6. Complete Master API Specification (93 Endpoints across 15 Modules)
 
 ### 6.1 Health Checks & System Telemetry (2 Endpoints)
+
 
 - `GET /health` — Public basic liveness check.
 - `GET /api/v1/health/detailed` — Detailed system health check (uptime, PostgreSQL status, memory usage).
@@ -247,17 +248,19 @@ stateDiagram-v2
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 6.13 Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (9 Endpoints)
+### 6.13 Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (10 Endpoints)
 
 - `GET /api/v1/payments/monthly-sheet` — Admin monthly billing sheet roster with student dues, carried-over debt, payments & statuses (`QueryBuilder`).
 - `GET /api/v1/payments/stats` — Admin monthly payment dashboard metrics & statistics cards.
 - `GET /api/v1/payments/revenue-trend` — Admin month-by-month payment collection trend for charting (past N months).
+- `PATCH /api/v1/payments/bills/:billId/previous-due` — Admin manually adjusts previous due (arrear balance) of a student's bill.
 - `POST /api/v1/payments/manual-collect` — Admin collects offline fee (Cash, bKash, Nagad, Bank Transfer) with partial or full amount.
 - `GET /api/v1/payments/my/bill` — Student views current month's fee bill + accumulated previous dues breakdown.
 - `POST /api/v1/payments/create-checkout-session` — Student initiates Stripe Checkout Session for full monthly fee settlement.
 - `POST /api/v1/payments/webhook` — Stripe raw body webhook listener fulfilling payments idempotently.
 - `GET /api/v1/payments/transactions` — Admin system-wide payment transactions ledger (`QueryBuilder`).
 - `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID via PDFKit**.
+
 
 ### 6.14 Dashboard & Operational Analytics (3 Endpoints)
 

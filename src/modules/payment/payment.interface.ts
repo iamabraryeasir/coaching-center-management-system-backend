@@ -142,3 +142,35 @@ export interface IRevenueTrendResponse {
   months: number;
   trend: IRevenueTrendMonthItem[];
 }
+
+export interface IAdjustPreviousDuePayload {
+  previousDue: number;
+  reason?: string;
+}
+
+export interface IAdjustPreviousDueResponse {
+  id: string;
+  studentId: string;
+  student: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  batchId: string;
+  batch: {
+    id: string;
+    name: string;
+    fee: number;
+  };
+  enrollmentId: string;
+  billingMonth: number;
+  billingYear: number;
+  monthlyFee: number;
+  previousDue: number;
+  totalPayable: number;
+  paidAmount: number;
+  dueAmount: number;
+  status: PaymentBillStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}

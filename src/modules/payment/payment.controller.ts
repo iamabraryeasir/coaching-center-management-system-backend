@@ -139,3 +139,18 @@ export const getRevenueTrendController = catchAsync(
     });
   },
 );
+
+export const adjustPreviousDueController = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const billId = req.params.billId as string;
+    const adminId = req.user?.userId as string;
+    const data = await paymentServices.adjustPreviousDue(billId, req.body, adminId);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Previous due amount adjusted successfully',
+      data,
+    });
+  },
+);

@@ -2877,6 +2877,51 @@
           "response": []
         },
         {
+          "name": "✅ Adjust Bill Previous Due Amount (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"previousDue\": 500,\n  \"reason\": \"Manual adjustment of historical arrear balance by Admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/bills/:billId/previous-due",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "bills",
+                ":billId",
+                "previous-due"
+              ],
+              "variable": [
+                {
+                  "key": "billId",
+                  "value": "00000000-0000-0000-0000-000000000000",
+                  "description": "Target MonthlyFeeBill UUID"
+                }
+              ]
+            },
+            "description": "Protected: Admin manually adjusts the previous due (arrear balance) of a student's monthly fee bill. Recalculates total payable, remaining due, and status automatically inside an interactive transaction with an audit log."
+          },
+          "response": []
+        },
+        {
           "name": "✅ Get Student Billing Summary & Dues (Student Only)",
           "request": {
             "method": "GET",

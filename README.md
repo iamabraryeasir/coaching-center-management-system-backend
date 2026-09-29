@@ -21,7 +21,7 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 4. [Role-Based Access Control & Permission Matrix](#-role-based-access-control--permission-matrix)
 5. [Authentication & Student Onboarding State Machine](#-authentication--student-onboarding-state-machine)
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
-7. [Master API Catalog (92 Verified Endpoints)](#-master-api-catalog-92-verified-endpoints)
+7. [Master API Catalog (93 Verified Endpoints)](#-master-api-catalog-93-verified-endpoints)
 8. [Directory Structure & File Architecture](#-directory-structure--file-architecture)
 9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
 10. [Environment Variables Reference](#-environment-variables-reference)
@@ -377,7 +377,7 @@ To protect cloud storage quotas and guarantee 100% real-time data accuracy, docu
 
 ---
 
-## 📚 Master API Catalog (92 Verified Endpoints)
+## 📚 Master API Catalog (93 Verified Endpoints)
 
 All endpoints are versioned under `/api/v1` and follow the standardized `sendResponse` JSON envelope.
 
@@ -494,17 +494,19 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `DELETE /api/v1/users/me/avatar` — Delete personal avatar from Cloudinary.
 - `POST /api/v1/uploads/users/:id/avatar` — Admin uploads avatar for specific user by ID.
 
-### 13. Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (9 APIs)
+### 13. Monthly Fee Payments, Ledger, Webhooks & Receipt PDF (10 APIs)
 
 - `GET /api/v1/payments/monthly-sheet` — Admin views roster of enrolled students with batch fees, past dues, paid amounts, remaining dues, and status (`PAID`/`PARTIAL`/`UNPAID`) with search, batch filter, and pagination (`QueryBuilder`).
 - `GET /api/v1/payments/stats` — Admin retrieves monthly revenue dashboard telemetry (Expected Revenue, Collected Amount, Total Due, Collection Rate %).
 - `GET /api/v1/payments/revenue-trend` — Admin retrieves month-by-month payment collection trend for charting (past N months).
+- `PATCH /api/v1/payments/bills/:billId/previous-due` — Admin manually adjusts previous due (arrear balance) of a student's bill.
 - `POST /api/v1/payments/manual-collect` — Admin records offline monthly fee collection (Cash, bKash, Nagad, Bank) supporting partial or full payments with instant receipt generation.
 - `GET /api/v1/payments/my/bill` — Student views current month billing breakdown, previous dues, and net total balance across active batches.
 - `POST /api/v1/payments/create-checkout-session` — Student creates hosted Stripe Checkout Session for full remaining balance settlement.
 - `POST /api/v1/payments/webhook` — Cryptographically verified Stripe webhook listener that settles transactions and updates bills to `PAID`.
 - `GET /api/v1/payments/transactions` — Admin & Student view paginated payment transaction ledger (`QueryBuilder`).
 - `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
+
 
 ### 14. Dashboard & Operational Analytics (3 APIs)
 

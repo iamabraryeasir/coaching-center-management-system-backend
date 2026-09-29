@@ -2,6 +2,7 @@ import { Role } from '@prisma/client';
 import { Router } from 'express';
 import { checkAuth, validateRequest } from '../../middlewares';
 import {
+  adjustPreviousDueController,
   collectManualPaymentController,
   createCheckoutSessionController,
   getMonthlySheetController,
@@ -13,6 +14,7 @@ import {
   handleStripeWebhookController,
 } from './payment.controller';
 import {
+  adjustPreviousDueSchema,
   collectManualPaymentSchema,
   createCheckoutSessionSchema,
   getMonthlySheetQuerySchema,
@@ -52,6 +54,13 @@ paymentRouter.get(
   checkAuth(Role.ADMIN),
   validateRequest(getRevenueTrendQuerySchema),
   getRevenueTrendController,
+);
+
+paymentRouter.patch(
+  '/bills/:billId/previous-due',
+  checkAuth(Role.ADMIN),
+  validateRequest(adjustPreviousDueSchema),
+  adjustPreviousDueController,
 );
 
 paymentRouter.post(
