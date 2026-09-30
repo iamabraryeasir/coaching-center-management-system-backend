@@ -4,11 +4,13 @@ import { checkAuth, validateRequest } from '../../middlewares';
 import {
   getMonthlySummaryController,
   getStudentDashboardController,
+  getTeacherDashboardController,
   getTodayDashboardController,
 } from './dashboard.controller';
 import {
   getMonthlySummaryQuerySchema,
   getStudentDashboardQuerySchema,
+  getTeacherDashboardQuerySchema,
 } from './dashboard.validation';
 
 const dashboardRouter: Router = Router();
@@ -30,6 +32,14 @@ dashboardRouter.get(
   checkAuth(Role.STUDENT, Role.ADMIN),
   validateRequest(getStudentDashboardQuerySchema),
   getStudentDashboardController,
+);
+
+// Teacher Personalized Dashboard Snapshot
+dashboardRouter.get(
+  '/teacher',
+  checkAuth(Role.TEACHER, Role.ADMIN),
+  validateRequest(getTeacherDashboardQuerySchema),
+  getTeacherDashboardController,
 );
 
 export { dashboardRouter };

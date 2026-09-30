@@ -21,7 +21,7 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 4. [Role-Based Access Control & Permission Matrix](#-role-based-access-control--permission-matrix)
 5. [Authentication & Student Onboarding State Machine](#-authentication--student-onboarding-state-machine)
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
-7. [Master API Catalog (93 Verified Endpoints)](#-master-api-catalog-93-verified-endpoints)
+7. [Master API Catalog (94 Verified Endpoints)](#-master-api-catalog-94-verified-endpoints)
 8. [Directory Structure & File Architecture](#-directory-structure--file-architecture)
 9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
 10. [Environment Variables Reference](#-environment-variables-reference)
@@ -377,7 +377,7 @@ To protect cloud storage quotas and guarantee 100% real-time data accuracy, docu
 
 ---
 
-## 📚 Master API Catalog (93 Verified Endpoints)
+## 📚 Master API Catalog (94 Verified Endpoints)
 
 All endpoints are versioned under `/api/v1` and follow the standardized `sendResponse` JSON envelope.
 
@@ -508,13 +508,15 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID**.
 
 
-### 14. Dashboard & Operational Analytics (3 APIs)
+### 14. Dashboard & Operational Analytics (4 APIs)
 
 - `GET /api/v1/dashboard/today` — Admin real-time daily operational snapshot (today's payment collection, student and teacher attendance rates, pending actions, recent 5 transactions).
 - `GET /api/v1/dashboard/monthly-summary` — Admin complete financial, academic, and batch enrollment snapshot for a calendar month.
 - `GET /api/v1/dashboard/student` — Student (or Admin with `?studentId=`) personalized dashboard snapshot (KPIs, today's schedule, billing alert, recent exams, and enrolled batches).
+- `GET /api/v1/dashboard/teacher` — Teacher (or Admin with `?teacherId=`) personalized dashboard snapshot (KPIs, today's classes with attendance status, assigned batches, pending draft exams, personal attendance, and permissions).
 
 ### 15. Centralized Audit Logging & Security Explorer (3 APIs)
+
 
 
 - `GET /api/v1/audit-logs` — Admin system-wide audit log explorer (`QueryBuilder`).

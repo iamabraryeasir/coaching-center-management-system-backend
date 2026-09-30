@@ -12,3 +12,9 @@ export const getStudentDashboardQuerySchema = z.object({
     studentId: z.string().uuid('Invalid student ID format').optional(),
   }),
 });
+
+export const getTeacherDashboardQuerySchema = z.object({
+  query: z.object({
+    teacherId: z.string().uuid('Invalid teacher ID format').optional(),
+  }),
+});

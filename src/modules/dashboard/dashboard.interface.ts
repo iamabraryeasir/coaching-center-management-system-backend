@@ -155,3 +155,74 @@ export interface StudentDashboardSummary {
 export interface IStudentDashboardQuery {
   studentId?: string;
 }
+
+export interface TeacherDashboardKpis {
+  assignedBatchesCount: number;
+  activeBatchesCount: number;
+  classesTodayCount: number;
+  attendanceCompletedClassesCount: number;
+  upcomingExamsCount: number;
+  pendingMarksExamsCount: number;
+  personalAttendanceRate: number;
+  isCheckedInToday: boolean;
+  totalStudentsTaught: number;
+}
+
+export interface TeacherTodayClass {
+  id: string;
+  batchId: string;
+  batchName: string;
+  subject: string;
+  startTime: string;
+  endTime: string;
+  room: string;
+  totalStudents: number;
+  isAttendanceTaken: boolean;
+  status: 'UPCOMING' | 'IN_PROGRESS' | 'COMPLETED';
+}
+
+export interface TeacherAssignedBatch {
+  batchId: string;
+  batchName: string;
+  subject: string;
+  studentCount: number;
+  status: string; // "ONGOING", "UPCOMING"
+  weeklyClassesCount: number;
+}
+
+export interface TeacherPendingExamTask {
+  examId: string;
+  title: string;
+  batchId: string;
+  batchName: string;
+  examDate: string;
+  totalMarks: number;
+  passMarks: number;
+  status: string;
+  resultStatus: string;
+  evaluatedCount: number;
+  totalStudents: number;
+}
+
+export interface TeacherPersonalAttendance {
+  isCheckedInToday: boolean;
+  checkInTime: string | null;
+  attendanceRate: number;
+  presentDays: number;
+  lateDays: number;
+  absentDays: number;
+  leaveDays: number;
+}
+
+export interface TeacherDashboardSummary {
+  kpis: TeacherDashboardKpis;
+  todayClasses: TeacherTodayClass[];
+  assignedBatches: TeacherAssignedBatch[];
+  pendingExamTasks: TeacherPendingExamTask[];
+  personalAttendance: TeacherPersonalAttendance;
+  permissions: string[];
+}
+
+export interface ITeacherDashboardQuery {
+  teacherId?: string;
+}

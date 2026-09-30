@@ -1,7 +1,11 @@
 import { Role } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { ApiError, catchAsync, sendResponse } from '../../utils';
-import type { IMonthlySummaryQuery, IStudentDashboardQuery } from './dashboard.interface';
+import type {
+  IMonthlySummaryQuery,
+  IStudentDashboardQuery,
+  ITeacherDashboardQuery,
+} from './dashboard.interface';
 import { dashboardServices } from './services';
 
 export const getTodayDashboardController = catchAsync(
@@ -53,6 +57,32 @@ export const getStudentDashboardController = catchAsync(
       statusCode: 200,
       success: true,
       message: 'Student dashboard summary retrieved successfully',
+      data,
+    });
+  },
+);
+
+export const getTeacherDashboardController = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    let teacherId = req.user?.userId;
+
+    if (req.user?.role === Role.ADMIN) {
+      const query = req.query as unknown as ITeacherDashboardQuery;
+      if (query.teacherId) {
+        teacherId = query.teacherId;
+      }
+    }
+
+    if (!teacherId) {
+      throw ApiError.badRequest('Teacher ID is required.');
+    }
+
+    const data = await dashboardServices.getTeacherDashboard(teacherId);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Teacher dashboard summary retrieved successfully',
       data,
     });
   },

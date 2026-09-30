@@ -2,7 +2,7 @@
 
 > **Version**: 2.8.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 93 Verified Endpoints across 15 Modules  
+> **API Standard**: RESTful v1 with 94 Verified Endpoints across 15 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 
 ---
@@ -132,7 +132,8 @@ stateDiagram-v2
 
 ---
 
-## 6. Complete Master API Specification (93 Endpoints across 15 Modules)
+## 6. Complete Master API Specification (94 Endpoints across 15 Modules)
+
 
 ### 6.1 Health Checks & System Telemetry (2 Endpoints)
 
@@ -262,13 +263,15 @@ stateDiagram-v2
 - `GET /api/v1/payments/transactions/:id/pdf` — **Download/Preview Payment Invoice Receipt PDF by Transaction ID via PDFKit**.
 
 
-### 6.14 Dashboard & Operational Analytics (3 Endpoints)
+### 6.14 Dashboard & Operational Analytics (4 Endpoints)
 
 - `GET /api/v1/dashboard/today` — Admin real-time daily operational numbers snapshot (today collection, student & teacher attendance rates, pending actions, recent transactions).
 - `GET /api/v1/dashboard/monthly-summary` — Admin complete financial, academic, and batch enrollment snapshot for a calendar month.
 - `GET /api/v1/dashboard/student` — Student (or Admin with `?studentId=`) personalized dashboard snapshot (KPIs, today's schedule, billing alert, recent exams, and enrolled batches).
+- `GET /api/v1/dashboard/teacher` — Teacher (or Admin with `?teacherId=`) personalized dashboard snapshot (KPIs, today's classes with attendance status, assigned batches, pending draft exams, personal attendance, and permissions).
 
 ### 6.15 Centralized Audit Logging & Security Explorer (3 Endpoints)
+
 
 
 - `GET /api/v1/audit-logs` — Admin system-wide audit log explorer (`QueryBuilder`).

@@ -3259,6 +3259,41 @@
             "description": "Protected: Student (or Admin with ?studentId=) retrieves personalized dashboard snapshot including KPIs, today's schedule, billing alert, recent exams, and enrolled batches."
           },
           "response": []
+        },
+        {
+          "name": "✅ Get Teacher Dashboard Summary (Teacher / Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/teacher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "teacher"
+              ],
+              "query": [
+                {
+                  "key": "teacherId",
+                  "value": "00000000-0000-0000-0000-000000000000",
+                  "disabled": true,
+                  "description": "Optional: Admin only to query specific teacher dashboard"
+                }
+              ]
+            },
+            "description": "Protected: Teacher (or Admin with ?teacherId=) retrieves personalized dashboard summary including KPIs, today's classes with attendance status, assigned batches, pending draft exams, personal attendance, and delegated permissions."
+          },
+          "response": []
         }
       ]
     },
