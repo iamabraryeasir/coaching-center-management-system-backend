@@ -618,16 +618,19 @@ Each domain feature module in `src/modules/` adheres to a strict, action-decompo
 
 ## 👥 Pre-Seeded Demo Credentials
 
-| Role                  | Name               | Email                           | Password         | Assigned Permissions / Meta                            |
-| :-------------------- | :----------------- | :------------------------------ | :--------------- | :----------------------------------------------------- |
-| **System Admin**      | Configured in .env | _(Inherited from `.env`)_       | _(From `.env`)_  | Full System Governance                                 |
-| **Teacher**           | Dr. Sarah Jenkins  | `sarah.jenkins@apexacademy.edu` | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES` |
-| **Teacher**           | Prof. Alan Walker  | `alan.walker@apexacademy.edu`   | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`                    |
-| **Teacher**           | Ms. Emily Watson   | `emily.watson@apexacademy.edu`  | `Teacher@123456` | `MANAGE_ATTENDANCE`                                    |
-| **Student**           | Rahim Ahmed        | `rahim.ahmed@student.apex.edu`  | `Student@123456` | HSC Class 12 (Active, Enrolled)                        |
-| **Student**           | Nusrat Jahan       | `nusrat.jahan@student.apex.edu` | `Student@123456` | HSC Class 12 (Active, Enrolled)                        |
-| **Student**           | Tanvir Hasan       | `tanvir.hasan@student.apex.edu` | `Student@123456` | Class 10 (Active, Enrolled)                            |
-| **Student (Pending)** | Sadia Afrin        | `sadia.afrin@student.apex.edu`  | `Student@123456` | Awaiting Admin Approval                                |
+| Role                  | Name         | Email                 | Password         | Assigned Permissions / Meta                            |
+| :-------------------- | :----------- | :-------------------- | :--------------- | :----------------------------------------------------- |
+| **System Admin**      | Abrar Yeasir | `admin@gmail.com`     | `Admin@123456`   | Full System Governance                                 |
+| **Teacher (Lead)**    | Sarah Khan   | `teacher1@gmail.com`  | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES` |
+| **Teacher**           | Tanvir Ahmed | `teacher2@gmail.com`  | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS` (Physics)          |
+| **Teacher**           | Ayesha Rahman| `teacher3@gmail.com`  | `Teacher@123456` | `MANAGE_ATTENDANCE` (Chemistry)                        |
+| **Teacher**           | Kamal Hossain| `teacher4@gmail.com`  | `Teacher@123456` | `MANAGE_EXAMS` (English)                               |
+| **Student**           | Rahim Ali    | `student1@gmail.com`  | `Student@123456` | HSC (Active, Enrolled in `HSC 2026`)                   |
+| **Student**           | Nusrat Jahan | `student2@gmail.com`  | `Student@123456` | HSC (Active, Enrolled in `HSC 2026`)                   |
+| **Student**           | Tanvir Hasan | `student3@gmail.com`  | `Student@123456` | Class 10 (Active, Enrolled in `SSC 2026`)              |
+| **Student**           | Sabbir Ahmed | `student4@gmail.com`  | `Student@123456` | HSC (Active, Enrolled in `SSC 2026`)                   |
+| **Student**           | Mehedi Hasan | `student5@gmail.com`  | `Student@123456` | Class 9 (Active, Enrolled in `Class 10`)               |
+| **Student (Pending)** | Sadia Afrin  | `student6@gmail.com`  | `Student@123456` | Awaiting Admin Approval (`PENDING_ACTIVATION`)         |
 
 ---
 
@@ -641,7 +644,7 @@ PORT=5000
 NODE_ENV=development
 
 # Database Connection (PostgreSQL with Pool)
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/coaching_center_db?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/coaching_management_db?schema=public"
 
 # JWT Authentication
 JWT_ACCESS_SECRET="your-super-secret-access-key-minimum-32-chars-long"
@@ -650,15 +653,15 @@ JWT_REFRESH_SECRET="your-super-secret-refresh-key-minimum-32-chars-long"
 JWT_REFRESH_EXPIRES_IN="30d"
 BCRYPT_SALT_ROUNDS=12
 
-# Root Admin Startup Bootstrapper (Set your own secure credentials)
-ADMIN_NAME="System Administrator"
-ADMIN_EMAIL="admin@yourdomain.com"
-ADMIN_PHONE="+8801700000000"
-ADMIN_PASSWORD="ReplaceWithYourStrongPassword123!"
-ADMIN_INSTITUTION_NAME="Radiant Way Academy"
-ADMIN_INSTITUTION_ADDRESS="House 12, Road 5, Dhanmondi, Dhaka"
-ADMIN_INSTITUTION_PHONE="+880 1700-000000"
-ADMIN_INSTITUTION_EMAIL="info@yourdomain.com"
+# Root Admin Startup Bootstrapper (Pre-configured demo credentials)
+ADMIN_NAME="Abrar Yeasir"
+ADMIN_EMAIL="admin@gmail.com"
+ADMIN_PASSWORD="Admin@123456"
+ADMIN_PHONE="+8801700000001"
+ADMIN_INSTITUTION_NAME="Radiant Coaching Center"
+ADMIN_INSTITUTION_ADDRESS="Dhanmondi, Dhaka"
+ADMIN_INSTITUTION_PHONE="+8801700000001"
+ADMIN_INSTITUTION_EMAIL="admin@gmail.com"
 
 # Google Identity Services (GIS) OAuth
 GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"

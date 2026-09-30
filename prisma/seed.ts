@@ -19,7 +19,7 @@ import { logger } from '../src/utils';
 
 async function main(): Promise<void> {
   logger.info('================================================================');
-  logger.info('🚀 Starting Idempotent Database Seeding Pipeline...');
+  logger.info('🚀 Starting Clean Idempotent Database Seeding Pipeline...');
   logger.info('================================================================');
 
   const adminPasswordHash = await bcrypt.hash(
@@ -31,8 +31,8 @@ async function main(): Promise<void> {
 
   // 1. Seed System Admin
   logger.info('1. Bootstrapping Admin User & Institution Profile...');
-  const adminEmail = config.ADMIN_EMAIL || 'admin@coaching.com';
-  const adminName = config.ADMIN_NAME || 'System Administrator';
+  const adminEmail = config.ADMIN_EMAIL || 'admin@gmail.com';
+  const adminName = config.ADMIN_NAME || 'Abrar Yeasir';
   const adminPhone = config.ADMIN_PHONE || '+8801700000001';
 
   const adminUser = await prisma.user.upsert({
@@ -53,45 +53,44 @@ async function main(): Promise<void> {
       password: adminPasswordHash,
       adminProfile: {
         create: {
-          institutionName: config.ADMIN_INSTITUTION_NAME,
-          institutionAddress: config.ADMIN_INSTITUTION_ADDRESS,
-          institutionPhone: config.ADMIN_INSTITUTION_PHONE,
-          institutionEmail: config.ADMIN_INSTITUTION_EMAIL,
+          institutionName: config.ADMIN_INSTITUTION_NAME || 'Radiant Coaching Center',
+          institutionAddress: config.ADMIN_INSTITUTION_ADDRESS || 'Dhanmondi, Dhaka',
+          institutionPhone: config.ADMIN_INSTITUTION_PHONE || '+8801700000001',
+          institutionEmail: config.ADMIN_INSTITUTION_EMAIL || 'admin@gmail.com',
         },
       },
     },
   });
 
-  // Ensure admin profile exists
   await prisma.adminProfile.upsert({
     where: { userId: adminUser.id },
     update: {
-      institutionName: config.ADMIN_INSTITUTION_NAME,
-      institutionAddress: config.ADMIN_INSTITUTION_ADDRESS,
-      institutionPhone: config.ADMIN_INSTITUTION_PHONE,
-      institutionEmail: config.ADMIN_INSTITUTION_EMAIL,
+      institutionName: config.ADMIN_INSTITUTION_NAME || 'Radiant Coaching Center',
+      institutionAddress: config.ADMIN_INSTITUTION_ADDRESS || 'Dhanmondi, Dhaka',
+      institutionPhone: config.ADMIN_INSTITUTION_PHONE || '+8801700000001',
+      institutionEmail: config.ADMIN_INSTITUTION_EMAIL || 'admin@gmail.com',
     },
     create: {
       userId: adminUser.id,
-      institutionName: config.ADMIN_INSTITUTION_NAME,
-      institutionAddress: config.ADMIN_INSTITUTION_ADDRESS,
-      institutionPhone: config.ADMIN_INSTITUTION_PHONE,
-      institutionEmail: config.ADMIN_INSTITUTION_EMAIL,
+      institutionName: config.ADMIN_INSTITUTION_NAME || 'Radiant Coaching Center',
+      institutionAddress: config.ADMIN_INSTITUTION_ADDRESS || 'Dhanmondi, Dhaka',
+      institutionPhone: config.ADMIN_INSTITUTION_PHONE || '+8801700000001',
+      institutionEmail: config.ADMIN_INSTITUTION_EMAIL || 'admin@gmail.com',
     },
   });
 
   // 2. Seed Teachers
-  logger.info('2. Bootstrapping Teaching Faculty & Delegated Permissions...');
+  logger.info('2. Bootstrapping Teachers & Permissions...');
   const teachersData = [
     {
-      email: 'sarah.jenkins@apexacademy.edu',
-      name: 'Dr. Sarah Jenkins',
-      phone: '+8801711110001',
+      email: 'teacher1@gmail.com',
+      name: 'Sarah Khan',
+      phone: '+8801711000001',
       profile: {
-        designation: 'Head of Mathematics & Physics',
-        qualification: 'Ph.D. in Applied Mathematics, BUET',
-        specialization: 'Higher Mathematics & Physics',
-        joiningDate: new Date('2023-01-01'),
+        designation: 'Senior Teacher',
+        qualification: 'M.Sc in Mathematics, BUET',
+        specialization: 'Higher Mathematics',
+        joiningDate: new Date('2024-01-01'),
       },
       permissions: [
         Permission.MANAGE_ATTENDANCE,
@@ -100,28 +99,40 @@ async function main(): Promise<void> {
       ],
     },
     {
-      email: 'alan.walker@apexacademy.edu',
-      name: 'Prof. Alan Walker',
-      phone: '+8801711110002',
+      email: 'teacher2@gmail.com',
+      name: 'Tanvir Ahmed',
+      phone: '+8801711000002',
       profile: {
-        designation: 'Senior Lecturer in Chemistry',
-        qualification: 'M.Sc. in Organic Chemistry, DU',
-        specialization: 'Chemistry & Organic Synthesis',
-        joiningDate: new Date('2023-06-01'),
+        designation: 'Senior Teacher',
+        qualification: 'M.Sc in Applied Physics, DU',
+        specialization: 'Physics',
+        joiningDate: new Date('2024-02-01'),
       },
       permissions: [Permission.MANAGE_ATTENDANCE, Permission.MANAGE_EXAMS],
     },
     {
-      email: 'emily.watson@apexacademy.edu',
-      name: 'Ms. Emily Watson',
-      phone: '+8801711110003',
+      email: 'teacher3@gmail.com',
+      name: 'Ayesha Rahman',
+      phone: '+8801711000003',
       profile: {
-        designation: 'Lecturer in English & Humanities',
-        qualification: 'M.A. in English Literature, JU',
-        specialization: 'English Language & Creative Writing',
-        joiningDate: new Date('2024-01-15'),
+        designation: 'Teacher',
+        qualification: 'M.Sc in Organic Chemistry, DU',
+        specialization: 'Chemistry',
+        joiningDate: new Date('2024-03-01'),
       },
       permissions: [Permission.MANAGE_ATTENDANCE],
+    },
+    {
+      email: 'teacher4@gmail.com',
+      name: 'Kamal Hossain',
+      phone: '+8801711000004',
+      profile: {
+        designation: 'Teacher',
+        qualification: 'M.A in English, JU',
+        specialization: 'English',
+        joiningDate: new Date('2024-04-01'),
+      },
+      permissions: [Permission.MANAGE_EXAMS],
     },
   ];
 
@@ -159,7 +170,7 @@ async function main(): Promise<void> {
       },
     });
 
-    // Delegated permissions
+    // Clean existing permissions and seed delegated ones
     for (const perm of t.permissions) {
       await prisma.teacherPermission.upsert({
         where: {
@@ -180,21 +191,26 @@ async function main(): Promise<void> {
   }
 
   // 3. Seed Batches
-  logger.info('3. Bootstrapping Academic Batches...');
+  logger.info('3. Bootstrapping Batches...');
   const batchesData = [
     {
-      name: 'HSC 2026 - Higher Mathematics & Physics Masterclass',
-      fee: 3500.0,
+      name: 'HSC 2026',
+      fee: 3000.0,
       status: BatchStatus.ONGOING,
     },
     {
-      name: 'SSC 2026 - Comprehensive Science Foundation',
-      fee: 2800.0,
+      name: 'SSC 2026',
+      fee: 2500.0,
       status: BatchStatus.ONGOING,
     },
     {
-      name: 'Class 10 - Intensive English & Grammar',
-      fee: 2200.0,
+      name: 'Class 10',
+      fee: 2000.0,
+      status: BatchStatus.ONGOING,
+    },
+    {
+      name: 'Class 9',
+      fee: 1800.0,
       status: BatchStatus.ONGOING,
     },
   ];
@@ -228,49 +244,51 @@ async function main(): Promise<void> {
   }
 
   // 4. Seed Routines
-  logger.info('4. Bootstrapping Conflict-Free Class Timetables...');
-  const batch1Id = seededBatches['HSC 2026 - Higher Mathematics & Physics Masterclass'].id;
-  const batch2Id = seededBatches['SSC 2026 - Comprehensive Science Foundation'].id;
-  const batch3Id = seededBatches['Class 10 - Intensive English & Grammar'].id;
+  logger.info('4. Bootstrapping Class Routines...');
+  const batch1Id = seededBatches['HSC 2026'].id;
+  const batch2Id = seededBatches['SSC 2026'].id;
+  const batch3Id = seededBatches['Class 10'].id;
+  const batch4Id = seededBatches['Class 9'].id;
 
   const routinesData = [
-    // Batch 1 Routines
+    // Batch 1: HSC 2026
     {
       batchId: batch1Id,
       dayOfWeek: DayOfWeek.SATURDAY,
       startTime: '10:00',
       endTime: '11:30',
-      subject: 'Higher Mathematics (Calculus)',
-      room: 'Lab 101',
-      teacherId: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      subject: 'Higher Mathematics',
+      room: 'Room 101',
+      teacherId: seededTeachers['teacher1@gmail.com'].id,
     },
     {
       batchId: batch1Id,
       dayOfWeek: DayOfWeek.MONDAY,
       startTime: '10:00',
       endTime: '11:30',
-      subject: 'Physics (Electromagnetism)',
-      room: 'Lab 101',
-      teacherId: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      subject: 'Physics',
+      room: 'Room 101',
+      teacherId: seededTeachers['teacher2@gmail.com'].id,
     },
     {
       batchId: batch1Id,
       dayOfWeek: DayOfWeek.WEDNESDAY,
       startTime: '10:00',
       endTime: '11:30',
-      subject: 'Chemistry (Organic Reactions)',
-      room: 'Hall A',
-      teacherId: seededTeachers['alan.walker@apexacademy.edu'].id,
+      subject: 'Chemistry',
+      room: 'Room 102',
+      teacherId: seededTeachers['teacher3@gmail.com'].id,
     },
-    // Batch 2 Routines
+
+    // Batch 2: SSC 2026
     {
       batchId: batch2Id,
       dayOfWeek: DayOfWeek.SUNDAY,
       startTime: '15:00',
       endTime: '16:30',
-      subject: 'General Science & Biology',
-      room: 'Room 203',
-      teacherId: seededTeachers['alan.walker@apexacademy.edu'].id,
+      subject: 'General Science',
+      room: 'Room 201',
+      teacherId: seededTeachers['teacher2@gmail.com'].id,
     },
     {
       batchId: batch2Id,
@@ -278,36 +296,48 @@ async function main(): Promise<void> {
       startTime: '15:00',
       endTime: '16:30',
       subject: 'General Mathematics',
-      room: 'Room 203',
-      teacherId: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      room: 'Room 201',
+      teacherId: seededTeachers['teacher1@gmail.com'].id,
     },
     {
       batchId: batch2Id,
       dayOfWeek: DayOfWeek.THURSDAY,
       startTime: '15:00',
       endTime: '16:30',
-      subject: 'English Language Practice',
-      room: 'Room 203',
-      teacherId: seededTeachers['emily.watson@apexacademy.edu'].id,
+      subject: 'Chemistry',
+      room: 'Room 201',
+      teacherId: seededTeachers['teacher3@gmail.com'].id,
     },
-    // Batch 3 Routines
+
+    // Batch 3: Class 10
     {
       batchId: batch3Id,
       dayOfWeek: DayOfWeek.SATURDAY,
       startTime: '16:00',
       endTime: '17:30',
-      subject: 'Grammar & Composition',
-      room: 'Room 204',
-      teacherId: seededTeachers['emily.watson@apexacademy.edu'].id,
+      subject: 'English',
+      room: 'Room 202',
+      teacherId: seededTeachers['teacher4@gmail.com'].id,
     },
     {
       batchId: batch3Id,
       dayOfWeek: DayOfWeek.WEDNESDAY,
       startTime: '16:00',
       endTime: '17:30',
-      subject: 'Literature & Comprehension',
-      room: 'Room 204',
-      teacherId: seededTeachers['emily.watson@apexacademy.edu'].id,
+      subject: 'Mathematics',
+      room: 'Room 202',
+      teacherId: seededTeachers['teacher1@gmail.com'].id,
+    },
+
+    // Batch 4: Class 9
+    {
+      batchId: batch4Id,
+      dayOfWeek: DayOfWeek.SUNDAY,
+      startTime: '16:00',
+      endTime: '17:30',
+      subject: 'General Science',
+      room: 'Room 102',
+      teacherId: seededTeachers['teacher2@gmail.com'].id,
     },
   ];
 
@@ -328,58 +358,84 @@ async function main(): Promise<void> {
   }
 
   // 5. Seed Students & Profiles
-  logger.info('5. Bootstrapping Students & Student Profiles...');
+  logger.info('5. Bootstrapping Students & Profiles...');
   const studentsData = [
     {
-      email: 'rahim.ahmed@student.apex.edu',
-      name: 'Rahim Ahmed',
-      phone: '+8801722220001',
+      email: 'student1@gmail.com',
+      name: 'Rahim Ali',
+      phone: '+8801722000001',
       status: UserStatus.ACTIVE,
       profile: {
-        guardianName: 'Kamal Ahmed',
-        guardianPhone: '+8801733330001',
-        institutionName: 'Notre Dame College, Dhaka',
-        classLevel: 'HSC-2nd Year',
-        rollNumber: 'HSC-101',
+        guardianName: 'Kamal Ali',
+        guardianPhone: '+8801733000001',
+        institutionName: 'Notre Dame College',
+        classLevel: 'HSC',
+        rollNumber: '101',
       },
     },
     {
-      email: 'nusrat.jahan@student.apex.edu',
+      email: 'student2@gmail.com',
       name: 'Nusrat Jahan',
-      phone: '+8801722220002',
+      phone: '+8801722000002',
       status: UserStatus.ACTIVE,
       profile: {
         guardianName: 'Rafiqul Islam',
-        guardianPhone: '+8801733330002',
-        institutionName: 'Viqarunnisa Noon College',
-        classLevel: 'HSC-2nd Year',
-        rollNumber: 'HSC-102',
+        guardianPhone: '+8801733000002',
+        institutionName: 'Viqarunnisa College',
+        classLevel: 'HSC',
+        rollNumber: '102',
       },
     },
     {
-      email: 'tanvir.hasan@student.apex.edu',
+      email: 'student3@gmail.com',
       name: 'Tanvir Hasan',
-      phone: '+8801722220003',
+      phone: '+8801722000003',
       status: UserStatus.ACTIVE,
       profile: {
         guardianName: 'Mahbub Hasan',
-        guardianPhone: '+8801733330003',
-        institutionName: 'Ideal School & College',
+        guardianPhone: '+8801733000003',
+        institutionName: 'Ideal School',
         classLevel: 'Class 10',
-        rollNumber: 'SSC-201',
+        rollNumber: '201',
       },
     },
     {
-      email: 'sadia.afrin@student.apex.edu',
+      email: 'student4@gmail.com',
+      name: 'Sabbir Ahmed',
+      phone: '+8801722000004',
+      status: UserStatus.ACTIVE,
+      profile: {
+        guardianName: 'Jamal Ahmed',
+        guardianPhone: '+8801733000004',
+        institutionName: 'Dhaka College',
+        classLevel: 'HSC',
+        rollNumber: '103',
+      },
+    },
+    {
+      email: 'student5@gmail.com',
+      name: 'Mehedi Hasan',
+      phone: '+8801722000005',
+      status: UserStatus.ACTIVE,
+      profile: {
+        guardianName: 'Abdur Rahim',
+        guardianPhone: '+8801733000005',
+        institutionName: 'City School',
+        classLevel: 'Class 9',
+        rollNumber: '301',
+      },
+    },
+    {
+      email: 'student6@gmail.com',
       name: 'Sadia Afrin',
-      phone: '+8801722220004',
+      phone: '+8801722000006',
       status: UserStatus.PENDING_ACTIVATION,
       profile: {
         guardianName: 'Farid Uddin',
-        guardianPhone: '+8801733330004',
-        institutionName: "Holy Cross Girls' High School",
+        guardianPhone: '+8801733000006',
+        institutionName: 'Holy Cross School',
         classLevel: 'Class 10',
-        rollNumber: 'SSC-202',
+        rollNumber: '202',
       },
     },
   ];
@@ -422,37 +478,40 @@ async function main(): Promise<void> {
   }
 
   // 6. Seed Enrollments
-  logger.info('6. Bootstrapping Batch Enrollments...');
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-
+  logger.info('6. Bootstrapping Enrollments...');
   const enrollmentsData = [
     {
-      studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
+      studentId: seededStudents['student1@gmail.com'].id,
       batchId: batch1Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
     },
     {
-      studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
+      studentId: seededStudents['student2@gmail.com'].id,
       batchId: batch1Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
     },
     {
-      studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
+      studentId: seededStudents['student3@gmail.com'].id,
       batchId: batch2Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
     },
     {
-      studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
+      studentId: seededStudents['student4@gmail.com'].id,
+      batchId: batch2Id,
+      status: EnrollmentStatus.ENROLLED,
+      approvedAt: new Date(),
+    },
+    {
+      studentId: seededStudents['student5@gmail.com'].id,
       batchId: batch3Id,
       status: EnrollmentStatus.ENROLLED,
       approvedAt: new Date(),
     },
     {
-      studentId: seededStudents['sadia.afrin@student.apex.edu'].id,
+      studentId: seededStudents['student6@gmail.com'].id,
       batchId: batch2Id,
       status: EnrollmentStatus.PENDING,
       approvedAt: null,
@@ -479,8 +538,7 @@ async function main(): Promise<void> {
     seededEnrollments[`${enr.batchId}_${enr.studentId}`] = { id: enrollment.id };
   }
 
-
-  // 7. Seed Daily Attendance Records (Past 3 days)
+  // 7. Seed Attendance Records
   logger.info('7. Bootstrapping Attendance Records...');
   const today = startOfDay(new Date());
   const day1 = subDays(today, 2);
@@ -488,71 +546,88 @@ async function main(): Promise<void> {
   const day3 = today;
 
   const attendanceEntries = [
-    // Batch 1
+    // Batch 1 (Day 1 & Day 2 & Today)
     {
       batchId: batch1Id,
-      studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
-      markedById: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      studentId: seededStudents['student1@gmail.com'].id,
+      markedById: seededTeachers['teacher1@gmail.com'].id,
       date: day1,
       status: AttendanceStatus.PRESENT,
-      remarks: 'Attentive in class',
+      remarks: 'Attentive',
     },
     {
       batchId: batch1Id,
-      studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
-      markedById: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      studentId: seededStudents['student2@gmail.com'].id,
+      markedById: seededTeachers['teacher1@gmail.com'].id,
       date: day1,
       status: AttendanceStatus.PRESENT,
       remarks: 'Present on time',
     },
     {
       batchId: batch1Id,
-      studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
-      markedById: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      studentId: seededStudents['student1@gmail.com'].id,
+      markedById: seededTeachers['teacher1@gmail.com'].id,
       date: day2,
       status: AttendanceStatus.PRESENT,
       remarks: null,
     },
     {
       batchId: batch1Id,
-      studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
-      markedById: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      studentId: seededStudents['student2@gmail.com'].id,
+      markedById: seededTeachers['teacher1@gmail.com'].id,
       date: day2,
       status: AttendanceStatus.LATE,
-      remarks: 'Arrived 15 mins late due to traffic',
+      remarks: 'Arrived 10 mins late',
     },
     {
       batchId: batch1Id,
-      studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
-      markedById: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      studentId: seededStudents['student1@gmail.com'].id,
+      markedById: seededTeachers['teacher1@gmail.com'].id,
       date: day3,
       status: AttendanceStatus.PRESENT,
       remarks: null,
     },
     {
       batchId: batch1Id,
-      studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
-      markedById: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
+      studentId: seededStudents['student2@gmail.com'].id,
+      markedById: seededTeachers['teacher1@gmail.com'].id,
       date: day3,
       status: AttendanceStatus.PRESENT,
       remarks: null,
     },
-    // Batch 2
+
+    // Batch 2 (Day 1 & Day 2)
     {
       batchId: batch2Id,
-      studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
-      markedById: seededTeachers['alan.walker@apexacademy.edu'].id,
+      studentId: seededStudents['student3@gmail.com'].id,
+      markedById: seededTeachers['teacher2@gmail.com'].id,
       date: day1,
       status: AttendanceStatus.PRESENT,
-      remarks: 'Active lab participation',
+      remarks: 'Participated actively',
     },
     {
       batchId: batch2Id,
-      studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
-      markedById: seededTeachers['alan.walker@apexacademy.edu'].id,
+      studentId: seededStudents['student4@gmail.com'].id,
+      markedById: seededTeachers['teacher2@gmail.com'].id,
+      date: day1,
+      status: AttendanceStatus.PRESENT,
+      remarks: null,
+    },
+    {
+      batchId: batch2Id,
+      studentId: seededStudents['student3@gmail.com'].id,
+      markedById: seededTeachers['teacher2@gmail.com'].id,
       date: day2,
       status: AttendanceStatus.PRESENT,
       remarks: null,
+    },
+    {
+      batchId: batch2Id,
+      studentId: seededStudents['student4@gmail.com'].id,
+      markedById: seededTeachers['teacher2@gmail.com'].id,
+      date: day2,
+      status: AttendanceStatus.ABSENT,
+      remarks: 'Sick leave',
     },
   ];
 
@@ -573,7 +648,7 @@ async function main(): Promise<void> {
     });
   }
 
-  // Teacher Attendance
+  // Teacher Attendance for Today
   for (const teacherEmail of Object.keys(seededTeachers)) {
     const tId = seededTeachers[teacherEmail].id;
     await prisma.teacherAttendanceRecord.upsert({
@@ -592,48 +667,46 @@ async function main(): Promise<void> {
         date: day3,
         status: AttendanceStatus.PRESENT,
         checkInTime: new Date(),
-        remarks: 'Self checked-in / Admin confirmed',
+        remarks: 'Present',
       },
     });
   }
 
   // 8. Seed Exams & Results
-  logger.info('8. Bootstrapping Examination Assessments & Published Merit Results...');
-  // Exam 1 (Batch 1 - Completed & Published)
+  logger.info('8. Bootstrapping Exams & Results...');
   let exam1 = await prisma.exam.findFirst({
-    where: { batchId: batch1Id, title: 'Higher Math Mid-Term Assessment 2026' },
+    where: { batchId: batch1Id, title: 'Higher Math Mid-Term Test' },
   });
 
   if (!exam1) {
     exam1 = await prisma.exam.create({
       data: {
         batchId: batch1Id,
-        title: 'Higher Math Mid-Term Assessment 2026',
-        description: 'Calculus, Derivatives & Limits',
+        title: 'Higher Math Mid-Term Test',
+        description: 'Calculus & Functions',
         totalMarks: 100.0,
         passMarks: 40.0,
-        examDate: subDays(today, 7),
+        examDate: subDays(today, 5),
         status: ExamStatus.COMPLETED,
         resultStatus: ResultStatus.PUBLISHED,
       },
     });
   }
 
-  // Results for Exam 1
   const exam1Results = [
     {
       examId: exam1.id,
-      studentId: seededStudents['rahim.ahmed@student.apex.edu'].id,
-      marksObtained: 92.5,
+      studentId: seededStudents['student1@gmail.com'].id,
+      marksObtained: 95.0,
       grade: 'A+',
-      remarks: 'Outstanding conceptual clarity in differential calculus',
+      remarks: 'Outstanding performance',
     },
     {
       examId: exam1.id,
-      studentId: seededStudents['nusrat.jahan@student.apex.edu'].id,
-      marksObtained: 84.0,
+      studentId: seededStudents['student2@gmail.com'].id,
+      marksObtained: 88.0,
       grade: 'A+',
-      remarks: 'Excellent analytical precision and problem-solving',
+      remarks: 'Very good analytical skills',
     },
   ];
 
@@ -654,73 +727,34 @@ async function main(): Promise<void> {
     });
   }
 
-  // Exam 2 (Batch 2 - Completed & Published)
-  let exam2 = await prisma.exam.findFirst({
-    where: { batchId: batch2Id, title: 'Science First Term Assessment' },
+  // Exam 2 (Batch 2 - Upcoming)
+  const existingExam2 = await prisma.exam.findFirst({
+    where: { batchId: batch2Id, title: 'Science Weekly Quiz' },
   });
 
-  if (!exam2) {
-    exam2 = await prisma.exam.create({
-      data: {
-        batchId: batch2Id,
-        title: 'Science First Term Assessment',
-        description: 'Basic Physics, Chemistry & Biology Fundamentals',
-        totalMarks: 50.0,
-        passMarks: 20.0,
-        examDate: subDays(today, 3),
-        status: ExamStatus.COMPLETED,
-        resultStatus: ResultStatus.PUBLISHED,
-      },
-    });
-  }
-
-  // Results for Exam 2
-  await prisma.examResult.upsert({
-    where: {
-      examId_studentId: {
-        examId: exam2.id,
-        studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
-      },
-    },
-    update: {
-      marksObtained: 44.5,
-      grade: 'A+',
-      remarks: 'Top score in general science',
-    },
-    create: {
-      examId: exam2.id,
-      studentId: seededStudents['tanvir.hasan@student.apex.edu'].id,
-      marksObtained: 44.5,
-      grade: 'A+',
-      remarks: 'Top score in general science',
-    },
-  });
-
-  // Exam 3 (Batch 1 - Upcoming)
-  const existingExam3 = await prisma.exam.findFirst({
-    where: { batchId: batch1Id, title: 'Physics Upcoming Chapter Test' },
-  });
-
-  if (!existingExam3) {
+  if (!existingExam2) {
     await prisma.exam.create({
       data: {
-        batchId: batch1Id,
-        title: 'Physics Upcoming Chapter Test',
-        description: 'Electromagnetism & Waves',
+        batchId: batch2Id,
+        title: 'Science Weekly Quiz',
+        description: 'Physics & Chemistry Basic Test',
         totalMarks: 50.0,
         passMarks: 20.0,
-        examDate: addDays(today, 5),
+        examDate: addDays(today, 4),
         status: ExamStatus.UPCOMING,
         resultStatus: ResultStatus.DRAFT,
       },
     });
   }
 
-  // 9. Seed Monthly Fee Bills & Payment Transactions
-  logger.info('9. Bootstrapping Monthly Fee Bills & Payment Transactions...');
-  const student1Id = seededStudents['rahim.ahmed@student.apex.edu'].id;
-  const student2Id = seededStudents['nusrat.jahan@student.apex.edu'].id;
-  const student3Id = seededStudents['tanvir.hasan@student.apex.edu'].id;
+  // 9. Seed Monthly Fee Bills & Payments
+  logger.info('9. Bootstrapping Monthly Bills & Payment Transactions...');
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  const student1Id = seededStudents['student1@gmail.com'].id;
+  const student2Id = seededStudents['student2@gmail.com'].id;
+  const student3Id = seededStudents['student3@gmail.com'].id;
 
   const enr1Id = seededEnrollments[`${batch1Id}_${student1Id}`]?.id;
   const enr2Id = seededEnrollments[`${batch1Id}_${student2Id}`]?.id;
@@ -737,7 +771,7 @@ async function main(): Promise<void> {
       },
       update: {
         status: PaymentBillStatus.PAID,
-        paidAmount: 3500.0,
+        paidAmount: 3000.0,
         dueAmount: 0.0,
       },
       create: {
@@ -746,10 +780,10 @@ async function main(): Promise<void> {
         enrollmentId: enr1Id,
         billingMonth: currentMonth,
         billingYear: currentYear,
-        monthlyFee: 3500.0,
+        monthlyFee: 3000.0,
         previousDue: 0.0,
-        totalPayable: 3500.0,
-        paidAmount: 3500.0,
+        totalPayable: 3000.0,
+        paidAmount: 3000.0,
         dueAmount: 0.0,
         status: PaymentBillStatus.PAID,
       },
@@ -762,15 +796,15 @@ async function main(): Promise<void> {
         studentId: student1Id,
         batchId: batch1Id,
         monthlyFeeBillId: bill1.id,
-        amount: 3500.0,
+        amount: 3000.0,
         currency: 'bdt',
         paymentMethod: PaymentMethod.STRIPE,
         status: PaymentStatus.COMPLETED,
-        stripeSessionId: 'cs_test_seed_rahim_001',
-        stripePaymentIntentId: 'pi_test_seed_rahim_001',
+        stripeSessionId: 'cs_test_seed_student1_001',
+        stripePaymentIntentId: 'pi_test_seed_student1_001',
         receiptNumber: 'REC-202609-0001',
-        notes: 'Online Stripe card payment - Full settlement',
-        paidAt: subDays(today, 10),
+        notes: 'Online Stripe card payment',
+        paidAt: subDays(today, 5),
       },
     });
   }
@@ -786,7 +820,7 @@ async function main(): Promise<void> {
       },
       update: {
         status: PaymentBillStatus.PARTIAL,
-        paidAmount: 2000.0,
+        paidAmount: 1500.0,
         dueAmount: 1500.0,
       },
       create: {
@@ -795,10 +829,10 @@ async function main(): Promise<void> {
         enrollmentId: enr2Id,
         billingMonth: currentMonth,
         billingYear: currentYear,
-        monthlyFee: 3500.0,
+        monthlyFee: 3000.0,
         previousDue: 0.0,
-        totalPayable: 3500.0,
-        paidAmount: 2000.0,
+        totalPayable: 3000.0,
+        paidAmount: 1500.0,
         dueAmount: 1500.0,
         status: PaymentBillStatus.PARTIAL,
       },
@@ -811,14 +845,14 @@ async function main(): Promise<void> {
         studentId: student2Id,
         batchId: batch1Id,
         monthlyFeeBillId: bill2.id,
-        amount: 2000.0,
+        amount: 1500.0,
         currency: 'bdt',
         paymentMethod: PaymentMethod.BKASH,
         status: PaymentStatus.COMPLETED,
         receiptNumber: 'REC-202609-0002',
-        notes: 'bKash Merchant Payment (Trx: BK88291) - Partial 2000 BDT',
+        notes: 'bKash Manual Front-Desk Collection',
         collectedById: adminUser.id,
-        paidAt: subDays(today, 8),
+        paidAt: subDays(today, 3),
       },
     });
   }
@@ -839,81 +873,53 @@ async function main(): Promise<void> {
         enrollmentId: enr3Id,
         billingMonth: currentMonth,
         billingYear: currentYear,
-        monthlyFee: 2800.0,
-        previousDue: 1000.0,
-        totalPayable: 3800.0,
+        monthlyFee: 2500.0,
+        previousDue: 500.0,
+        totalPayable: 3000.0,
         paidAmount: 0.0,
-        dueAmount: 3800.0,
+        dueAmount: 3000.0,
         status: PaymentBillStatus.UNPAID,
       },
     });
   }
 
   // 10. Seed Initial Audit Logs
-  logger.info('10. Bootstrapping Immutable Administrative Audit Trail...');
-  const auditLogsData = [
-    {
-      userId: adminUser.id,
-      action: 'SYSTEM_BOOTSTRAPPED',
-      entity: 'System',
-      entityId: adminUser.id,
-      details: JSON.stringify({
-        institutionName: config.ADMIN_INSTITUTION_NAME,
-        version: '1.0.0',
-        environment: config.NODE_ENV,
-      }),
-    },
-    {
-      userId: adminUser.id,
-      action: 'TEACHER_PROVISIONED',
-      entity: 'User',
-      entityId: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
-      details: JSON.stringify({
-        teacherName: 'Dr. Sarah Jenkins',
-        permissions: ['MANAGE_ATTENDANCE', 'MANAGE_EXAMS', 'MANAGE_ROUTINES'],
-      }),
-    },
-    {
-      userId: adminUser.id,
-      action: 'BATCH_CREATED',
-      entity: 'Batch',
-      entityId: batch1Id,
-      details: JSON.stringify({
-        name: 'HSC 2026 - Higher Mathematics & Physics Masterclass',
-        fee: 3500.0,
-      }),
-    },
-    {
-      userId: seededTeachers['sarah.jenkins@apexacademy.edu'].id,
-      action: 'EXAM_RESULTS_PUBLISHED',
-      entity: 'Exam',
-      entityId: exam1.id,
-      details: JSON.stringify({
-        examTitle: 'Higher Math Mid-Term Assessment 2026',
-        totalCandidates: 2,
-        passRate: 100,
-      }),
-    },
-  ];
+  logger.info('10. Bootstrapping Initial Audit Log...');
+  const existingAudit = await prisma.auditLog.findFirst({
+    where: { action: 'SYSTEM_BOOTSTRAPPED' },
+  });
 
-  for (const log of auditLogsData) {
+  if (!existingAudit) {
     await prisma.auditLog.create({
-      data: log,
+      data: {
+        userId: adminUser.id,
+        action: 'SYSTEM_BOOTSTRAPPED',
+        entity: 'System',
+        entityId: adminUser.id,
+        details: JSON.stringify({
+          institutionName: config.ADMIN_INSTITUTION_NAME || 'Radiant Coaching Center',
+          version: '1.0.0',
+          environment: config.NODE_ENV,
+        }),
+      },
     });
   }
 
   logger.info('================================================================');
   logger.info('🎉 Database Seeding Complete & Verified Successfully!');
   logger.info('================================================================');
-  logger.info('Seeded Credentials Overview:');
-  logger.info(`  • Admin  : ${adminEmail} / Abrar650@#`);
-  logger.info('  • Teacher: sarah.jenkins@apexacademy.edu / Teacher@123456');
-  logger.info('  • Teacher: alan.walker@apexacademy.edu / Teacher@123456');
-  logger.info('  • Teacher: emily.watson@apexacademy.edu / Teacher@123456');
-  logger.info('  • Student: rahim.ahmed@student.apex.edu / Student@123456');
-  logger.info('  • Student: nusrat.jahan@student.apex.edu / Student@123456');
-  logger.info('  • Student: tanvir.hasan@student.apex.edu / Student@123456');
-  logger.info('  • Student (Pending): sadia.afrin@student.apex.edu / Student@123456');
+  logger.info('Clean Seeded Credentials Overview:');
+  logger.info(`  • Admin   : ${adminEmail} / Admin@123456 (${adminName})`);
+  logger.info('  • Teacher : teacher1@gmail.com / Teacher@123456 (Sarah Khan - Math)');
+  logger.info('  • Teacher : teacher2@gmail.com / Teacher@123456 (Tanvir Ahmed - Physics)');
+  logger.info('  • Teacher : teacher3@gmail.com / Teacher@123456 (Ayesha Rahman - Chemistry)');
+  logger.info('  • Teacher : teacher4@gmail.com / Teacher@123456 (Kamal Hossain - English)');
+  logger.info('  • Student : student1@gmail.com / Student@123456 (Rahim Ali)');
+  logger.info('  • Student : student2@gmail.com / Student@123456 (Nusrat Jahan)');
+  logger.info('  • Student : student3@gmail.com / Student@123456 (Tanvir Hasan)');
+  logger.info('  • Student : student4@gmail.com / Student@123456 (Sabbir Ahmed)');
+  logger.info('  • Student : student5@gmail.com / Student@123456 (Mehedi Hasan)');
+  logger.info('  • Student : student6@gmail.com / Student@123456 (Sadia Afrin - Pending)');
   logger.info('================================================================');
 }
 
