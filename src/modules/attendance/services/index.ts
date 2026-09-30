@@ -6,7 +6,6 @@ import { getTeacherAttendanceService } from './get-teacher-attendance.service';
 import { getTeacherAttendanceSummaryService } from './get-teacher-attendance-summary.service';
 import { markBulkAttendanceService } from './mark-bulk-attendance.service';
 import { markBulkTeacherAttendanceService } from './mark-bulk-teacher-attendance.service';
-import { selfCheckInTeacherService } from './self-check-in-teacher.service';
 import { updateAttendanceRecordService } from './update-attendance-record.service';
 import { updateTeacherAttendanceRecordService } from './update-teacher-attendance-record.service';
 
@@ -17,7 +16,6 @@ export const attendanceService = Object.freeze({
   getStudentAttendance: getStudentAttendanceService,
   getMyAttendance: getMyAttendanceService,
   markBulkTeacherAttendance: markBulkTeacherAttendanceService,
-  selfCheckInTeacher: selfCheckInTeacherService,
   getTeacherAttendance: getTeacherAttendanceService,
   getTeacherAttendanceSummary: getTeacherAttendanceSummaryService,
   getMyTeacherAttendance: getMyTeacherAttendanceService,
@@ -33,7 +31,6 @@ export {
   getTeacherAttendanceSummaryService,
   markBulkAttendanceService,
   markBulkTeacherAttendanceService,
-  selfCheckInTeacherService,
   updateAttendanceRecordService,
   updateTeacherAttendanceRecordService,
 };

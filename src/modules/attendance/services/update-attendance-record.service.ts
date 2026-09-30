@@ -2,7 +2,10 @@ import { Permission, Role } from '@prisma/client';
 import { prisma } from '../../../config';
 import { ApiError, logger } from '../../../utils';
 import type { IAttendanceRecordResponse, IUpdateAttendanceInput } from '../attendance.interface';
-import { assertAttendanceRecordIsToday, formatAttendanceRecordResponse } from '../attendance.utils';
+import {
+  assertAttendanceRecordNotFuture,
+  formatAttendanceRecordResponse,
+} from '../attendance.utils';
 
 export const updateAttendanceRecordService = async (
   id: string,
@@ -50,8 +53,8 @@ export const updateAttendanceRecordService = async (
     throw ApiError.notFound('Attendance record not found');
   }
 
-  // 3. Enforce view-only rule for past attendance records
-  assertAttendanceRecordIsToday(existingRecord.date);
+  // 3. Ensure record date is not in the future (submitted attendance can be edited anytime)
+  assertAttendanceRecordNotFuture(existingRecord.date);
 
   const previousStatus = existingRecord.status;
 

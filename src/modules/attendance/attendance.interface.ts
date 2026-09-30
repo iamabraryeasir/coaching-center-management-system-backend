@@ -102,10 +102,6 @@ export interface IBulkTeacherAttendanceInput {
   records: IBulkTeacherAttendanceItem[];
 }
 
-export interface ISelfCheckInTeacherInput {
-  remarks?: string;
-}
-
 export interface IUpdateTeacherAttendanceInput {
   status: AttendanceStatus;
   remarks?: string;

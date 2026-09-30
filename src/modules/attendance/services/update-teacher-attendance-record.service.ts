@@ -6,7 +6,7 @@ import type {
   IUpdateTeacherAttendanceInput,
 } from '../attendance.interface';
 import {
-  assertAttendanceRecordIsToday,
+  assertAttendanceRecordNotFuture,
   formatTeacherAttendanceRecordResponse,
 } from '../attendance.utils';
 
@@ -55,8 +55,8 @@ export const updateTeacherAttendanceRecordService = async (
     throw ApiError.notFound('Teacher attendance record not found');
   }
 
-  // 3. Enforce view-only rule for past teacher attendance records
-  assertAttendanceRecordIsToday(existingRecord.date);
+  // 3. Ensure record date is not in the future (submitted attendance can be edited anytime)
+  assertAttendanceRecordNotFuture(existingRecord.date);
 
   const previousStatus = existingRecord.status;
 

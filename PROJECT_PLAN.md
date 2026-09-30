@@ -2,7 +2,7 @@
 
 > **Version**: 2.8.0 (Enterprise Production Specification)  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 94 Verified Endpoints across 15 Modules  
+> **API Standard**: RESTful v1 with 93 Verified Endpoints across 15 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 
 ---
@@ -132,7 +132,7 @@ stateDiagram-v2
 
 ---
 
-## 6. Complete Master API Specification (94 Endpoints across 15 Modules)
+## 6. Complete Master API Specification (93 Endpoints across 15 Modules)
 
 
 ### 6.1 Health Checks & System Telemetry (2 Endpoints)
@@ -212,14 +212,13 @@ stateDiagram-v2
 - `DELETE /api/v1/routines/:id` — Admin or authorized Teacher deletes routine slot.
 - `GET /api/v1/routines/batches/:batchId/pdf` — **Download/Preview Batch Weekly Timetable PDF via PDFKit**.
 
-### 6.10 Daily Student & Teacher Attendance Tracking (11 Endpoints)
+### 6.10 Daily Student & Teacher Attendance Tracking (10 Endpoints)
 
 - `POST /api/v1/attendance/batches/:batchId` — Record bulk student attendance for a batch.
 - `GET /api/v1/attendance/batches/:batchId` — Retrieve batch attendance sheet filtered by date.
 - `PATCH /api/v1/attendance/:id` — Correct single attendance record with audit trail.
 - `GET /api/v1/attendance/students/:studentId` — Retrieve attendance history for a specific student.
 - `GET /api/v1/attendance/my/summary` — Student views personal monthly attendance statistics & percentage.
-- `POST /api/v1/attendance/teachers/check-in` — Teacher daily self check-in.
 - `GET /api/v1/attendance/teachers/my/summary` — Teacher views personal attendance summary & percentage.
 - `POST /api/v1/attendance/teachers/bulk` — Admin or authorized Teacher records bulk faculty attendance.
 - `GET /api/v1/attendance/teachers` — Retrieve faculty attendance sheet filtered by date.

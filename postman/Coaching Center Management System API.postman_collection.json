@@ -1975,37 +1975,6 @@
           "response": []
         },
         {
-          "name": "✅ Teacher Self Check-In (Teacher Only)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"remarks\": \"Checked in from campus office\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/attendance/teachers/check-in",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "attendance",
-                "teachers",
-                "check-in"
-              ]
-            },
-            "description": "Protected: Teacher records their own attendance check-in for the current calendar date."
-          },
-          "response": []
-        },
-        {
           "name": "✅ Get My Teacher Attendance Summary (Teacher Only)",
           "request": {
             "method": "GET",

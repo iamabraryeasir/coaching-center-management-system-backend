@@ -77,23 +77,25 @@ export const markBulkAttendanceService = async (
 
   const calendarDate = normalizeDateToUtc(input.date);
 
-  // 4. Atomic upsert of all records inside transaction
+  // 4. Enforce submission once per day: Check if attendance for this batch has already been submitted for today
+  const existingAttendanceCount = await prisma.attendanceRecord.count({
+    where: {
+      batchId,
+      date: calendarDate,
+    },
+  });
+
+  if (existingAttendanceCount > 0) {
+    throw ApiError.conflict(
+      `Attendance for batch '${batch.name}' has already been submitted for today (${input.date}). Once submitted, individual records can be edited anytime using the attendance update endpoint.`,
+    );
+  }
+
+  // 5. Atomic creation of all records inside transaction
   const results = await prisma.$transaction(async (tx) => {
     const promises = input.records.map((record) =>
-      tx.attendanceRecord.upsert({
-        where: {
-          batchId_studentId_date: {
-            batchId,
-            studentId: record.studentId,
-            date: calendarDate,
-          },
-        },
-        update: {
-          status: record.status,
-          remarks: record.remarks || null,
-          markedById: actorUserId,
-        },
-        create: {
+      tx.attendanceRecord.create({
+        data: {
           batchId,
           studentId: record.studentId,
           markedById: actorUserId,

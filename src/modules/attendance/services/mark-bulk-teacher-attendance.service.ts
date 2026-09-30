@@ -1,4 +1,4 @@
-import { Role, UserStatus } from '@prisma/client';
+import { Permission, Role, UserStatus } from '@prisma/client';
 import { prisma } from '../../../config';
 import { ApiError, logger } from '../../../utils';
 import type {
@@ -14,6 +14,7 @@ import {
 export const markBulkTeacherAttendanceService = async (
   input: IBulkTeacherAttendanceInput,
   markedById: string,
+  actorRole?: Role,
 ): Promise<{
   markedCount: number;
   date: string;
@@ -22,9 +23,27 @@ export const markBulkTeacherAttendanceService = async (
   // 1. Enforce today-only attendance marking (Bangladesh Standard Time)
   assertAttendanceDateIsToday(input.date);
 
+  // 2. Permission check for Teacher
+  if (actorRole === Role.TEACHER) {
+    const hasPerm = await prisma.teacherPermission.findUnique({
+      where: {
+        teacherId_permission: {
+          teacherId: markedById,
+          permission: Permission.MANAGE_ATTENDANCE,
+        },
+      },
+    });
+
+    if (!hasPerm) {
+      throw ApiError.forbidden(
+        'You lack the MANAGE_ATTENDANCE permission required to mark teacher attendance.',
+      );
+    }
+  }
+
   const normalizedDate = normalizeDateToUtc(input.date);
 
-  // 1. Collect and deduplicate teacher IDs
+  // 3. Collect and deduplicate teacher IDs
   const teacherIds = [...new Set(input.records.map((r) => r.teacherId))];
 
   // 2. Validate all teachers exist, are ACTIVE, have Role.TEACHER, and are not soft-deleted
@@ -50,24 +69,32 @@ export const markBulkTeacherAttendanceService = async (
     );
   }
 
-  // 3. Perform atomic upsert in a database transaction
-  const upsertedRecords = await prisma.$transaction(async (tx) => {
+  // 3. Check if attendance has already been submitted for any of these teachers today
+
+  const existingTeacherRecords = await prisma.teacherAttendanceRecord.findMany({
+    where: {
+      teacherId: { in: teacherIds },
+      date: normalizedDate,
+    },
+    include: {
+      teacher: { select: { name: true } },
+    },
+  });
+
+  if (existingTeacherRecords.length > 0) {
+    const existingNames = existingTeacherRecords.map((r) => r.teacher.name).join(', ');
+    throw ApiError.conflict(
+      `Attendance has already been submitted today for the following teacher(s): ${existingNames}. Once submitted, records can be edited anytime using the teacher attendance update endpoint.`,
+    );
+  }
+
+  // 4. Perform atomic creation in a database transaction
+  const createdRecords = await prisma.$transaction(async (tx) => {
     const results = [];
 
     for (const record of input.records) {
-      const upserted = await tx.teacherAttendanceRecord.upsert({
-        where: {
-          teacherId_date: {
-            teacherId: record.teacherId,
-            date: normalizedDate,
-          },
-        },
-        update: {
-          status: record.status,
-          remarks: record.remarks ?? null,
-          markedById,
-        },
-        create: {
+      const created = await tx.teacherAttendanceRecord.create({
+        data: {
           teacherId: record.teacherId,
           markedById,
           date: normalizedDate,
@@ -84,24 +111,24 @@ export const markBulkTeacherAttendanceService = async (
         },
       });
 
-      results.push(upserted);
+      results.push(created);
     }
 
     return results;
   });
 
-  // 4. Audit Log
+  // 5. Audit Log
   logger.audit('TEACHER_ATTENDANCE_MARKED', {
     date: input.date,
     markedById,
-    recordsCount: upsertedRecords.length,
+    recordsCount: createdRecords.length,
     presentCount: input.records.filter((r) => r.status === 'PRESENT').length,
     absentCount: input.records.filter((r) => r.status === 'ABSENT').length,
   });
 
   return {
-    markedCount: upsertedRecords.length,
+    markedCount: createdRecords.length,
     date: input.date,
-    records: upsertedRecords.map(formatTeacherAttendanceRecordResponse),
+    records: createdRecords.map(formatTeacherAttendanceRecordResponse),
   };
 };

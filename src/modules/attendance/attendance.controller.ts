@@ -89,8 +89,13 @@ export const getMyAttendance = catchAsync(async (req: Request, res: Response): P
 export const markBulkTeacherAttendance = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const actorUserId = req.user?.userId as string;
+    const actorRole = req.user?.role as Role;
 
-    const result = await attendanceService.markBulkTeacherAttendance(req.body, actorUserId);
+    const result = await attendanceService.markBulkTeacherAttendance(
+      req.body,
+      actorUserId,
+      actorRole,
+    );
 
     sendResponse(res, {
       statusCode: 201,
@@ -100,19 +105,6 @@ export const markBulkTeacherAttendance = catchAsync(
     });
   },
 );
-
-export const selfCheckInTeacher = catchAsync(async (req: Request, res: Response): Promise<void> => {
-  const teacherId = req.user?.userId as string;
-
-  const record = await attendanceService.selfCheckInTeacher(teacherId, req.body);
-
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: 'Self check-in recorded successfully for today',
-    data: record,
-  });
-});
 
 export const getTeacherAttendance = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
@@ -190,7 +182,6 @@ export const attendanceController = Object.freeze({
   getStudentAttendance,
   getMyAttendance,
   markBulkTeacherAttendance,
-  selfCheckInTeacher,
   getTeacherAttendance,
   updateTeacherAttendanceRecord,
   getTeacherAttendanceSummary,

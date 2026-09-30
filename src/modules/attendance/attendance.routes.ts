@@ -9,7 +9,6 @@ import {
   getTeacherAttendanceSummaryQuerySchema,
   markBulkAttendanceSchema,
   markBulkTeacherAttendanceSchema,
-  selfCheckInTeacherAttendanceSchema,
   updateAttendanceSchema,
   updateTeacherAttendanceSchema,
 } from './attendance.validation';
@@ -29,13 +28,6 @@ router.get(
 /**
  * Teacher Self-Service Endpoints
  */
-router.post(
-  '/teachers/check-in',
-  checkAuth(Role.TEACHER),
-  validateRequest(selfCheckInTeacherAttendanceSchema),
-  attendanceController.selfCheckInTeacher,
-);
-
 router.get(
   '/teachers/my/summary',
   checkAuth(Role.TEACHER),

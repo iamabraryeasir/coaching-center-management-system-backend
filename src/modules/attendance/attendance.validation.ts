@@ -122,14 +122,6 @@ export const markBulkTeacherAttendanceSchema = z.object({
   }),
 });
 
-export const selfCheckInTeacherAttendanceSchema = z.object({
-  body: z
-    .object({
-      remarks: z.string().trim().max(255, 'Remarks cannot exceed 255 characters').optional(),
-    })
-    .optional(),
-});
-
 export const updateTeacherAttendanceSchema = z.object({
   params: z.object({
     id: z.string().uuid('Invalid teacher attendance record ID format'),

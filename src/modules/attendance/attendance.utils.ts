@@ -44,18 +44,13 @@ export const assertAttendanceDateIsToday = (dateStr: string): void => {
 };
 
 /**
- * Asserts that an existing attendance record's date is today in BST before allowing modification.
- * Throws ApiError if the record is from a previous day or a future day.
+ * Asserts that an existing attendance record's date is not in the future relative to Bangladesh Standard Time.
+ * Once submitted, attendance records (from today or past days) can be edited anytime.
+ * Throws ApiError if the record date is in the future.
  */
-export const assertAttendanceRecordIsToday = (recordDate: Date): void => {
+export const assertAttendanceRecordNotFuture = (recordDate: Date): void => {
   const recordDateStr = formatDateToCalendarString(recordDate);
   const bstTodayStr = getBangladeshTodayString();
-
-  if (recordDateStr < bstTodayStr) {
-    throw ApiError.badRequest(
-      "Previous days' attendance records cannot be modified. They can only be viewed.",
-    );
-  }
 
   if (recordDateStr > bstTodayStr) {
     throw ApiError.badRequest('Future attendance records cannot be modified.');

@@ -21,7 +21,7 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 4. [Role-Based Access Control & Permission Matrix](#-role-based-access-control--permission-matrix)
 5. [Authentication & Student Onboarding State Machine](#-authentication--student-onboarding-state-machine)
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
-7. [Master API Catalog (94 Verified Endpoints)](#-master-api-catalog-94-verified-endpoints)
+7. [Master API Catalog (93 Verified Endpoints)](#-master-api-catalog-93-verified-endpoints)
 8. [Directory Structure & File Architecture](#-directory-structure--file-architecture)
 9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
 10. [Environment Variables Reference](#-environment-variables-reference)
@@ -318,7 +318,7 @@ erDiagram
 | **Conflict-Free Timetable Routine Management**           |    Full Control    |  Delegated (`MANAGE_ROUTINES`)  |  Personal Schedule  |
 | **Download/Preview Batch Timetable PDF**                 | Download / Preview |       Download / Preview        | Download / Preview  |
 | **Student Batch Attendance Marking & Corrections**       |    Full Control    | Delegated (`MANAGE_ATTENDANCE`) |  Personal Summary   |
-| **Teacher Attendance (Self Check-In & Bulk Marking)**    |    Bulk Marking    |          Self Check-In          |      No Access      |
+| **Teacher Attendance Marking & Summaries**               |    Full Control    | Delegated (`MANAGE_ATTENDANCE`) |      No Access      |
 | **Exam Creation & Schedule Configuration**               |    Full Control    |   Delegated (`MANAGE_EXAMS`)    |      Read Only      |
 | **Bulk Student Marks Entry & Result Publication**        |    Full Control    |   Delegated (`MANAGE_EXAMS`)    |  Published Results  |
 | **Download/Preview Grade Sheet Report Card PDF**         | Download / Preview |       Download / Preview        | Download / Preview  |
@@ -377,7 +377,7 @@ To protect cloud storage quotas and guarantee 100% real-time data accuracy, docu
 
 ---
 
-## 📚 Master API Catalog (94 Verified Endpoints)
+## 📚 Master API Catalog (93 Verified Endpoints)
 
 All endpoints are versioned under `/api/v1` and follow the standardized `sendResponse` JSON envelope.
 
@@ -457,14 +457,13 @@ All endpoints are versioned under `/api/v1` and follow the standardized `sendRes
 - `DELETE /api/v1/routines/:id` — Admin or authorized Teacher deletes routine slot.
 - `GET /api/v1/routines/batches/:batchId/pdf` — **Download/Preview Batch Weekly Timetable PDF via PDFKit**.
 
-### 10. Daily Student & Teacher Attendance Tracking (11 APIs)
+### 10. Daily Student & Teacher Attendance Tracking (10 APIs)
 
 - `POST /api/v1/attendance/batches/:batchId` — Record bulk student attendance for a batch.
 - `GET /api/v1/attendance/batches/:batchId` — Retrieve batch attendance sheet filtered by date.
 - `PATCH /api/v1/attendance/:id` — Correct single attendance record with audit trail.
 - `GET /api/v1/attendance/students/:studentId` — Retrieve attendance history for a specific student.
 - `GET /api/v1/attendance/my/summary` — Student views personal monthly attendance statistics & percentage.
-- `POST /api/v1/attendance/teachers/check-in` — Teacher daily self check-in.
 - `GET /api/v1/attendance/teachers/my/summary` — Teacher views personal attendance summary & percentage.
 - `POST /api/v1/attendance/teachers/bulk` — Admin or authorized Teacher records bulk faculty attendance.
 - `GET /api/v1/attendance/teachers` — Retrieve faculty attendance sheet filtered by date.
