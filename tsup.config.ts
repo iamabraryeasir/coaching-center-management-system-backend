@@ -2,13 +2,17 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/server.ts'],
-  format: ['esm'],
-  target: 'es2022',
+  format: ['esm', 'cjs'],
+  target: 'esnext',
   outDir: 'dist',
   clean: true,
-  sourcemap: true,
-  minify: false,
+  bundle: true,
   splitting: false,
-  treeshake: true,
-  shims: true,
+  sourcemap: true,
+  banner: {
+    js: `
+      import { createRequire } from 'module';
+      const require = createRequire(import.meta.url);
+    `,
+  },
 });

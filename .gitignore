@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnpm-store/
 
@@ -32,3 +32,11 @@ Thumbs.db
 .tsup/
 .turbo/
 *.tsbuildinfo
+
+.vercel
+
+# Alternative package manager lockfiles (enforce npm)
+bun.lock
+bun.lockb
+pnpm-lock.yaml
+yarn.lock
