@@ -42,10 +42,10 @@ router.patch(
   userController.changePassword,
 );
 
-// Administrative User Supervision (Admin only)
+// User Directory & Supervision (Admin and Faculty)
 router.get(
   '/',
-  checkAuth(Role.ADMIN),
+  checkAuth(Role.ADMIN, Role.TEACHER),
   validateRequest(getUsersQuerySchema),
   userController.getAllUsers,
 );
@@ -82,7 +82,7 @@ router.patch(
 
 router.get(
   '/:id',
-  checkAuth(Role.ADMIN),
+  checkAuth(Role.ADMIN, Role.TEACHER),
   validateRequest(userIdParamSchema),
   userController.getUserById,
 );
