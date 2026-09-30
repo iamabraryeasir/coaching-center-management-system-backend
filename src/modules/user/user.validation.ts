@@ -1,5 +1,6 @@
 import { Gender, Permission, Role, UserStatus } from '@prisma/client';
 import { z } from 'zod';
+import { strongPasswordSchema } from '../auth';
 
 export const updateMyProfileSchema = z.object({
   body: z
@@ -46,7 +47,7 @@ export const changePasswordSchema = z.object({
   body: z
     .object({
       currentPassword: z.string().min(1, 'Current password is required'),
-      newPassword: z.string().min(6, 'New password must be at least 6 characters'),
+      newPassword: strongPasswordSchema,
     })
     .refine((data) => data.currentPassword !== data.newPassword, {
       message: 'New password must be different from current password',

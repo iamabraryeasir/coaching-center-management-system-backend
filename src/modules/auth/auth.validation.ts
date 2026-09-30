@@ -1,11 +1,22 @@
 import { Permission } from '@prisma/client';
 import { z } from 'zod';
 
+export const strongPasswordSchema = z
+  .string({
+    error: 'Password is required',
+  })
+  .min(8, 'Password must be at least 8 characters long')
+  .max(128, 'Password cannot exceed 128 characters')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one digit (number)')
+  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
+
 export const registerStudentSchema = z.object({
   body: z.object({
     name: z.string().trim().min(2, 'Name must be at least 2 characters'),
     email: z.email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    password: strongPasswordSchema,
     phone: z.string().trim().min(10, 'Phone must be at least 10 digits'),
     guardianName: z.string().trim().min(2, 'Guardian name must be at least 2 characters'),
     guardianPhone: z.string().trim().min(10, 'Guardian phone must be at least 10 digits'),
@@ -19,7 +30,7 @@ export const registerTeacherSchema = z.object({
   body: z.object({
     name: z.string().trim().min(2, 'Name must be at least 2 characters'),
     email: z.email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    password: strongPasswordSchema,
     phone: z.string().trim().min(10, 'Phone must be at least 10 digits'),
     designation: z.string().trim().min(2, 'Designation must be at least 2 characters'),
     qualification: z.string().trim().min(2, 'Qualification must be at least 2 characters'),
@@ -124,7 +135,7 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordSchema = z.object({
   body: z.object({
     token: z.string().trim().min(32, 'Valid reset token is required'),
-    newPassword: z.string().min(6, 'Password must be at least 6 characters'),
+    newPassword: strongPasswordSchema,
   }),
 });
 
