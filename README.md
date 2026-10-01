@@ -70,7 +70,6 @@ erDiagram
     Batch ||--o{ Enrollment : "contains"
     Batch ||--o{ AttendanceRecord : "tracks"
     Batch ||--o{ Exam : "schedules"
-    %% Payments & Invoicing
     Batch ||--o{ MonthlyFeeBill : "bills"
     Batch ||--o{ PaymentTransaction : "receives"
 
@@ -80,22 +79,15 @@ erDiagram
     %% Student Relations
     User ||--o{ Enrollment : "enrolls (studentId)"
     User ||--o{ AttendanceRecord : "student attendance"
-    User ||--o{ AttendanceRecord : "marked by"
     User ||--o{ TeacherAttendanceRecord : "faculty attendance"
-    User ||--o{ TeacherAttendanceRecord : "marked by"
     User ||--o{ ExamResult : "receives marks"
     Enrollment ||--o{ MonthlyFeeBill : "generates"
     User ||--o{ MonthlyFeeBill : "billed (studentId)"
     User ||--o{ PaymentTransaction : "pays (studentId)"
-    User ||--o{ PaymentTransaction : "collects (adminId)"
     MonthlyFeeBill ||--o{ PaymentTransaction : "settles"
 
     %% Examinations & Grading
     Exam ||--o{ ExamResult : "evaluates"
-
-    %% Payments & Invoicing
-    Enrollment ||--o{ PaymentTransaction : "fulfills"
-    PaymentTransaction ||--o| Receipt : "issues"
 
     User {
         string id PK "UUID"
@@ -127,16 +119,16 @@ erDiagram
         string guardianName
         string guardianPhone
         string institutionName "Nullable"
-        string classLevel "e.g. Class 10, HSC-2nd"
+        string classLevel "e.g. Class 10, HSC"
         string rollNumber "Nullable"
     }
 
     TeacherProfile {
         string id PK "UUID"
         string userId FK, UK
-        string designation "e.g. Head of Physics"
-        string qualification "e.g. Ph.D. in Physics, BUET"
-        string specialization "e.g. Higher Math & Calculus"
+        string designation "e.g. Senior Teacher"
+        string qualification "e.g. M.Sc in Mathematics"
+        string specialization "e.g. Higher Math"
         datetime joiningDate "Nullable"
     }
 
@@ -158,7 +150,7 @@ erDiagram
 
     Batch {
         string id PK "UUID"
-        string name "e.g. HSC 2026 Masterclass"
+        string name "e.g. HSC 2026"
         decimal fee "10,2"
         BatchStatus status "UPCOMING | ONGOING | COMPLETED | CANCELLED"
         datetime deletedAt "Nullable"
@@ -180,20 +172,16 @@ erDiagram
         string studentId FK
         string batchId FK
         EnrollmentStatus status "PENDING | ENROLLED | REJECTED"
-        int startBillingMonth "Nullable (1-12)"
-        int startBillingYear "Nullable"
-        decimal openingDue "10,2 default 0.00"
         datetime enrolledAt
         datetime approvedAt "Nullable"
     }
 
     AttendanceRecord {
-    MonthlyFeeBill {
         string id PK "UUID"
         string batchId FK
         string studentId FK
         string markedById FK
-        date date "Native PostgreSQL DATE"
+        date date "PostgreSQL DATE"
         AttendanceStatus status "PRESENT | ABSENT | LATE | EXCUSED | LEAVE"
         string remarks "Nullable"
     }
@@ -202,9 +190,10 @@ erDiagram
         string id PK "UUID"
         string teacherId FK
         string markedById FK
-        date date "Native PostgreSQL DATE"
+        date date "PostgreSQL DATE"
         AttendanceStatus status "PRESENT | ABSENT | LATE | EXCUSED | LEAVE"
         datetime checkInTime "Nullable"
+        string remarks "Nullable"
     }
 
     Exam {
@@ -214,9 +203,24 @@ erDiagram
         string description "Nullable"
         decimal totalMarks "5,2"
         decimal passMarks "5,2"
-        date examDate "Native PostgreSQL DATE"
+        date examDate "PostgreSQL DATE"
         ExamStatus status "UPCOMING | ONGOING | COMPLETED | CANCELLED"
         ResultStatus resultStatus "DRAFT | PUBLISHED"
+    }
+
+    ExamResult {
+        string id PK "UUID"
+        string examId FK
+        string studentId FK
+        decimal marksObtained "5,2"
+        string grade "Nullable (A+, A, B, F)"
+        string remarks "Nullable"
+    }
+
+    MonthlyFeeBill {
+        string id PK "UUID"
+        string studentId FK
+        string batchId FK
         string enrollmentId FK
         int billingMonth "1-12 (BST)"
         int billingYear "e.g. 2026"
@@ -230,43 +234,21 @@ erDiagram
         datetime updatedAt
     }
 
-    ExamResult {
-        string id PK "UUID"
-        string examId FK
-        string studentId FK
-        decimal marksObtained "5,2"
-        string grade "Nullable (A+, A, B, F)"
-        string remarks "Nullable"
-    }
-
     PaymentTransaction {
         string id PK "UUID"
         string studentId FK
         string batchId FK
-        string enrollmentId FK "Nullable"
-        int billingMonth "1-12"
-        int billingYear "e.g. 2026"
         string monthlyFeeBillId FK "Nullable"
         decimal amount "10,2"
         string currency "bdt"
         PaymentMethod paymentMethod "STRIPE | CASH | BKASH | NAGAD | BANK_TRANSFER"
         PaymentStatus status "PENDING | COMPLETED | FAILED | REFUNDED"
-        PaymentStatus status "COMPLETED | FAILED | REFUNDED"
         string receiptNumber UK "REC-YYYYMM-XXXX"
         string notes "Nullable"
         string stripeSessionId UK "Nullable"
         string stripePaymentIntentId "Nullable"
         datetime paidAt "Nullable"
         string collectedById FK "Nullable"
-        datetime paidAt
-    }
-
-
-    Receipt {
-        string id PK "UUID"
-        string transactionId FK, UK
-        string receiptNumber UK "REC-YYYY-XXXX"
-        datetime issuedAt
     }
 
     AuditLog {
