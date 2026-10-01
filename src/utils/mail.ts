@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { getYear } from 'date-fns';
 import ejs from 'ejs';
@@ -38,7 +39,11 @@ export const sendEmail = async <T extends Record<string, unknown> = Record<strin
 ): Promise<void> => {
   const { to, subject, templateName, data, text, attachments } = options;
   const fileName = templateName.endsWith('.ejs') ? templateName : `${templateName}.ejs`;
-  const templatePath = path.join(process.cwd(), 'src', 'templates', 'emails', fileName);
+  const candidatePaths = [
+    path.join(process.cwd(), 'dist', 'templates', 'emails', fileName),
+    path.join(process.cwd(), 'src', 'templates', 'emails', fileName),
+  ];
+  const templatePath = candidatePaths.find((p) => fs.existsSync(p)) || candidatePaths[0];
 
   const html = await ejs.renderFile(templatePath, {
     ...data,
