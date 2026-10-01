@@ -1,8 +1,10 @@
 # Coaching Center Management System — Backend Production Blueprint & Plan
 
 > **Version**: 2.8.0 (Enterprise Production Specification)  
+> **Live Production API**: `https://coaching-system-backend.onrender.com`  
+> **Health Check**: `https://coaching-system-backend.onrender.com/health`  
 > **Architecture**: Single-Institution Coaching Center / Academy  
-> **API Standard**: RESTful v1 with 93 Verified Endpoints across 15 Modules  
+> **API Standard**: RESTful v1 with 95 Verified Endpoints across 15 Modules  
 > **Status**: 100% Implemented, Verified & Quality Gate Passed
 
 ---

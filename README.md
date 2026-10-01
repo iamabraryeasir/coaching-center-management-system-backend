@@ -1,5 +1,7 @@
 # 🎓 Coaching Center Management System — Backend API Engine
 
+[![Live Deployment](https://img.shields.io/badge/Render-Live%20API-46E3B7?style=flat-square&logo=render&logoColor=white)](https://coaching-system-backend.onrender.com)
+[![Health Check](https://img.shields.io/badge/Health%20Check-Passing-success?style=flat-square)](https://coaching-system-backend.onrender.com/health)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D24.0.0-339933?style=flat-square&logo=node.js)](https://nodejs.org)
 [![TypeScript Version](https://img.shields.io/badge/typescript-v7%2B-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![Express Version](https://img.shields.io/badge/express-v5.0-000000?style=flat-square&logo=express)](https://expressjs.com)
@@ -8,6 +10,9 @@
 [![Stripe API](https://img.shields.io/badge/stripe-integrated-635BFF?style=flat-square&logo=stripe)](https://stripe.com)
 [![Biome Code Quality](https://img.shields.io/badge/biome-v2.5-60A5FA?style=flat-square&logo=biome)](https://biomejs.dev)
 [![Status](https://img.shields.io/badge/status-production--ready-success?style=flat-square)]()
+
+> **Live Backend API Base URL**: [`https://coaching-system-backend.onrender.com`](https://coaching-system-backend.onrender.com)  
+> **Live API Health Check**: [`https://coaching-system-backend.onrender.com/health`](https://coaching-system-backend.onrender.com/health)
 
 An enterprise-grade, high-performance, single-institution backend system for **Coaching Centers, Academies, and Educational Institutes**. Built from the ground up using **Node.js (v24+)**, **Express.js (v5)**, **TypeScript (v7+ in strict mode)**, and **Prisma ORM (v7+)** with a native PostgreSQL driver adapter (`@prisma/adapter-pg` + `pg.Pool`).
 
@@ -724,7 +729,7 @@ npm start
 A complete, self-contained Postman testing suite (95 runnable requests across 14 modules) is located in the `postman/` directory:
 
 1. Import `postman/Coaching Center Management System API.postman_collection.json` directly into Postman.
-2. **Base URL Configuration**: Only `baseUrl` is defined in the collection variables (`https://coaching-center-app-backend.vercel.app` by default, or switch to `http://localhost:5000` for local development).
+2. **Base URL Configuration**: `baseUrl` is defined in the collection variables (`https://coaching-system-backend.onrender.com` by default, or switch to `http://localhost:5000` for local development).
 3. **Cookie-Based Authentication**: The API natively uses secure HttpOnly cookies for session management (`accessToken` and `refreshToken`). Simply run any login endpoint (`✅ Login — Administrator`, `✅ Login — Teacher`, or `✅ Login — Student`), and Postman's native cookie manager automatically authenticates all subsequent protected requests without requiring manual Bearer tokens or background sync scripts.
 4. **Self-Contained Payloads & Sample IDs**: All requests come pre-configured with realistic sample JSON bodies, parameters, and comprehensive descriptions for effortless testing.
 

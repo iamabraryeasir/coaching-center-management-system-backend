@@ -3353,7 +3353,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://coaching-center-app-backend.vercel.app",
+      "value": "https://coaching-system-backend.onrender.com",
       "type": "string",
       "description": "Base API URL (switch to http://localhost:5000 for local development)"
     }
