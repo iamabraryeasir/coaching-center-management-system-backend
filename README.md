@@ -28,10 +28,9 @@ An enterprise-grade, high-performance, single-institution backend system for **C
 6. [Zero Cloud Storage In-Memory PDF Subsystem](#-zero-cloud-storage-in-memory-pdf-subsystem)
 7. [Master API Catalog (93 Verified Endpoints)](#-master-api-catalog-93-verified-endpoints)
 8. [Directory Structure & File Architecture](#-directory-structure--file-architecture)
-9. [Pre-Seeded Demo Credentials](#-pre-seeded-demo-credentials)
-10. [Environment Variables Reference](#-environment-variables-reference)
-11. [Installation & Getting Started](#-installation--getting-started)
-12. [Postman Collection & Verification](#-postman-collection--verification)
+9. [Environment Variables Reference](#-environment-variables-reference)
+10. [Installation & Getting Started](#-installation--getting-started)
+11. [Postman Collection & Verification](#-postman-collection--verification)
 
 ---
 
@@ -603,24 +602,6 @@ Each domain feature module in `src/modules/` adheres to a strict, action-decompo
 
 ---
 
-## 👥 Pre-Seeded Demo Credentials
-
-| Role                  | Name         | Email                 | Password         | Assigned Permissions / Meta                            |
-| :-------------------- | :----------- | :-------------------- | :--------------- | :----------------------------------------------------- |
-| **System Admin**      | Abrar Yeasir | `admin@gmail.com`     | `Admin@123456`   | Full System Governance                                 |
-| **Teacher (Lead)**    | Sarah Khan   | `teacher1@gmail.com`  | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS`, `MANAGE_ROUTINES` |
-| **Teacher**           | Tanvir Ahmed | `teacher2@gmail.com`  | `Teacher@123456` | `MANAGE_ATTENDANCE`, `MANAGE_EXAMS` (Physics)          |
-| **Teacher**           | Ayesha Rahman| `teacher3@gmail.com`  | `Teacher@123456` | `MANAGE_ATTENDANCE` (Chemistry)                        |
-| **Teacher**           | Kamal Hossain| `teacher4@gmail.com`  | `Teacher@123456` | `MANAGE_EXAMS` (English)                               |
-| **Student**           | Rahim Ali    | `student1@gmail.com`  | `Student@123456` | HSC (Active, Enrolled in `HSC 2026`)                   |
-| **Student**           | Nusrat Jahan | `student2@gmail.com`  | `Student@123456` | HSC (Active, Enrolled in `HSC 2026`)                   |
-| **Student**           | Tanvir Hasan | `student3@gmail.com`  | `Student@123456` | Class 10 (Active, Enrolled in `SSC 2026`)              |
-| **Student**           | Sabbir Ahmed | `student4@gmail.com`  | `Student@123456` | HSC (Active, Enrolled in `SSC 2026`)                   |
-| **Student**           | Mehedi Hasan | `student5@gmail.com`  | `Student@123456` | Class 9 (Active, Enrolled in `Class 10`)               |
-| **Student (Pending)** | Sadia Afrin  | `student6@gmail.com`  | `Student@123456` | Awaiting Admin Approval (`PENDING_ACTIVATION`)         |
-
----
-
 ## ⚙️ Environment Variables Reference
 
 Create a `.env` file in the root directory based on `.env.example`:
@@ -640,15 +621,15 @@ JWT_REFRESH_SECRET="your-super-secret-refresh-key-minimum-32-chars-long"
 JWT_REFRESH_EXPIRES_IN="30d"
 BCRYPT_SALT_ROUNDS=12
 
-# Root Admin Startup Bootstrapper (Pre-configured demo credentials)
-ADMIN_NAME="Abrar Yeasir"
-ADMIN_EMAIL="admin@gmail.com"
-ADMIN_PASSWORD="Admin@123456"
+# Root Admin Startup Bootstrapper
+ADMIN_NAME="System Administrator"
+ADMIN_EMAIL="admin@coaching.com"
+ADMIN_PASSWORD="your-secure-admin-password"
 ADMIN_PHONE="+8801700000001"
-ADMIN_INSTITUTION_NAME="Radiant Coaching Center"
+ADMIN_INSTITUTION_NAME="Coaching Center Academy"
 ADMIN_INSTITUTION_ADDRESS="Dhanmondi, Dhaka"
 ADMIN_INSTITUTION_PHONE="+8801700000001"
-ADMIN_INSTITUTION_EMAIL="admin@gmail.com"
+ADMIN_INSTITUTION_EMAIL="admin@coaching.com"
 
 # Google Identity Services (GIS) OAuth
 GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
