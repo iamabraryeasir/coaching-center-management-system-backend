@@ -42,3 +42,5 @@ pnpm-lock.yaml
 yarn.lock
 
 .vercel
+
+ASSIGNMENT.md
