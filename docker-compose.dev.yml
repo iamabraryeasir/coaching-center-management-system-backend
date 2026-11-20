@@ -1,0 +1,102 @@
+name: coaching-management-system-dev
+
+services:
+  # ============================================================================
+  # Application Backend Development Service (tsx watch with live reload)
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: coaching-backend-api-dev
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/coaching_management_db?schema=public
+      REDIS_URL: redis://redis:6379
+      RUN_MIGRATIONS: "true"
+      CORS_ORIGIN: "*"
+      JWT_ACCESS_SECRET: super_secret_jwt_access_key_min_32_characters_long_for_security
+      JWT_REFRESH_SECRET: super_secret_jwt_refresh_key_min_32_characters_long_for_security
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tsup.config.ts:/app/tsup.config.ts
+      # Preserve container node_modules from being overwritten by host mount
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - coaching-network
+    command: ["npm", "run", "dev"]
+
+  # ============================================================================
+  # PostgreSQL Service (Development)
+  # ============================================================================
+  postgres:
+    image: postgres:17-alpine
+    container_name: coaching-backend-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: coaching_management_db
+      TZ: Asia/Dhaka
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d coaching_management_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - coaching-network
+
+  # ============================================================================
+  # Redis Service (Development)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: coaching-backend-redis-dev
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - coaching-network
+
+# ==============================================================================
+# Persistent Named Volumes
+# ==============================================================================
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+# ==============================================================================
+# Isolated Bridge Network
+# ==============================================================================
+networks:
+  coaching-network:
+    driver: bridge

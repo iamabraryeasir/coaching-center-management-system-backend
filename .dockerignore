@@ -1,0 +1,39 @@
+# Dependencies and package caches
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build and output artifacts
+dist
+build
+coverage
+*.tsbuildinfo
+
+# Version control and editor metadata
+.git
+.github
+.gitignore
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.docker.example
+
+# Local documentation, scratch files and tests
+*.md
+postman
+test-html-google
+
+# Docker configurations (prevent context cycle)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
