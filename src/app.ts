@@ -11,6 +11,9 @@ import { httpLogger, sendResponse } from './utils';
 
 const app: Application = express();
 
+// Enable reverse proxy trust for deployments behind proxies/load balancers (Render, Vercel, AWS)
+app.set('trust proxy', 1);
+
 // Security HTTP headers configured for cross-origin API clients & Google OAuth popups
 app.use(
   helmet({
@@ -20,15 +23,26 @@ app.use(
 );
 
 // Cross-Origin Resource Sharing
+const rawOrigins = config.CORS_ORIGIN.split(',').map((o) => o.trim().replace(/\/$/, ''));
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or local HTML) or matched origins
-      if (!origin || config.CORS_ORIGIN === '*' || config.CORS_ORIGIN.split(',').includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
+      // Allow requests with no origin (like mobile apps, curl, or Postman)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      if (config.CORS_ORIGIN === '*' || rawOrigins.includes('*')) {
+        return callback(null, true);
+      }
+
+      const normalizedOrigin = origin.replace(/\/$/, '');
+      if (rawOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error(`Origin '${origin}' not allowed by CORS`));
     },
     credentials: true,
   }),
